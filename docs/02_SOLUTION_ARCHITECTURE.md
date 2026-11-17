@@ -92,7 +92,7 @@ flowchart TD
   F --> G2[6b. Augment CNN<br/>rot±10° shift±2 zoom0.9–1.1 bright/contrast±15%<br/>KHÔNG hflip]
   G1 --> H1[Baselines: Majority · LR · RF · LinearSVM · MLP]
   G2 --> H2[CNN 2×Conv→Dense128→24]
-  K[keypoint.csv + webcam/*.json] --> L[Landmark normalize<br/>wrist-origin · scale · mirror-to-right]
+  K[keypoint.csv + webcam/*.json] --> L[Landmark normalize lm-v1<br/>wrist-origin · chia cho max |x|,|y|]
   L --> M[Split theo phiên/người<br/>session-holdout · signer-holdout]
   M --> N[Landmark-MLP 42/63→128→64→24<br/>aug: rot±15°, jitter]
   H1 & H2 & N --> O[Evaluate trên Test chính thức<br/>chỉ 1 lần, sau khi chọn theo Val]
@@ -118,10 +118,12 @@ flowchart TD
 | Vai trò | Benchmark học thuật + chế độ "Ensemble" thử nghiệm trong AI Lab | Chạy trong Lesson Player |
 
 **Landmark normalization (spec dùng chung Python & TS, `preprocess_version = "lm-v1"`):**
-1. Nếu `handedness == Left` và setting `mirror_left = true` → lật `x := 1 − x` (đưa về tay phải).
-2. Tịnh tiến: `p_i := p_i − p_0` (cổ tay là gốc).
-3. Chuẩn hóa tỉ lệ: chia cho `max_i ‖p_i[x,y]‖` (khoảng cách xa nhất tới cổ tay trên mặt phẳng xy); z chia cùng hệ số.
-4. Flatten theo thứ tự landmark 0..20 → `Float32Array(42)` cho `features = "xy"` hoặc `Float32Array(63)` cho `"xyz"` (manifest quyết định).
+*Đặc tả đã được kiểm chứng trên dữ liệu thật:* mọi hàng của `keypoint.csv` (33.536 hàng dùng được) có cổ tay ở (0, 0) và giá trị tuyệt đối lớn nhất của một tọa độ đúng bằng 1, tức chia tỉ lệ theo chuẩn L-vô-cực, **không** phải chuẩn Euclid. `normalize_lm_v1` tái tạo đúng từng hàng của file (test trong `ml/tests/unit/test_normalize.py`).
+
+1. Tịnh tiến: `p_i := p_i − p_0` (cổ tay là gốc).
+2. Chia mọi tọa độ x, y cho `max_i max(|x_i|, |y_i|)`. Nếu hệ số = 0 (mọi điểm trùng cổ tay) → không có đầu ra (`None`/`null`, bỏ khung).
+3. Flatten theo thứ tự `x0, y0, x1, y1, … x20, y20` → `Float32Array(42)`. Chỉ dùng x, y; z (nếu có) bị bỏ qua. Bản 63 số (`xyz`) chưa được định nghĩa vì dữ liệu không có z.
+4. **`lm-v1` không lật gương.** File không cho biết hàng nào là tay nào và chứa cả hai kiểu hướng bàn tay lẫn lộn (khoảng 46,5% / 53,5% theo dấu tích có hướng của cổ tay→gốc ngón trỏ và cổ tay→gốc ngón út, ở mọi chữ cái). Việc lật là một **thí nghiệm có đối chứng** (P1-19, chọn theo validation); nếu có lợi sẽ tạo `lm-v2`.
 5. Golden fixture: `shared/contracts/fixtures/landmarks_lm-v1.json` (input thô, output kỳ vọng) — sinh bởi Python, test ở cả 2 phía.
 
 ### 4.4 Model Manifest (hợp đồng ML → Web)

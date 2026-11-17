@@ -67,10 +67,12 @@ Schema: `shared/contracts/schemas/model_manifest.schema.json` (đã có, task P0
 
 ### 3.3 Landmark preprocessing `lm-v1` (Python ↔ TypeScript)
 
-1. Nếu `handedness == Left` và `settings.handedness` cho phép mirror → `x := 1 − x`.
-2. `p_i := p_i − p_0` (cổ tay là gốc).
-3. Chia cho `max_i ‖(x_i, y_i)‖`; z chia cùng hệ số. Nếu hệ số = 0 → trả `null` (bỏ khung).
-4. Flatten landmark 0..20 → `Float32Array(42)` (`xy`) hoặc `Float32Array(63)` (`xyz`).
+Đã kiểm chứng trên toàn bộ `keypoint.csv`: cổ tay ở (0, 0) và giá trị tuyệt đối lớn nhất của x, y trong mỗi hàng đúng bằng 1.
+
+1. `p_i := p_i − p_0` (cổ tay là gốc).
+2. Chia mọi x, y cho `max_i max(|x_i|, |y_i|)` (chuẩn L-vô-cực, **không** phải chuẩn Euclid). Nếu hệ số = 0 → trả `null` (bỏ khung).
+3. Flatten theo thứ tự `x0, y0, x1, y1, … x20, y20` → `Float32Array(42)`. z bị bỏ qua.
+4. Không lật gương trong `lm-v1` (xem 02 §4.3); lật là thí nghiệm ở P1-19 và nếu có lợi sẽ thành `lm-v2`.
 
 Golden fixture `shared/contracts/fixtures/landmarks_lm-v1.json` (do `ml` sinh) gồm `{ input: HandFrame, expected: number[] }[]`; cả hai phía phải khớp với sai số ≤ 1e-6 (AC-ML-09).
 
@@ -134,7 +136,7 @@ export interface Classifier {                   // vision/classifier.ts
   readonly backend: 'webgpu' | 'wasm';
 }
 
-export function normalizeLandmarks(frame: HandFrame, opts: { mirrorLeft: boolean; features: 'xy' | 'xyz' }): Float32Array | null; // lm-v1
+export function normalizeLandmarks(frame: HandFrame): Float32Array | null; // lm-v1: 42 số (x, y), không lật gương
 
 export interface Smoother {
   push(probs: Float32Array): { label: string; confidence: number; topK: Array<{ label: string; p: number }> };

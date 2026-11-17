@@ -40,7 +40,7 @@ SignLingo/
 
 ### 2.2 `ml/CLAUDE.md` — điểm chính
 - Chỉ `data/split.py` tạo split; script tuning cấm đọc test (`load_split("test", final=True)` chỉ trong `evaluate --final`).
-- Mọi `fit()` chỉ nhận `X_train`. Không lật ngang ảnh MNIST; landmark mirror-to-right theo lm-v1.
+- Mọi `fit()` chỉ nhận `X_train`. Không lật ngang ảnh MNIST; landmark `lm-v1` không lật gương (lật chỉ là thí nghiệm có đối chứng, xem 02 §4.3).
 - Mỗi thí nghiệm = 1 YAML + 1 JSON kết quả đúng `experiment.schema.json`.
 - Đổi tiền xử lý landmark ⇒ tăng `preprocess_version`, sinh lại fixture.
 - Chỉ ghi vào `frontend/public/{models,data}` qua `python -m signlingo_ml.export.publish`.

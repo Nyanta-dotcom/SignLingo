@@ -94,7 +94,7 @@ Phase 2 và phần còn lại của Phase 3 (Skill Tree, Lesson Player đầy đ
 
 | ☐ | ID | Task | Files | Guide | Test |
 |---|---|---|---|---|---|
-| ☐ | P1-15 [R] | `normalize_lm_v1` (mirror-to-right, wrist-origin, scale max xy; scale = 0 → None) | `landmarks/normalize.py` | 04 §3.3 | Unit (hypothesis): bất biến tịnh tiến & tỉ lệ |
+| ☑ | P1-15 [R] | `normalize_lm_v1`: tịnh tiến cổ tay về (0, 0), chia cho max(|x|,|y|), flatten x0,y0,…; hệ số 0 → None. **Không lật gương.** Đặc tả suy ra từ dữ liệu thật (33.536 hàng), thay cho đặc tả cũ sai (chuẩn Euclid + lật theo handedness) | `landmarks/normalize.py` | 04 §3.3 | Unit ✅ (10): bất biến tịnh tiến/tỉ lệ (hypothesis), cổ tay (0,0), max|giá trị| = 1, idempotent, z bị bỏ qua, suy biến, **tái tạo đúng cả 33.536 hàng của `keypoint.csv` (sai số ≤ 1e-6)** |
 | ☐ | P1-16 | Sinh golden fixture `landmarks_lm-v1.json` (≥ 50 mẫu, có tay trái, có ca scale = 0) | `landmarks/fixtures.py` | Ghi vào `shared/contracts/fixtures/` | Unit: round-trip |
 | ◐ | P1-17 | Loader `keypoint.csv` ✅ (bỏ 1 dòng hỏng, bỏ J/Z, `order_split` = 20% cuối mỗi lớp theo thứ tự file). **Còn:** `ingest.py` đọc `ml/data/raw/webcam/*.json` + schema `landmark_capture` | `landmarks/dataset.py` ✅, `landmarks/ingest.py` ☐, `shared/contracts/schemas/landmark_capture.schema.json` ☐ | File thật: 36.402 dòng, 1 dòng hỏng (35522), 2.865 dòng J/Z bị bỏ → **33.536** mẫu, 24 lớp (số đếm trực tiếp từ file). `keypoint.csv` không có session/signer: thứ tự file chỉ là *giả định* thứ tự thu và chưa phải signer-holdout | Unit ✅ (dòng hỏng, ô có khoảng trắng, J/Z, order_split) |
 | ☐ | P1-18 | Landmark augment: mirror, xoay ±15°, jitter, scale | `landmarks/augment.py` | Sau normalize | Unit |
