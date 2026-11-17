@@ -74,3 +74,11 @@ def test_run_cnn_records_the_config_tag():
         kind="ablation",
     )
     assert rec["hyperparams"]["config"] == "my_tag" and rec["kind"] == "ablation"
+
+
+def test_config_tags_keep_the_original_epoch_runs_distinct_from_longer_ones():
+    from signlingo_ml.train.run_cnn import config_tag, parse_tag
+
+    assert config_tag("wide", 15) == "wide" and config_tag("wide", 30) == "wide_e30"
+    assert parse_tag("wide") == ("wide", 15) and parse_tag("wide_e30") == ("wide", 30)
+    assert parse_tag("dropout_0.5_e40") == ("dropout_0.5", 40)

@@ -197,4 +197,4 @@ def test_landmark_runs_are_kept_apart_from_the_image_cnn_runs(tmp_path):
     assert [r["config"] for r in agg["lm_sweep"]] == ["canonical", "base"]  # best val first
     assert [r["config"] for r in agg["lm_main"]] == ["canonical"]
     md = render_markdown(agg)
-    assert "Landmark MLP sweep" in md and "not a signer holdout" in md
+    assert "Landmark sweeps" in md and "not a signer holdout" in md

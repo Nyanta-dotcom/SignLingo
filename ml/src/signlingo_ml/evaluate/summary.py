@@ -190,7 +190,7 @@ def render_markdown(agg: dict) -> str:
     if agg.get("lm_sweep"):
         out += [
             "",
-            "## Landmark MLP sweep (validation only; one factor changed from `base`)",
+            "## Landmark sweeps (validation only; config = features__model)",
             "",
             (
                 "Split: keypoint.csv in file order per class, train | gap | val | gap | test. "
@@ -206,7 +206,7 @@ def render_markdown(agg: dict) -> str:
                 f" | {_fmt(r['best_epoch'], 1)} | {r['params']['mean']:.0f} | {_fmt(r['train_s'], 0)} |"
             )
     if agg.get("lm_main"):
-        out += ["", "## Landmark MLP main (config chosen on validation; test part scored once)", ""]
+        out += ["", "## Landmark main runs (test part scored once per run)", ""]
         out += [
             "| Config | Seeds | Val macro-F1 | Test acc | Test macro-F1 |",
             "|---|---|---|---|---|",

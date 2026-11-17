@@ -49,11 +49,32 @@ def select_best(records: list[dict]) -> str:
     return min(by, key=lambda name: (-float(np.mean(by[name])), name))
 
 
+DEFAULT_EPOCHS = 15
+
+
+def config_tag(name: str, epochs: int) -> str:
+    """Tag for a config at a given epoch budget; the original 15-epoch runs keep their old tag."""
+    return name if epochs == DEFAULT_EPOCHS else f"{name}_e{epochs}"
+
+
+def parse_tag(tag: str) -> tuple[str, int]:
+    base, sep, tail = tag.rpartition("_e")
+    if sep and tail.isdigit() and base in CONFIGS:
+        return base, int(tail)
+    return tag, DEFAULT_EPOCHS
+
+
 def main(argv=None) -> None:
     ap = argparse.ArgumentParser(description="CNN sweep on the real Kaggle data.")
     ap.add_argument("--seeds", nargs="+", type=int, default=[SEED, SEED + 1, SEED + 2])
-    ap.add_argument("--epochs", type=int, default=15)
+    ap.add_argument("--epochs", type=int, default=DEFAULT_EPOCHS)
+    ap.add_argument("--configs", nargs="+", default=list(CONFIGS), choices=list(CONFIGS))
     ap.add_argument("--skip-final", action="store_true", help="sweep only; never read the test set")
+    ap.add_argument(
+        "--final-only",
+        metavar="TAG",
+        help="skip the sweep: train config TAG (e.g. wide_e30) and score the test split once",
+    )
     ap.add_argument("--out", default=str(REPORTS / "experiments"))
     args = ap.parse_args(argv)
 
@@ -61,25 +82,40 @@ def main(argv=None) -> None:
     Xt, yt = transform(clean(load_kaggle_csv(raw_path("sign_mnist_test.csv"))))
     table = load_or_make_split(X, y, DATA_PROCESSED / "split_v1.parquet")
     tr, va = split_indices(table, "train"), split_indices(table, "val")
+
+    def final(best_tag: str) -> None:
+        name, epochs = parse_tag(best_tag)
+        for seed in args.seeds:
+            cfg, kw = resolve(name, seed, epochs)
+            rec = run_cnn(
+                f"cnn_main_{best_tag}_s{seed}", cfg, X[tr], y[tr], X[va], y[va], Xt, yt,
+                eval_test=True, model_kwargs=kw, kind="main", tag=best_tag,
+            )
+            write_record(rec, args.out)
+            m = rec["metrics"]
+            print(
+                f"{rec['run_id']:28s} val_f1 {m['val_macro_f1']:.3f} "
+                f"test_f1 {m['test_macro_f1']:.3f} test_acc {m['test_acc']:.3f}",
+                flush=True,
+            )
+
+    if args.final_only:
+        final(args.final_only)
+        return
+
     print(
-        f"train {len(tr)} val {len(va)} | {len(CONFIGS)} configs x {len(args.seeds)} seeds",
+        f"train {len(tr)} val {len(va)} | {len(args.configs)} configs x {len(args.seeds)} seeds"
+        f" x {args.epochs} epochs",
         flush=True,
     )
-
     sweep = []
-    for name in CONFIGS:
+    for name in args.configs:
+        tag = config_tag(name, args.epochs)
         for seed in args.seeds:
             cfg, kw = resolve(name, seed, args.epochs)
             rec = run_cnn(
-                f"cnn_sweep_{name}_s{seed}",
-                cfg,
-                X[tr],
-                y[tr],
-                X[va],
-                y[va],
-                model_kwargs=kw,
-                kind="ablation",
-                tag=name,
+                f"cnn_sweep_{tag}_s{seed}", cfg, X[tr], y[tr], X[va], y[va],
+                model_kwargs=kw, kind="ablation", tag=tag,
             )
             write_record(rec, args.out)
             sweep.append(rec)
@@ -91,32 +127,9 @@ def main(argv=None) -> None:
             )
 
     best = select_best(sweep)
-    print(f"\nWinner by mean validation macro-F1: {best}", flush=True)
-    if args.skip_final:
-        return
-    for seed in args.seeds:
-        cfg, kw = resolve(best, seed, args.epochs)
-        rec = run_cnn(
-            f"cnn_main_{best}_s{seed}",
-            cfg,
-            X[tr],
-            y[tr],
-            X[va],
-            y[va],
-            Xt,
-            yt,
-            eval_test=True,
-            model_kwargs=kw,
-            kind="main",
-            tag=best,
-        )
-        write_record(rec, args.out)
-        m = rec["metrics"]
-        print(
-            f"{rec['run_id']:28s} val_f1 {m['val_macro_f1']:.3f} test_f1 {m['test_macro_f1']:.3f}"
-            f" test_acc {m['test_acc']:.3f}",
-            flush=True,
-        )
+    print(f"\nWinner by mean validation macro-F1 (this sweep only): {best}", flush=True)
+    if not args.skip_final:
+        final(best)
 
 
 if __name__ == "__main__":
