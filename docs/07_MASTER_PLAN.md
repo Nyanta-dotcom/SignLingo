@@ -54,8 +54,8 @@ Phase 2 và phần còn lại của Phase 3 (Skill Tree, Lesson Player đầy đ
 | ☑ | P0-09 🎓 | `e2e/` Playwright + Chrome fake camera | `e2e/` | `PW_CHANNEL=chrome` dùng Chrome cài sẵn | E2E smoke ✅ (local) |
 | ☐ | P0-10 | Cài skills theo 06 §3 + tạo `.claude/agents`, `.claude/skills` nội bộ | `.claude/` | **Chờ duyệt danh sách skill** | — |
 | ☑ | P0-11 🎓 | `frontend/vercel.json` (SPA rewrite, COOP/COEP, CSP, Permissions-Policy, cache) + Vite dev/preview cùng header COOP/COEP | `frontend/` | Theo 02 §7, §9. CSP chỉ áp trên Vercel; script chống nháy theme (P3-01) phải là file ngoài hoặc thêm hash vào CSP | E2E `crossOriginIsolated` ✅ (local dev) · ☐ kiểm lại trên Preview URL |
-| ☐ | P0-12 | Hooks (ruff format, prettier, chặn ghi thư mục cấm) + script CI C7 (≤ 100 dòng/task) | `.claude/`, `.github/` | 06 §4–5 | Thử sửa file → hook chạy |
-| ☐ | P0-13 🎓 | Ghim runtime: `.nvmrc` (Node LTS dùng chung máy & CI), `.python-version`, `engines`; `.gitattributes` (`eol=lf`); cài **uv** + `uv.lock` (hoặc chốt pip + `requirements.lock`) | gốc, `ml/` | Đồng bộ CI | CI xanh với đúng phiên bản |
+| ☑ | P0-12 | Hooks (ruff format, prettier, chặn ghi thư mục cấm) + script CI C7 (≤ 100 dòng/task) | `.claude/`, `.github/` | 06 §4–5. Hook chặn ghi + ruff format đã chạy; **prettier chưa cài** nên chưa có hook cho TS; script C7 ở `scripts/check_diff_size.py` (job CI chỉ cảnh báo) | Hook chặn `docs/course` đã thử ✅ |
+| ◐ | P0-13 🎓 | Ghim runtime: `.nvmrc` (Node LTS dùng chung máy & CI), `.python-version`, `engines`; `.gitattributes` (`eol=lf`); cài **uv** + `uv.lock` (hoặc chốt pip + `requirements.lock`) | gốc, `ml/` | Đồng bộ CI | CI xanh với đúng phiên bản | **Xong:** `.nvmrc`, `.python-version`, `engines`, `.gitattributes`. **Còn:** cài uv + `uv.lock`.
 | ☐ | P0-14 🎓 | Commit baseline, push GitHub, tạo project Vercel (Root = `frontend/`), xác nhận Preview + Production | — | **Người dùng: chủ project Vercel, repo public/private** | URL production mở được, camera xin quyền được (HTTPS) |
 
 **3 lớp kiểm thử Phase 0:** Unit = config, schema, App · Integration = `pnpm build` + `pnpm preview` có header đúng · E2E = Playwright smoke + `crossOriginIsolated` (local và trên Preview URL).
@@ -70,14 +70,14 @@ Phase 2 và phần còn lại của Phase 3 (Skill Tree, Lesson Player đầy đ
 
 | ☐ | ID | Task | Files (`ml/src/signlingo_ml/…`) | Guide | Test |
 |---|---|---|---|---|---|
-| ☐ | P1-01 ♻ | Load CSV + quality report (NaN, dup, label range, balance, pixel range) | `data/load.py`, `data/quality.py` | Dataclass `QualityReport`, ghi JSON | Unit: fixture có NaN/dup → đếm đúng |
-| ☐ | P1-02 ♻ | Clean + transform (remap nhãn, /255, reshape) | `data/transform.py` | Hàm thuần | Unit: nhãn 10→9, 24→23; giá trị ∈ [0,1] |
+| ☑ | P1-01 ♻ | Load CSV + quality report (NaN, dup, label range, balance, pixel range) | `data/load.py`, `data/quality.py` | Dataclass `QualityReport`, ghi JSON | Unit: fixture có NaN/dup → đếm đúng |
+| ☑ | P1-02 ♻ | Clean + transform (remap nhãn, /255, reshape) | `data/transform.py` | Hàm thuần | Unit: nhãn 10→9, 24→23; giá trị ∈ [0,1] |
 | ☐ | P1-03 ♻ [R] | Group split: thumbnail 10×10 → Ward 70 cụm/lớp → 15% cụm = val; lưu `split_v1.parquet` | `data/split.py` | `n_groups=70, val_frac=0.15, seed=42` trong YAML | Unit: **0 group overlap** (AC-ML-02), val ≈ 15% ± 1%, deterministic |
-| ☐ | P1-04 | Guard: `load_split(name, final=False)` raise nếu đọc `test` khi chưa `final` | `data/access.py` | Dùng ở mọi script train/tune | Unit |
-| ☐ | P1-05 ♻ | Features: pixel 784, HOG 1296 | `features/pixel.py`, `features/hog.py` | scikit-image | Unit: shape |
+| ☑ | P1-04 | Guard: `load_split(name, final=False)` raise nếu đọc `test` khi chưa `final` | `data/access.py` | Dùng ở mọi script train/tune | Unit |
+| ☑ | P1-05 ♻ | Features: pixel 784, HOG 1296 | `features/pixel.py`, `features/hog.py` | scikit-image | Unit: shape |
 | ☐ | P1-06 ♻ | Augment (rot ±10°, shift ±2, zoom .9–1.1, bright/contrast ±15%, **no hflip**) | `features/augment.py` | p = 0,7 | Unit: không hflip; seed tái lập |
-| ☐ | P1-07 | Metrics: acc, macro-F1, per-class F1, CM row-norm, top-k confusions, latency | `evaluate/metrics.py` | Khớp sklearn | Unit |
-| ☐ | P1-08 | Experiment logger theo `experiment.schema.json` (tạo schema trong task này) | `evaluate/logger.py`, `shared/contracts/schemas/experiment.schema.json` | 04 §4.2 | Unit: validate schema |
+| ☑ | P1-07 | Metrics: acc, macro-F1, per-class F1, CM row-norm, top-k confusions, latency | `evaluate/metrics.py` | Khớp sklearn | Unit |
+| ☑ | P1-08 | Experiment logger theo `experiment.schema.json` (tạo schema trong task này) | `evaluate/logger.py`, `shared/contracts/schemas/experiment.schema.json` | 04 §4.2 | Unit: validate schema |
 | ☐ | P1-09 ♻ | Baselines: Majority, LR, RF(200), LinearSVM, MLP 256-128 × {pixel, HOG} | `train/baselines.py`, `configs/baselines.yaml` | Scaler fit trên train (AC-ML-03) | Unit: scaler mean = mean(X_train) |
 | ☐ | P1-10 | Leakage study: LR pixel, random vs group split | `train/leakage_study.py` | kind = `leakage_study` | Integration: gap random > gap group |
 

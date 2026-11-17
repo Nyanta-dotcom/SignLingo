@@ -4,6 +4,10 @@ Version: 0.1.0
 Summary: SignLingo AI — data & ML pipeline
 Requires-Python: >=3.11
 Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: scikit-learn
+Requires-Dist: scikit-image
+Requires-Dist: scipy
 Requires-Dist: jsonschema
 Provides-Extra: dev
 Requires-Dist: pytest; extra == "dev"

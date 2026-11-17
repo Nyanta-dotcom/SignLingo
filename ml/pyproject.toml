@@ -3,7 +3,7 @@ name = "signlingo-ml"
 version = "0.1.0"
 description = "SignLingo AI — data & ML pipeline"
 requires-python = ">=3.11"
-dependencies = ["numpy", "jsonschema"]
+dependencies = ["numpy", "pandas", "scikit-learn", "scikit-image", "scipy", "jsonschema"]
 
 [project.optional-dependencies]
 dev = ["pytest", "ruff", "hypothesis"]

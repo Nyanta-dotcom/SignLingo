@@ -10,5 +10,19 @@
       "Bash(git diff:*)"
     ],
     "ask": ["Bash(git push:*)", "Bash(rm:*)"]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [{ "type": "command", "command": "python \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard_paths.py\"" }]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [{ "type": "command", "command": "python \"$CLAUDE_PROJECT_DIR/.claude/hooks/format_python.py\"" }]
+      }
+    ]
   }
 }

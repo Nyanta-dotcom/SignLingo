@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Experiment",
+  "type": "object",
+  "required": ["run_id", "kind", "dataset", "model_name", "feature_set", "split_strategy", "metrics", "seed", "run_at"],
+  "properties": {
+    "run_id": { "type": "string", "minLength": 1 },
+    "kind": { "enum": ["baseline", "main", "ablation", "leakage_study", "perf_benchmark"] },
+    "dataset": { "enum": ["sign_mnist", "landmarks"] },
+    "model_name": { "type": "string" },
+    "feature_set": { "type": "string" },
+    "split_strategy": { "enum": ["random", "group_ward70", "session_holdout", "signer_holdout"] },
+    "hyperparams": { "type": "object" },
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "val_acc": { "type": "number" },
+        "val_macro_f1": { "type": "number" },
+        "test_acc": { "type": "number" },
+        "test_macro_f1": { "type": "number" },
+        "error_rate": { "type": "number" },
+        "latency_ms": { "type": "number" },
+        "params": { "type": "integer" },
+        "train_s": { "type": "number" }
+      }
+    },
+    "confusion_matrix": {
+      "type": "object",
+      "required": ["labels", "matrix", "normalized"],
+      "properties": {
+        "labels": { "type": "array", "items": { "type": "string" } },
+        "matrix": { "type": "array", "items": { "type": "array", "items": { "type": "number" } } },
+        "normalized": { "enum": ["row", "none"] }
+      }
+    },
+    "per_class_f1": { "type": "object", "additionalProperties": { "type": "number" } },
+    "top_confusions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["true", "pred", "rate"],
+        "properties": { "true": { "type": "string" }, "pred": { "type": "string" }, "rate": { "type": "number" } }
+      }
+    },
+    "curves": { "type": "object" },
+    "git_commit": { "type": "string" },
+    "seed": { "type": "integer" },
+    "run_at": { "type": "string" }
+  }
+}
