@@ -87,7 +87,7 @@ flowchart TD
   B --> C[2. Quality checks<br/>NaN · duplicates · label range · balance]
   C --> D[3. Clean<br/>drop NaN/dup/out-of-range]
   D --> E[4. Transform<br/>label 0..25→0..23 · /255 · reshape 28×28]
-  E --> F[5. Group Split<br/>thumb 10×10 → Ward 70 cụm/lớp → 15% cụm = Val]
+  E --> F[5. Group Split<br/>thumb 10×10 chuẩn hóa từng ảnh → Ward 70 cụm/lớp → ~15% ảnh (nguyên cụm) = Val]
   F --> G1[6a. Pixel 784 / HOG 1296]
   F --> G2[6b. Augment CNN<br/>rot±10° shift±2 zoom0.9–1.1 bright/contrast±15%<br/>KHÔNG hflip]
   G1 --> H1[Baselines: Majority · LR · RF · LinearSVM · MLP]
