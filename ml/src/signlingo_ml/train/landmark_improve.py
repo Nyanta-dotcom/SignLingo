@@ -74,7 +74,7 @@ def _prepare(data: dict, feature_kind: str):
 
 
 def _fit(model_name, F, y, seed, epochs, hgb_iters, num_classes):
-    """Train one member; returns (predict_proba function, params, curves, best_epoch, train_s)."""
+    """Train one member; returns (predict_proba, params, curves, best_epoch, train_s, model)."""
     family, hidden, dropout = MODELS[model_name]
     t0 = time.perf_counter()
     if family == "mlp":
@@ -85,11 +85,12 @@ def _fit(model_name, F, y, seed, epochs, hgb_iters, num_classes):
         )
         res = train_model(model, F["train"], y["train"], F["val"], y["val"], cfg, num_classes)
         proba = lambda X: _softmax(predict_logits(model, X))
-        return proba, count_parameters(model), res.history, res.best_epoch, time.perf_counter() - t0
+        elapsed = time.perf_counter() - t0
+        return proba, count_parameters(model), res.history, res.best_epoch, elapsed, model
     clf = HistGradientBoostingClassifier(
         max_iter=hgb_iters, learning_rate=0.1, early_stopping=False, random_state=seed
     ).fit(F["train"], y["train"])
-    return clf.predict_proba, 0, None, hgb_iters, time.perf_counter() - t0
+    return clf.predict_proba, 0, None, hgb_iters, time.perf_counter() - t0, clf
 
 
 def _record(run_id, kind, tag, name, feature_kind, seed, metrics, hp, details, curves):
@@ -118,7 +119,7 @@ def run_model(run_id, feature_kind, model_name, seed, data, kind="ablation", eva
               epochs=60, hgb_iters=200, num_classes=N_CLASSES) -> dict:  # fmt: skip
     F, y = _prepare(data, feature_kind)
     labels = LABELS if num_classes == len(LABELS) else [str(i) for i in range(num_classes)]
-    proba, params, curves, best_epoch, train_s = _fit(
+    proba, params, curves, best_epoch, train_s, _model = _fit(
         model_name, F, y, seed, epochs, hgb_iters, num_classes
     )
     metrics, details = _score(proba, F, y, labels, eval_test)

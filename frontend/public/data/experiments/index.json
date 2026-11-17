@@ -1,0 +1,1389 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-11-17T23:24:29.446796+00:00",
+  "datasets": [
+    "landmarks",
+    "sign_mnist"
+  ],
+  "runs": [
+    {
+      "run_id": "baseline_lr_pixel_s42",
+      "kind": "baseline",
+      "dataset": "sign_mnist",
+      "model_name": "Logistic Regression",
+      "feature_set": "pixel",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.7725752508361204,
+        "val_macro_f1": 0.7722995031156508,
+        "latency_ms": 0.32126300007803366,
+        "train_s": 2.528492000012193,
+        "test_acc": 0.704824316787507,
+        "test_macro_f1": 0.6840262036408588,
+        "error_rate": 0.295175683212493
+      }
+    },
+    {
+      "run_id": "baseline_majority_s42",
+      "kind": "baseline",
+      "dataset": "sign_mnist",
+      "model_name": "Majority class (floor)",
+      "feature_set": "pixel",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.046583850931677016,
+        "val_macro_f1": 0.00370919881305638,
+        "latency_ms": 0.04145500002778135,
+        "train_s": 0.005281999998260289,
+        "test_acc": 0.020078081427774678,
+        "test_macro_f1": 0.0016402405686167304,
+        "error_rate": 0.9799219185722253
+      }
+    },
+    {
+      "run_id": "baseline_mlp_hog_s42",
+      "kind": "baseline",
+      "dataset": "sign_mnist",
+      "model_name": "MLP 256-128",
+      "feature_set": "hog",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.9182990922121357,
+        "val_macro_f1": 0.9174872636134542,
+        "latency_ms": 0.6746664999809582,
+        "train_s": 21.633006399992155,
+        "test_acc": 0.9159230340211936,
+        "test_macro_f1": 0.9098940939829294,
+        "error_rate": 0.08407696597880643
+      }
+    },
+    {
+      "run_id": "baseline_mlp_hog_s43",
+      "kind": "baseline",
+      "dataset": "sign_mnist",
+      "model_name": "MLP 256-128",
+      "feature_set": "hog",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.931438127090301,
+        "val_macro_f1": 0.9301423591966699,
+        "latency_ms": 0.5373975000111386,
+        "train_s": 21.98540510001476,
+        "test_acc": 0.918153931957613,
+        "test_macro_f1": 0.9134222102976789,
+        "error_rate": 0.08184606804238703
+      }
+    },
+    {
+      "run_id": "baseline_mlp_hog_s44",
+      "kind": "baseline",
+      "dataset": "sign_mnist",
+      "model_name": "MLP 256-128",
+      "feature_set": "hog",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.9218824653607263,
+        "val_macro_f1": 0.9210703908710989,
+        "latency_ms": 0.7968860000255518,
+        "train_s": 21.898905400012154,
+        "test_acc": 0.9156441717791411,
+        "test_macro_f1": 0.9082487326579405,
+        "error_rate": 0.08435582822085885
+      }
+    },
+    {
+      "run_id": "baseline_mlp_pixel_s42",
+      "kind": "baseline",
+      "dataset": "sign_mnist",
+      "model_name": "MLP 256-128",
+      "feature_set": "pixel",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.8373148590539895,
+        "val_macro_f1": 0.8362270082604626,
+        "latency_ms": 0.4204109999409411,
+        "train_s": 12.87650620000204,
+        "test_acc": 0.7915504740658115,
+        "test_macro_f1": 0.7686359011798437,
+        "error_rate": 0.20844952593418853
+      }
+    },
+    {
+      "run_id": "baseline_mlp_pixel_s43",
+      "kind": "baseline",
+      "dataset": "sign_mnist",
+      "model_name": "MLP 256-128",
+      "feature_set": "pixel",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.8291925465838509,
+        "val_macro_f1": 0.8298378419991194,
+        "latency_ms": 0.4884874999697786,
+        "train_s": 13.441491000005044,
+        "test_acc": 0.79712771890686,
+        "test_macro_f1": 0.7771604731239555,
+        "error_rate": 0.20287228109314004
+      }
+    },
+    {
+      "run_id": "baseline_mlp_pixel_s44",
+      "kind": "baseline",
+      "dataset": "sign_mnist",
+      "model_name": "MLP 256-128",
+      "feature_set": "pixel",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.8365981844242714,
+        "val_macro_f1": 0.8352447954192183,
+        "latency_ms": 0.5375350000394974,
+        "train_s": 13.546649099997012,
+        "test_acc": 0.8088399330730619,
+        "test_macro_f1": 0.784718399671684,
+        "error_rate": 0.1911600669269381
+      }
+    },
+    {
+      "run_id": "baseline_rf_pixel_s42",
+      "kind": "baseline",
+      "dataset": "sign_mnist",
+      "model_name": "Random Forest (200 trees)",
+      "feature_set": "pixel",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.8358815097945532,
+        "val_macro_f1": 0.8346705336025678,
+        "latency_ms": 32.811193999950774,
+        "train_s": 11.300340500019956,
+        "test_acc": 0.8039598438371445,
+        "test_macro_f1": 0.7874918324458783,
+        "error_rate": 0.19604015616285553
+      }
+    },
+    {
+      "run_id": "baseline_rf_pixel_s43",
+      "kind": "baseline",
+      "dataset": "sign_mnist",
+      "model_name": "Random Forest (200 trees)",
+      "feature_set": "pixel",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.8399426660296225,
+        "val_macro_f1": 0.838626298226269,
+        "latency_ms": 37.12875550001627,
+        "train_s": 11.625802400027169,
+        "test_acc": 0.8004740658114892,
+        "test_macro_f1": 0.784334402206763,
+        "error_rate": 0.19952593418851083
+      }
+    },
+    {
+      "run_id": "baseline_rf_pixel_s44",
+      "kind": "baseline",
+      "dataset": "sign_mnist",
+      "model_name": "Random Forest (200 trees)",
+      "feature_set": "pixel",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.8394648829431438,
+        "val_macro_f1": 0.8384989610578276,
+        "latency_ms": 36.06360699996003,
+        "train_s": 12.326134300004924,
+        "test_acc": 0.8084216397099833,
+        "test_macro_f1": 0.7917569194744702,
+        "error_rate": 0.19157836029001674
+      }
+    },
+    {
+      "run_id": "baseline_svm_hog_s42",
+      "kind": "baseline",
+      "dataset": "sign_mnist",
+      "model_name": "Linear SVM",
+      "feature_set": "hog",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.880315336837076,
+        "val_macro_f1": 0.8769809559253058,
+        "latency_ms": 0.6926525000017136,
+        "train_s": 2332.700287399988,
+        "test_acc": 0.8816229782487451,
+        "test_macro_f1": 0.8756914691991765,
+        "error_rate": 0.11837702175125486
+      }
+    },
+    {
+      "run_id": "cnn_ens_wide_e30_n5",
+      "kind": "main",
+      "dataset": "sign_mnist",
+      "model_name": "CNN wide_e30 ensemble",
+      "feature_set": "pixels_28x28",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.9885332059245103,
+        "val_macro_f1": 0.9883750961149221,
+        "params": 4140280,
+        "train_s": 886.2182548999845,
+        "test_acc": 0.9792247629670943,
+        "test_macro_f1": 0.9790365073233542,
+        "error_rate": 0.020775237032905736
+      },
+      "config": "wide_e30__ens5"
+    },
+    {
+      "run_id": "cnn_main_wide_e30_s42",
+      "kind": "main",
+      "dataset": "sign_mnist",
+      "model_name": "CNN + augmentation",
+      "feature_set": "pixels_28x28",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.9835164835164835,
+        "val_macro_f1": 0.9831876690408002,
+        "params": 828056,
+        "latency_ms": 0.8091775000502821,
+        "train_s": 170.35242780001136,
+        "test_acc": 0.9722532069157837,
+        "test_macro_f1": 0.9710763040159341,
+        "error_rate": 0.027746793084216348
+      },
+      "config": "wide_e30"
+    },
+    {
+      "run_id": "cnn_main_wide_e30_s43",
+      "kind": "main",
+      "dataset": "sign_mnist",
+      "model_name": "CNN + augmentation",
+      "feature_set": "pixels_28x28",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.9749163879598662,
+        "val_macro_f1": 0.9745133051622418,
+        "params": 828056,
+        "latency_ms": 0.7481590000679716,
+        "train_s": 118.61604819999775,
+        "test_acc": 0.9761572783045176,
+        "test_macro_f1": 0.976607789650255,
+        "error_rate": 0.023842721695482405
+      },
+      "config": "wide_e30"
+    },
+    {
+      "run_id": "cnn_main_wide_e30_s44",
+      "kind": "main",
+      "dataset": "sign_mnist",
+      "model_name": "CNN + augmentation",
+      "feature_set": "pixels_28x28",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.9816053511705686,
+        "val_macro_f1": 0.9819759949102501,
+        "params": 828056,
+        "latency_ms": 0.8376909999060445,
+        "train_s": 148.10706480001681,
+        "test_acc": 0.9765755716675962,
+        "test_macro_f1": 0.9755738215399002,
+        "error_rate": 0.02342442833240377
+      },
+      "config": "wide_e30"
+    },
+    {
+      "run_id": "cnn_main_wide_s42",
+      "kind": "main",
+      "dataset": "sign_mnist",
+      "model_name": "CNN + augmentation",
+      "feature_set": "pixels_28x28",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.9765886287625418,
+        "val_macro_f1": 0.976218523853707,
+        "params": 828056,
+        "latency_ms": 0.6449584999063518,
+        "train_s": 167.10322269998142,
+        "test_acc": 0.9711377579475738,
+        "test_macro_f1": 0.9684770238065159,
+        "error_rate": 0.028862242052426157
+      },
+      "config": "wide"
+    },
+    {
+      "run_id": "cnn_main_wide_s43",
+      "kind": "main",
+      "dataset": "sign_mnist",
+      "model_name": "CNN + augmentation",
+      "feature_set": "pixels_28x28",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.9727663640707119,
+        "val_macro_f1": 0.9724831123622056,
+        "params": 828056,
+        "latency_ms": 0.6013894999341574,
+        "train_s": 102.89248879998922,
+        "test_acc": 0.9704406023424428,
+        "test_macro_f1": 0.9706390120156408,
+        "error_rate": 0.029559397657557218
+      },
+      "config": "wide"
+    },
+    {
+      "run_id": "cnn_main_wide_s44",
+      "kind": "main",
+      "dataset": "sign_mnist",
+      "model_name": "CNN + augmentation",
+      "feature_set": "pixels_28x28",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.9765886287625418,
+        "val_macro_f1": 0.9770705144835566,
+        "params": 828056,
+        "latency_ms": 0.6734229999710806,
+        "train_s": 159.69612320000306,
+        "test_acc": 0.9749023982152817,
+        "test_macro_f1": 0.9743436720027163,
+        "error_rate": 0.025097601784718315
+      },
+      "config": "wide"
+    },
+    {
+      "run_id": "cnn_sweep_base_e30_s42",
+      "kind": "ablation",
+      "dataset": "sign_mnist",
+      "model_name": "CNN + augmentation",
+      "feature_set": "pixels_28x28",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.9837553750597229,
+        "val_macro_f1": 0.9832425771336796,
+        "params": 208728,
+        "latency_ms": 0.5741130000387784,
+        "train_s": 139.46668930002488
+      },
+      "config": "base_e30"
+    },
+    {
+      "run_id": "cnn_sweep_base_e30_s43",
+      "kind": "ablation",
+      "dataset": "sign_mnist",
+      "model_name": "CNN + augmentation",
+      "feature_set": "pixels_28x28",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.9653607262302915,
+        "val_macro_f1": 0.9660823315700705,
+        "params": 208728,
+        "latency_ms": 0.7801440000184812,
+        "train_s": 115.62399619998178
+      },
+      "config": "base_e30"
+    },
+    {
+      "run_id": "cnn_sweep_base_e30_s44",
+      "kind": "ablation",
+      "dataset": "sign_mnist",
+      "model_name": "CNN + augmentation",
+      "feature_set": "pixels_28x28",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.982560917343526,
+        "val_macro_f1": 0.9824305529277355,
+        "params": 208728,
+        "latency_ms": 1.572656500065932,
+        "train_s": 156.97433040000033
+      },
+      "config": "base_e30"
+    },
+    {
+      "run_id": "cnn_sweep_base_s42",
+      "kind": "ablation",
+      "dataset": "sign_mnist",
+      "model_name": "CNN + augmentation",
+      "feature_set": "pixels_28x28",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.962494027711419,
+        "val_macro_f1": 0.9612283601859385,
+        "params": 208728,
+        "latency_ms": 0.6715390000317711,
+        "train_s": 91.81507219999912
+      },
+      "config": "base"
+    },
+    {
+      "run_id": "cnn_sweep_base_s43",
+      "kind": "ablation",
+      "dataset": "sign_mnist",
+      "model_name": "CNN + augmentation",
+      "feature_set": "pixels_28x28",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.9476827520305782,
+        "val_macro_f1": 0.9474081640315791,
+        "params": 208728,
+        "latency_ms": 0.6423485001141671,
+        "train_s": 91.5695027000038
+      },
+      "config": "base"
+    },
+    {
+      "run_id": "cnn_sweep_base_s44",
+      "kind": "ablation",
+      "dataset": "sign_mnist",
+      "model_name": "CNN + augmentation",
+      "feature_set": "pixels_28x28",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.9768275203057811,
+        "val_macro_f1": 0.9765392853706176,
+        "params": 208728,
+        "latency_ms": 0.4781899999943562,
+        "train_s": 77.38144239998655
+      },
+      "config": "base"
+    },
+    {
+      "run_id": "cnn_sweep_dropout_0.5_s42",
+      "kind": "ablation",
+      "dataset": "sign_mnist",
+      "model_name": "CNN + augmentation",
+      "feature_set": "pixels_28x28",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.9519827998088868,
+        "val_macro_f1": 0.9509484840806243,
+        "params": 208728,
+        "latency_ms": 0.5025285000738222,
+        "train_s": 91.04941810001037
+      },
+      "config": "dropout_0.5"
+    },
+    {
+      "run_id": "cnn_sweep_dropout_0.5_s43",
+      "kind": "ablation",
+      "dataset": "sign_mnist",
+      "model_name": "CNN + augmentation",
+      "feature_set": "pixels_28x28",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.942427138079312,
+        "val_macro_f1": 0.9414006017429944,
+        "params": 208728,
+        "latency_ms": 0.5598465001094155,
+        "train_s": 89.06204409999191
+      },
+      "config": "dropout_0.5"
+    },
+    {
+      "run_id": "cnn_sweep_dropout_0.5_s44",
+      "kind": "ablation",
+      "dataset": "sign_mnist",
+      "model_name": "CNN + augmentation",
+      "feature_set": "pixels_28x28",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.9593884376493073,
+        "val_macro_f1": 0.9589795814391824,
+        "params": 208728,
+        "latency_ms": 0.5452400000649504,
+        "train_s": 91.94001339998795
+      },
+      "config": "dropout_0.5"
+    },
+    {
+      "run_id": "cnn_sweep_lr_3e-3_s42",
+      "kind": "ablation",
+      "dataset": "sign_mnist",
+      "model_name": "CNN + augmentation",
+      "feature_set": "pixels_28x28",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.9763497372193024,
+        "val_macro_f1": 0.975986741895137,
+        "params": 208728,
+        "latency_ms": 0.7182970001304056,
+        "train_s": 81.70098699998925
+      },
+      "config": "lr_3e-3"
+    },
+    {
+      "run_id": "cnn_sweep_lr_3e-3_s43",
+      "kind": "ablation",
+      "dataset": "sign_mnist",
+      "model_name": "CNN + augmentation",
+      "feature_set": "pixels_28x28",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.9034878165312948,
+        "val_macro_f1": 0.9025773715258877,
+        "params": 208728,
+        "latency_ms": 0.42062099993927404,
+        "train_s": 88.75136590001057
+      },
+      "config": "lr_3e-3"
+    },
+    {
+      "run_id": "cnn_sweep_lr_3e-3_s44",
+      "kind": "ablation",
+      "dataset": "sign_mnist",
+      "model_name": "CNN + augmentation",
+      "feature_set": "pixels_28x28",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.9789775441949355,
+        "val_macro_f1": 0.9783117471843154,
+        "params": 208728,
+        "latency_ms": 0.38121949997730553,
+        "train_s": 44.268484900007024
+      },
+      "config": "lr_3e-3"
+    },
+    {
+      "run_id": "cnn_sweep_no_aug_s42",
+      "kind": "ablation",
+      "dataset": "sign_mnist",
+      "model_name": "CNN",
+      "feature_set": "pixels_28x28",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.9166268514094601,
+        "val_macro_f1": 0.9166576456683865,
+        "params": 208728,
+        "latency_ms": 0.6109925000055227,
+        "train_s": 53.223401499999454
+      },
+      "config": "no_aug"
+    },
+    {
+      "run_id": "cnn_sweep_no_aug_s43",
+      "kind": "ablation",
+      "dataset": "sign_mnist",
+      "model_name": "CNN",
+      "feature_set": "pixels_28x28",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.9034878165312948,
+        "val_macro_f1": 0.9049176140892218,
+        "params": 208728,
+        "latency_ms": 0.5059060000348836,
+        "train_s": 44.96139929999481
+      },
+      "config": "no_aug"
+    },
+    {
+      "run_id": "cnn_sweep_no_aug_s44",
+      "kind": "ablation",
+      "dataset": "sign_mnist",
+      "model_name": "CNN",
+      "feature_set": "pixels_28x28",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.9319159101767798,
+        "val_macro_f1": 0.9327406211046757,
+        "params": 208728,
+        "latency_ms": 0.5284165000193752,
+        "train_s": 35.56049669999629
+      },
+      "config": "no_aug"
+    },
+    {
+      "run_id": "cnn_sweep_wide_e30_s42",
+      "kind": "ablation",
+      "dataset": "sign_mnist",
+      "model_name": "CNN + augmentation",
+      "feature_set": "pixels_28x28",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.9835164835164835,
+        "val_macro_f1": 0.9831876690408002,
+        "params": 828056,
+        "latency_ms": 1.409535999991931,
+        "train_s": 213.10551320001832
+      },
+      "config": "wide_e30"
+    },
+    {
+      "run_id": "cnn_sweep_wide_e30_s43",
+      "kind": "ablation",
+      "dataset": "sign_mnist",
+      "model_name": "CNN + augmentation",
+      "feature_set": "pixels_28x28",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.9749163879598662,
+        "val_macro_f1": 0.9745133051622418,
+        "params": 828056,
+        "latency_ms": 0.7478370000899304,
+        "train_s": 131.36344720001216
+      },
+      "config": "wide_e30"
+    },
+    {
+      "run_id": "cnn_sweep_wide_e30_s44",
+      "kind": "ablation",
+      "dataset": "sign_mnist",
+      "model_name": "CNN + augmentation",
+      "feature_set": "pixels_28x28",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.9816053511705686,
+        "val_macro_f1": 0.9819759949102501,
+        "params": 828056,
+        "latency_ms": 0.7306189999508206,
+        "train_s": 165.95443399998476
+      },
+      "config": "wide_e30"
+    },
+    {
+      "run_id": "cnn_sweep_wide_s42",
+      "kind": "ablation",
+      "dataset": "sign_mnist",
+      "model_name": "CNN + augmentation",
+      "feature_set": "pixels_28x28",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.9765886287625418,
+        "val_macro_f1": 0.976218523853707,
+        "params": 828056,
+        "latency_ms": 0.5510574999789242,
+        "train_s": 170.05138369998895
+      },
+      "config": "wide"
+    },
+    {
+      "run_id": "cnn_sweep_wide_s43",
+      "kind": "ablation",
+      "dataset": "sign_mnist",
+      "model_name": "CNN + augmentation",
+      "feature_set": "pixels_28x28",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.9727663640707119,
+        "val_macro_f1": 0.9724831123622056,
+        "params": 828056,
+        "latency_ms": 0.5911529999866616,
+        "train_s": 98.60159790000762
+      },
+      "config": "wide"
+    },
+    {
+      "run_id": "cnn_sweep_wide_s44",
+      "kind": "ablation",
+      "dataset": "sign_mnist",
+      "model_name": "CNN + augmentation",
+      "feature_set": "pixels_28x28",
+      "split_strategy": "group_ward70",
+      "metrics": {
+        "val_acc": 0.9765886287625418,
+        "val_macro_f1": 0.9770705144835566,
+        "params": 828056,
+        "latency_ms": 0.6141944999399129,
+        "train_s": 172.77687200001674
+      },
+      "config": "wide"
+    },
+    {
+      "run_id": "lm_main_canonical_s42",
+      "kind": "main",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "landmarks_xy_canonical",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.7906352520131226,
+        "val_macro_f1": 0.7496004599748058,
+        "params": 15320,
+        "train_s": 6.500772700004745,
+        "test_acc": 0.7124962719952281,
+        "test_macro_f1": 0.6651193184037348,
+        "error_rate": 0.28750372800477186
+      },
+      "config": "canonical"
+    },
+    {
+      "run_id": "lm_main_canonical_s43",
+      "kind": "main",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "landmarks_xy_canonical",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.7898896510587533,
+        "val_macro_f1": 0.7460257722592262,
+        "params": 15320,
+        "train_s": 7.345038300001761,
+        "test_acc": 0.710706829704742,
+        "test_macro_f1": 0.6678505206746012,
+        "error_rate": 0.28929317029525803
+      },
+      "config": "canonical"
+    },
+    {
+      "run_id": "lm_main_canonical_s44",
+      "kind": "main",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "landmarks_xy_canonical",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.7857142857142857,
+        "val_macro_f1": 0.7432228571812619,
+        "params": 15320,
+        "train_s": 7.113242200022796,
+        "test_acc": 0.7041455413062929,
+        "test_macro_f1": 0.6599645244500347,
+        "error_rate": 0.2958544586937071
+      },
+      "config": "canonical"
+    },
+    {
+      "run_id": "lm_sweep_base_s42",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "landmarks_xy",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.7303906949000895,
+        "val_macro_f1": 0.6553252226782978,
+        "params": 15320,
+        "train_s": 7.661906700028339
+      },
+      "config": "base"
+    },
+    {
+      "run_id": "lm_sweep_base_s43",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "landmarks_xy",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.7032508201610498,
+        "val_macro_f1": 0.6242212227630984,
+        "params": 15320,
+        "train_s": 9.063060000014957
+      },
+      "config": "base"
+    },
+    {
+      "run_id": "lm_sweep_base_s44",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "landmarks_xy",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.696391291380853,
+        "val_macro_f1": 0.609637357794616,
+        "params": 15320,
+        "train_s": 9.531359700020403
+      },
+      "config": "base"
+    },
+    {
+      "run_id": "lm_sweep_canonical_s42",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "landmarks_xy_canonical",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.7906352520131226,
+        "val_macro_f1": 0.7496004599748058,
+        "params": 15320,
+        "train_s": 7.836547699989751
+      },
+      "config": "canonical"
+    },
+    {
+      "run_id": "lm_sweep_canonical_s43",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "landmarks_xy_canonical",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.7898896510587533,
+        "val_macro_f1": 0.7460257722592262,
+        "params": 15320,
+        "train_s": 7.917500999988988
+      },
+      "config": "canonical"
+    },
+    {
+      "run_id": "lm_sweep_canonical_s44",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "landmarks_xy_canonical",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.7857142857142857,
+        "val_macro_f1": 0.7432228571812619,
+        "params": 15320,
+        "train_s": 7.122448900016025
+      },
+      "config": "canonical"
+    },
+    {
+      "run_id": "lm_sweep_mirror_aug_s42",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "landmarks_xy",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.7421711899791231,
+        "val_macro_f1": 0.6896266443338416,
+        "params": 15320,
+        "train_s": 18.30499430000782
+      },
+      "config": "mirror_aug"
+    },
+    {
+      "run_id": "lm_sweep_mirror_aug_s43",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "landmarks_xy",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.758574410975246,
+        "val_macro_f1": 0.707339904259907,
+        "params": 15320,
+        "train_s": 12.945258899999317
+      },
+      "config": "mirror_aug"
+    },
+    {
+      "run_id": "lm_sweep_mirror_aug_s44",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "landmarks_xy",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.7506710408589323,
+        "val_macro_f1": 0.6920134491874187,
+        "params": 15320,
+        "train_s": 12.0914092999883
+      },
+      "config": "mirror_aug"
+    },
+    {
+      "run_id": "lm_sweep_no_aug_s42",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "landmarks_xy",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.7360572621532956,
+        "val_macro_f1": 0.6616713784653849,
+        "params": 15320,
+        "train_s": 8.151484799978789
+      },
+      "config": "no_aug"
+    },
+    {
+      "run_id": "lm_sweep_no_aug_s43",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "landmarks_xy",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.6938562481359977,
+        "val_macro_f1": 0.6152440824531532,
+        "params": 15320,
+        "train_s": 10.544583799986867
+      },
+      "config": "no_aug"
+    },
+    {
+      "run_id": "lm_sweep_no_aug_s44",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "landmarks_xy",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.6943036087086192,
+        "val_macro_f1": 0.6123874526067007,
+        "params": 15320,
+        "train_s": 9.853629599994747
+      },
+      "config": "no_aug"
+    },
+    {
+      "run_id": "lmi_ens_xy_dist_ang__mlp_512_256",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark mlp_512_256 ensemble",
+      "feature_set": "xy_dist_ang",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.8611691022964509,
+        "val_macro_f1": 0.8570788990460952,
+        "params": 1414520,
+        "train_s": 124.61150909998105
+      },
+      "config": "xy_dist_ang__mlp_512_256__ens5"
+    },
+    {
+      "run_id": "lmi_feat_dist__mlp_128_64_s42",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "dist",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.798836862511184,
+        "val_macro_f1": 0.7922714117833678,
+        "params": 36824,
+        "train_s": 5.8474132999836
+      },
+      "config": "dist__mlp_128_64"
+    },
+    {
+      "run_id": "lmi_feat_dist__mlp_128_64_s43",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "dist",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.8030122278556516,
+        "val_macro_f1": 0.7936364973533413,
+        "params": 36824,
+        "train_s": 4.883387300011236
+      },
+      "config": "dist__mlp_128_64"
+    },
+    {
+      "run_id": "lmi_feat_dist__mlp_128_64_s44",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "dist",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.8110647181628392,
+        "val_macro_f1": 0.7904123616191487,
+        "params": 36824,
+        "train_s": 4.300665199989453
+      },
+      "config": "dist__mlp_128_64"
+    },
+    {
+      "run_id": "lmi_feat_dist_ang__mlp_128_64_s42",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "dist_ang",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.7980912615568148,
+        "val_macro_f1": 0.7909194265838089,
+        "params": 40792,
+        "train_s": 4.129299899999751
+      },
+      "config": "dist_ang__mlp_128_64"
+    },
+    {
+      "run_id": "lmi_feat_dist_ang__mlp_128_64_s43",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "dist_ang",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.81031911720847,
+        "val_macro_f1": 0.8076307659427919,
+        "params": 40792,
+        "train_s": 6.969141700014006
+      },
+      "config": "dist_ang__mlp_128_64"
+    },
+    {
+      "run_id": "lmi_feat_dist_ang__mlp_128_64_s44",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "dist_ang",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.7843722039964212,
+        "val_macro_f1": 0.7847592320894533,
+        "params": 40792,
+        "train_s": 6.073935099993832
+      },
+      "config": "dist_ang__mlp_128_64"
+    },
+    {
+      "run_id": "lmi_feat_xy__mlp_128_64_s42",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "xy",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.8223978526692514,
+        "val_macro_f1": 0.782402081665387,
+        "params": 15320,
+        "train_s": 24.040880999993533
+      },
+      "config": "xy__mlp_128_64"
+    },
+    {
+      "run_id": "lmi_feat_xy__mlp_128_64_s43",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "xy",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.8180733671339099,
+        "val_macro_f1": 0.7790728331933282,
+        "params": 15320,
+        "train_s": 10.46706080000149
+      },
+      "config": "xy__mlp_128_64"
+    },
+    {
+      "run_id": "lmi_feat_xy__mlp_128_64_s44",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "xy",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.8094243960632269,
+        "val_macro_f1": 0.7694763463580538,
+        "params": 15320,
+        "train_s": 13.951939499995206
+      },
+      "config": "xy__mlp_128_64"
+    },
+    {
+      "run_id": "lmi_feat_xy_dist_ang__mlp_128_64_s42",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "xy_dist_ang",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.847748285117805,
+        "val_macro_f1": 0.8461310856462722,
+        "params": 46168,
+        "train_s": 5.846333399997093
+      },
+      "config": "xy_dist_ang__mlp_128_64"
+    },
+    {
+      "run_id": "lmi_feat_xy_dist_ang__mlp_128_64_s43",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "xy_dist_ang",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.857291977333731,
+        "val_macro_f1": 0.8589060969930903,
+        "params": 46168,
+        "train_s": 7.743195299990475
+      },
+      "config": "xy_dist_ang__mlp_128_64"
+    },
+    {
+      "run_id": "lmi_feat_xy_dist_ang__mlp_128_64_s44",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "xy_dist_ang",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.8265732180137191,
+        "val_macro_f1": 0.8216237527629694,
+        "params": 46168,
+        "train_s": 6.4835042000049725
+      },
+      "config": "xy_dist_ang__mlp_128_64"
+    },
+    {
+      "run_id": "lmi_main_xy_dist_ang__mlp_512_256__ens",
+      "kind": "main",
+      "dataset": "landmarks",
+      "model_name": "Landmark mlp_512_256 ensemble",
+      "feature_set": "xy_dist_ang",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.8611691022964509,
+        "val_macro_f1": 0.8570788990460952,
+        "test_acc": 0.7815389203698181,
+        "test_macro_f1": 0.777559675101724,
+        "error_rate": 0.2184610796301819,
+        "params": 1414520,
+        "train_s": 129.31277729998692
+      },
+      "config": "xy_dist_ang__mlp_512_256__ens5"
+    },
+    {
+      "run_id": "lmi_main_xy_dist_ang__mlp_512_256_s42",
+      "kind": "main",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "xy_dist_ang",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.857291977333731,
+        "val_macro_f1": 0.843817225013796,
+        "test_acc": 0.7916790933492395,
+        "test_macro_f1": 0.7851398875143083,
+        "error_rate": 0.20832090665076053,
+        "params": 282904,
+        "train_s": 27.991381599975284
+      },
+      "config": "xy_dist_ang__mlp_512_256"
+    },
+    {
+      "run_id": "lmi_main_xy_dist_ang__mlp_512_256_s43",
+      "kind": "main",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "xy_dist_ang",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.8546078138980018,
+        "val_macro_f1": 0.8521884377267428,
+        "test_acc": 0.7502236802863108,
+        "test_macro_f1": 0.7530022531342433,
+        "error_rate": 0.2497763197136892,
+        "params": 282904,
+        "train_s": 15.948102399997879
+      },
+      "config": "xy_dist_ang__mlp_512_256"
+    },
+    {
+      "run_id": "lmi_main_xy_dist_ang__mlp_512_256_s44",
+      "kind": "main",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "xy_dist_ang",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.8522218908440203,
+        "val_macro_f1": 0.8525713087823045,
+        "test_acc": 0.762451535937966,
+        "test_macro_f1": 0.7677054283344663,
+        "error_rate": 0.237548464062034,
+        "params": 282904,
+        "train_s": 14.911504899995634
+      },
+      "config": "xy_dist_ang__mlp_512_256"
+    },
+    {
+      "run_id": "lmi_model_xy_dist_ang__hgb_s42",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark gradient boosting",
+      "feature_set": "xy_dist_ang",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.8282135401133314,
+        "val_macro_f1": 0.809952956869855,
+        "params": 0,
+        "train_s": 171.1467479999992
+      },
+      "config": "xy_dist_ang__hgb"
+    },
+    {
+      "run_id": "lmi_model_xy_dist_ang__mlp_128_64_s42",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "xy_dist_ang",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.847748285117805,
+        "val_macro_f1": 0.8461310856462722,
+        "params": 46168,
+        "train_s": 6.362643400003435
+      },
+      "config": "xy_dist_ang__mlp_128_64"
+    },
+    {
+      "run_id": "lmi_model_xy_dist_ang__mlp_128_64_s43",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "xy_dist_ang",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.857291977333731,
+        "val_macro_f1": 0.8589060969930903,
+        "params": 46168,
+        "train_s": 9.115585899999132
+      },
+      "config": "xy_dist_ang__mlp_128_64"
+    },
+    {
+      "run_id": "lmi_model_xy_dist_ang__mlp_128_64_s44",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "xy_dist_ang",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.8265732180137191,
+        "val_macro_f1": 0.8216237527629694,
+        "params": 46168,
+        "train_s": 6.722472499997821
+      },
+      "config": "xy_dist_ang__mlp_128_64"
+    },
+    {
+      "run_id": "lmi_model_xy_dist_ang__mlp_256_128_s42",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "xy_dist_ang",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.8471518043543096,
+        "val_macro_f1": 0.8391764770456037,
+        "params": 108696,
+        "train_s": 8.566757000022335
+      },
+      "config": "xy_dist_ang__mlp_256_128"
+    },
+    {
+      "run_id": "lmi_model_xy_dist_ang__mlp_256_128_s43",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "xy_dist_ang",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.8507306889352818,
+        "val_macro_f1": 0.8464615433963537,
+        "params": 108696,
+        "train_s": 8.500113799993414
+      },
+      "config": "xy_dist_ang__mlp_256_128"
+    },
+    {
+      "run_id": "lmi_model_xy_dist_ang__mlp_256_128_s44",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "xy_dist_ang",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.8467044437816881,
+        "val_macro_f1": 0.8421011809805711,
+        "params": 108696,
+        "train_s": 11.063653300021542
+      },
+      "config": "xy_dist_ang__mlp_256_128"
+    },
+    {
+      "run_id": "lmi_model_xy_dist_ang__mlp_512_256_s42",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "xy_dist_ang",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.857291977333731,
+        "val_macro_f1": 0.843817225013796,
+        "params": 282904,
+        "train_s": 23.009602599981008
+      },
+      "config": "xy_dist_ang__mlp_512_256"
+    },
+    {
+      "run_id": "lmi_model_xy_dist_ang__mlp_512_256_s43",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "xy_dist_ang",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.8546078138980018,
+        "val_macro_f1": 0.8521884377267428,
+        "params": 282904,
+        "train_s": 15.367362599994522
+      },
+      "config": "xy_dist_ang__mlp_512_256"
+    },
+    {
+      "run_id": "lmi_model_xy_dist_ang__mlp_512_256_s44",
+      "kind": "ablation",
+      "dataset": "landmarks",
+      "model_name": "Landmark MLP",
+      "feature_set": "xy_dist_ang",
+      "split_strategy": "session_holdout",
+      "metrics": {
+        "val_acc": 0.8522218908440203,
+        "val_macro_f1": 0.8525713087823045,
+        "params": 282904,
+        "train_s": 19.749238499993226
+      },
+      "config": "xy_dist_ang__mlp_512_256"
+    }
+  ],
+  "leakage_study": [
+    {
+      "run_id": "leakage_lr_pixel_group_ward70_s42",
+      "model_name": "Logistic Regression",
+      "split_strategy": "group_ward70",
+      "val_acc": 0.7725752508361204,
+      "test_acc": 0.704824316787507,
+      "val_test_gap": 0.06775093404861343,
+      "nn_dist_val_to_train": 2.4569981259811917
+    },
+    {
+      "run_id": "leakage_lr_pixel_group_ward70_s43",
+      "model_name": "Logistic Regression",
+      "split_strategy": "group_ward70",
+      "val_acc": 0.6991404011461319,
+      "test_acc": 0.6769380925822643,
+      "val_test_gap": 0.022202308563867512,
+      "nn_dist_val_to_train": 2.491960225871047
+    },
+    {
+      "run_id": "leakage_lr_pixel_group_ward70_s44",
+      "model_name": "Logistic Regression",
+      "split_strategy": "group_ward70",
+      "val_acc": 0.761983863312767,
+      "test_acc": 0.6872559955382042,
+      "val_test_gap": 0.07472786777456286,
+      "nn_dist_val_to_train": 2.393288158315543
+    },
+    {
+      "run_id": "leakage_lr_pixel_random_s42",
+      "model_name": "Logistic Regression",
+      "split_strategy": "random",
+      "val_acc": 1.0,
+      "test_acc": 0.6899051868377022,
+      "val_test_gap": 0.3100948131622978,
+      "nn_dist_val_to_train": 0.4466458510581071
+    },
+    {
+      "run_id": "leakage_lr_pixel_random_s43",
+      "model_name": "Logistic Regression",
+      "split_strategy": "random",
+      "val_acc": 0.9995144452537024,
+      "test_acc": 0.6833519241494702,
+      "val_test_gap": 0.31616252110423215,
+      "nn_dist_val_to_train": 0.45241032570284245
+    },
+    {
+      "run_id": "leakage_lr_pixel_random_s44",
+      "model_name": "Logistic Regression",
+      "split_strategy": "random",
+      "val_acc": 1.0,
+      "test_acc": 0.6890686001115449,
+      "val_test_gap": 0.3109313998884551,
+      "nn_dist_val_to_train": 0.4612638395869266
+    }
+  ]
+}

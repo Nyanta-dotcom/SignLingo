@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ModelIndex",
+  "type": "object",
+  "required": ["schema_version", "active", "available"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "active": {
+      "type": "object",
+      "description": "task -> model key (model_id-version) that the app loads",
+      "additionalProperties": { "type": "string" }
+    },
+    "available": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+  }
+}

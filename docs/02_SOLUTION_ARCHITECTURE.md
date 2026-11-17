@@ -138,7 +138,7 @@ flowchart TD
   "file": "landmark-mlp-1.2.0.onnx",
   "sha256": "…",
   "input": { "name": "x", "shape": [1, 42], "dtype": "float32", "features": "xy" },
-  "output": { "name": "logits", "shape": [1, 24] },
+  "output": { "name": "probs", "shape": [1, 24] },
   "labels": ["A","B","C","D","E","F","G","H","I","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y"],
   "preprocess_version": "lm-v1",
   "recommended": { "threshold": 0.6, "hold_ms": 1000, "smoothing_window": 5 },
@@ -170,7 +170,7 @@ sequenceDiagram
   else có tay
     L->>N: normalize(landmarks)
     N->>C: Float32[63]
-    C-->>L: logits → softmax(24)
+    C-->>L: probs (24, đã softmax, trung bình tập hợp)
     L->>S: push(probs, t)
     S-->>U: {topK, stableLabel, holdProgress 0..1, fingerDiff}
   end

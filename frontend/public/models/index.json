@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "active": {
+    "static_letters": "landmark-mlp-ens5-1.0.0"
+  },
+  "available": [
+    "landmark-mlp-ens5-1.0.0"
+  ]
+}

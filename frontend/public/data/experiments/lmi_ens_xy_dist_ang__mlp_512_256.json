@@ -1,0 +1,31 @@
+{
+  "run_id": "lmi_ens_xy_dist_ang__mlp_512_256",
+  "kind": "ablation",
+  "dataset": "landmarks",
+  "model_name": "Landmark mlp_512_256 ensemble",
+  "feature_set": "xy_dist_ang",
+  "split_strategy": "session_holdout",
+  "hyperparams": {
+    "config": "xy_dist_ang__mlp_512_256__ens5",
+    "seed": 42,
+    "split": "file_order_60_20_20_gap2pct",
+    "model": "mlp_512_256",
+    "n_members": 5,
+    "member_seeds": [
+      42,
+      43,
+      44,
+      45,
+      46
+    ]
+  },
+  "metrics": {
+    "val_acc": 0.8611691022964509,
+    "val_macro_f1": 0.8570788990460952,
+    "params": 1414520,
+    "train_s": 124.61150909998105
+  },
+  "git_commit": "18e69a7",
+  "seed": 42,
+  "run_at": "2026-11-17T22:49:20.601061+00:00"
+}

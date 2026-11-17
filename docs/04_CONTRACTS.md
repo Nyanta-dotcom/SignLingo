@@ -54,8 +54,8 @@ Schema: `shared/contracts/schemas/model_manifest.schema.json` (đã có, task P0
 |---|---|
 | `model_id`, `version` (semver), `task` | Định danh |
 | `file`, `sha256` | Frontend kiểm sha256 sau khi tải |
-| `input` `{name, shape, dtype, features: 'xy'\|'xyz'}` | Mặc định `[1, 42]`, `xy` |
-| `output` `{name, shape}` | Logits `[1, 24]`; softmax làm ở client |
+| `input` `{name, shape, dtype, features}` | Luôn **42 số lm-v1** (`[1, 42]`, `xy`), tên `x`, batch động. Phần chuẩn hóa hướng, khoảng cách, góc và chuẩn hóa đặc trưng **nằm trong đồ thị ONNX**; frontend chỉ cần `normalizeLandmarks` (lm-v1) |
+| `output` `{name, shape}` | Tên `probs`, `[1, 24]`: **xác suất đã softmax**, trung bình qua các thành viên của tập hợp (softmax nằm trong đồ thị vì tập hợp cần trung bình xác suất) |
 | `labels` | Thứ tự lớp; khớp `curriculum.sign.model_class_index` |
 | `preprocess_version` | `lm-v1` (landmark) hoặc `img-v1` (CNN crop 28×28) |
 | `recommended` `{threshold, hold_ms, smoothing_window}` | Mặc định 0,6 / 1000 / 5 |
