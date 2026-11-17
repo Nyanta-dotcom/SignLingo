@@ -1,0 +1,39 @@
+{
+  "run_id": "leakage_lr_pixel_group_ward70_s43",
+  "kind": "leakage_study",
+  "dataset": "sign_mnist",
+  "model_name": "Logistic Regression",
+  "feature_set": "pixel",
+  "split_strategy": "group_ward70",
+  "hyperparams": {
+    "seed": 43,
+    "val_frac": 0.15
+  },
+  "metrics": {
+    "val_acc": 0.6991404011461319,
+    "val_macro_f1": 0.6980996105648635,
+    "test_acc": 0.6769380925822643,
+    "test_macro_f1": 0.6514469581659247
+  },
+  "git_commit": "4816ed5",
+  "seed": 43,
+  "run_at": "2026-11-17T21:22:21.799430+00:00",
+  "diagnostics": {
+    "val_fraction": 0.15254052085230377,
+    "n_train": 23267,
+    "n_val": 4188,
+    "nn_dist_val_to_train": {
+      "median": 2.491960225871047,
+      "mean": 2.4722343554522648,
+      "p10": 1.2350949296286189,
+      "p90": 3.589105315300517
+    },
+    "val_test_gap": 0.022202308563867512,
+    "nn_dist_test_to_train": {
+      "median": 2.6222834490975204,
+      "mean": 2.636599286897302,
+      "p10": 1.3974217062997432,
+      "p90": 3.82021713898462
+    }
+  }
+}

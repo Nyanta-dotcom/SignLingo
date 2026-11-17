@@ -1,0 +1,309 @@
+{
+  "baselines": [
+    {
+      "model_name": "MLP 256-128",
+      "feature_set": "hog",
+      "n_seeds": 3,
+      "val_macro_f1": {
+        "mean": 0.9229000045604078,
+        "std": 0.006522919265494601
+      },
+      "test_acc": {
+        "mean": 0.9165737125859826,
+        "std": 0.00137559477476749
+      },
+      "test_macro_f1": {
+        "mean": 0.9105216789795163,
+        "std": 0.0026432205579886847
+      },
+      "latency_ms": {
+        "mean": 0.6696500000058828,
+        "std": 0.12981696485410707
+      },
+      "train_s": {
+        "mean": 21.83910563333969,
+        "std": 0.18365244353116097
+      },
+      "run_ids": [
+        "baseline_mlp_hog_s42",
+        "baseline_mlp_hog_s43",
+        "baseline_mlp_hog_s44"
+      ]
+    },
+    {
+      "model_name": "Linear SVM",
+      "feature_set": "hog",
+      "n_seeds": 1,
+      "val_macro_f1": {
+        "mean": 0.8769809559253058,
+        "std": null
+      },
+      "test_acc": {
+        "mean": 0.8816229782487451,
+        "std": null
+      },
+      "test_macro_f1": {
+        "mean": 0.8756914691991765,
+        "std": null
+      },
+      "latency_ms": {
+        "mean": 0.6926525000017136,
+        "std": null
+      },
+      "train_s": {
+        "mean": 2332.700287399988,
+        "std": null
+      },
+      "run_ids": [
+        "baseline_svm_hog_s42"
+      ]
+    },
+    {
+      "model_name": "Random Forest (200 trees)",
+      "feature_set": "pixel",
+      "n_seeds": 3,
+      "val_macro_f1": {
+        "mean": 0.8372652642955548,
+        "std": 0.0022480044963173957
+      },
+      "test_acc": {
+        "mean": 0.8042851831195389,
+        "std": 0.003983762913943034
+      },
+      "test_macro_f1": {
+        "mean": 0.7878610513757037,
+        "std": 0.00372500773300664
+      },
+      "latency_ms": {
+        "mean": 35.334518833309026,
+        "std": 2.2492246425768245
+      },
+      "train_s": {
+        "mean": 11.750759066684017,
+        "std": 0.5241887603033784
+      },
+      "run_ids": [
+        "baseline_rf_pixel_s42",
+        "baseline_rf_pixel_s43",
+        "baseline_rf_pixel_s44"
+      ]
+    },
+    {
+      "model_name": "MLP 256-128",
+      "feature_set": "pixel",
+      "n_seeds": 3,
+      "val_macro_f1": {
+        "mean": 0.8337698818929334,
+        "std": 0.00344047799168737
+      },
+      "test_acc": {
+        "mean": 0.799172708681911,
+        "std": 0.008824275356985187
+      },
+      "test_macro_f1": {
+        "mean": 0.7768382579918277,
+        "std": 0.008046089508484256
+      },
+      "latency_ms": {
+        "mean": 0.4821444999834057,
+        "std": 0.05881907077123879
+      },
+      "train_s": {
+        "mean": 13.288215433334699,
+        "std": 0.3604066121854649
+      },
+      "run_ids": [
+        "baseline_mlp_pixel_s42",
+        "baseline_mlp_pixel_s43",
+        "baseline_mlp_pixel_s44"
+      ]
+    },
+    {
+      "model_name": "Logistic Regression",
+      "feature_set": "pixel",
+      "n_seeds": 1,
+      "val_macro_f1": {
+        "mean": 0.7722995031156508,
+        "std": null
+      },
+      "test_acc": {
+        "mean": 0.704824316787507,
+        "std": null
+      },
+      "test_macro_f1": {
+        "mean": 0.6840262036408588,
+        "std": null
+      },
+      "latency_ms": {
+        "mean": 0.32126300007803366,
+        "std": null
+      },
+      "train_s": {
+        "mean": 2.528492000012193,
+        "std": null
+      },
+      "run_ids": [
+        "baseline_lr_pixel_s42"
+      ]
+    },
+    {
+      "model_name": "Majority class (floor)",
+      "feature_set": "pixel",
+      "n_seeds": 1,
+      "val_macro_f1": {
+        "mean": 0.00370919881305638,
+        "std": null
+      },
+      "test_acc": {
+        "mean": 0.020078081427774678,
+        "std": null
+      },
+      "test_macro_f1": {
+        "mean": 0.0016402405686167304,
+        "std": null
+      },
+      "latency_ms": {
+        "mean": 0.04145500002778135,
+        "std": null
+      },
+      "train_s": {
+        "mean": 0.005281999998260289,
+        "std": null
+      },
+      "run_ids": [
+        "baseline_majority_s42"
+      ]
+    }
+  ],
+  "best_by_val": {
+    "model_name": "MLP 256-128",
+    "feature_set": "hog",
+    "n_seeds": 3,
+    "val_macro_f1": {
+      "mean": 0.9229000045604078,
+      "std": 0.006522919265494601
+    },
+    "test_acc": {
+      "mean": 0.9165737125859826,
+      "std": 0.00137559477476749
+    },
+    "test_macro_f1": {
+      "mean": 0.9105216789795163,
+      "std": 0.0026432205579886847
+    },
+    "latency_ms": {
+      "mean": 0.6696500000058828,
+      "std": 0.12981696485410707
+    },
+    "train_s": {
+      "mean": 21.83910563333969,
+      "std": 0.18365244353116097
+    },
+    "run_ids": [
+      "baseline_mlp_hog_s42",
+      "baseline_mlp_hog_s43",
+      "baseline_mlp_hog_s44"
+    ]
+  },
+  "best_detail": {
+    "top_confusions": [
+      {
+        "true": "U",
+        "pred": "K",
+        "rate": 0.15037593984962405
+      },
+      {
+        "true": "V",
+        "pred": "W",
+        "rate": 0.12716763005780346
+      },
+      {
+        "true": "U",
+        "pred": "R",
+        "rate": 0.11654135338345864
+      },
+      {
+        "true": "N",
+        "pred": "S",
+        "rate": 0.10652920962199312
+      },
+      {
+        "true": "Y",
+        "pred": "K",
+        "rate": 0.09036144578313253
+      }
+    ],
+    "weakest_classes": [
+      [
+        "U",
+        0.7784946236559139
+      ],
+      [
+        "R",
+        0.815028901734104
+      ],
+      [
+        "S",
+        0.8372943327239488
+      ],
+      [
+        "T",
+        0.8481262327416174
+      ],
+      [
+        "K",
+        0.8481375358166189
+      ]
+    ]
+  },
+  "leakage": [
+    {
+      "split_strategy": "group_ward70",
+      "n_seeds": 3,
+      "val_acc": {
+        "mean": 0.7445665050983398,
+        "std": 0.039694994175904115
+      },
+      "test_acc": {
+        "mean": 0.6896728016359918,
+        "std": 0.014099329377385058
+      },
+      "val_test_gap": {
+        "mean": 0.05489370346234793,
+        "std": 0.02852568800853656
+      },
+      "nn_val_to_train": {
+        "mean": 2.447415503389261,
+        "std": 0.05002913371950414
+      },
+      "nn_test_to_train": {
+        "mean": 2.593851443756361,
+        "std": 0.026397765880098376
+      }
+    },
+    {
+      "split_strategy": "random",
+      "n_seeds": 3,
+      "val_acc": {
+        "mean": 0.9998381484179008,
+        "std": 0.0002803351634812394
+      },
+      "test_acc": {
+        "mean": 0.6874419036995724,
+        "std": 0.003566639717967942
+      },
+      "val_test_gap": {
+        "mean": 0.31239624471832833,
+        "std": 0.003288403518252907
+      },
+      "nn_val_to_train": {
+        "mean": 0.453440005449292,
+        "std": 0.0073631907107151
+      },
+      "nn_test_to_train": {
+        "mean": 2.5101391626067513,
+        "std": 0.003632913681732554
+      }
+    }
+  ]
+}
