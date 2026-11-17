@@ -10,7 +10,7 @@
 
 | Loại task | Tài liệu cấp cho Agent | Thư mục được sửa | Cấm sửa |
 |---|---|---|---|
-| **ML** (Phase 1) | 01_PRD §2, §5.1, §6.1 · 02_ARCH §4 · 03_DATA §4–5 · 04_CONTRACTS §2–4 · `docs/reports/*` | `ml/`, `shared/contracts/schemas`, `shared/contracts/fixtures`, và **chỉ** `frontend/public/{models,data}` qua publish script | `frontend/src` |
+| **ML** (Phase 1) | 01_PRD §2, §5.1, §6.1 · 02_ARCH §4 · 03_DATA §4–5 · 04_CONTRACTS §2–4 | `ml/`, `shared/contracts/schemas`, `shared/contracts/fixtures`, và **chỉ** `frontend/public/{models,data}` qua publish script | `frontend/src` |
 | **Frontend – Data & Game** (Phase 2) | 01_PRD §5.2–5.4, §6.3 · 02_ARCH §6 · **03_DATA** · **04_CONTRACTS** §6–7 | `frontend/src/{storage,game,content}`, `shared/contracts/schemas` (curriculum, backup, landmark_capture) | `ml/`, `frontend/src/vision` |
 | **Frontend – UI & Vision** (Phase 3) | **Prototype (V0) + 05_UI** · 01_PRD · 02_ARCH §5 · 03_DATA §3 · **04_CONTRACTS** §3, §5–6 | `frontend/`, `e2e/` | `ml/` (chỉ đọc `shared/contracts`) |
 | **Test/Perf/Deploy** (Phase 4) | 01_PRD §6 (AC) · 02_ARCH §5.4, §7, §9 · 07_PLAN | `e2e/`, `*/tests/`, `frontend/vercel.json`, CI | Không đổi hợp đồng khi chưa duyệt |

@@ -55,7 +55,7 @@ def order_split(y: np.ndarray, val_frac: float = 0.2) -> np.ndarray:
     """Hold out the LAST `val_frac` of each class in file order (assumed collection order).
 
     The file has no session or signer column, and rows of one class form long contiguous
-    blocks, so a random split leaks near-identical neighbouring frames (week 4: 93.3% vs 84.6%).
+    blocks, so a random split leaks near-identical neighbouring frames.
     Assumption (unverified): file order reflects collection order. Even so, the held-out part
     probably comes from the same signer, so this is NOT a signer-holdout (see FT-ML-07).
     """

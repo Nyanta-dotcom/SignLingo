@@ -2,7 +2,7 @@
 
 > **Trạng thái:** Draft v0.2 — chờ review · **Ngày:** 2026-11-18 · **v0.2:** bỏ backend; app là SPA tĩnh trên Vercel, dữ liệu người học lưu trong trình duyệt.
 > **Tài liệu liên quan:** [02_SOLUTION_ARCHITECTURE](02_SOLUTION_ARCHITECTURE.md) · [03_DATA_STORAGE](03_DATA_STORAGE.md) · [04_CONTRACTS](04_CONTRACTS.md) · [05_UI_DESIGN_SPEC](05_UI_DESIGN_SPEC.md) · [07_MASTER_PLAN](07_MASTER_PLAN.md)
-> **Nguồn đầu vào:** `docs/course/topic.docx`, `week1–5.docx` (yêu cầu môn), `docs/reports/week3_report.docx`, `week4_report.docx` (kết quả đã đạt).
+> **Nguồn đầu vào:** `docs/course/topic.docx`, `week1–5.docx` (yêu cầu môn). Các báo cáo tuần 3–4 cũ **không được dùng** (xem §2).
 
 ---
 
@@ -21,9 +21,9 @@
 |---|---|
 | Mục tiêu kép | (a) Sản phẩm EdTech thực tế; (b) Đồ án cuối kỳ môn *Introduction to Artificial Intelligence* — **40% điểm môn** |
 | Rubric môn (10 điểm) | AI Problem Definition (2) · Problem Statement & 3 Research Questions (2) · Solution Development & Analysis (5) · GitHub Repository + README (1) |
-| Tiến độ môn | Tuần 1 (SWOT, WBS), Tuần 2 (Problem, Data), **Tuần 3 ✅** (pipeline, group split, 5 baseline), **Tuần 4 ✅** (CNN, landmark MLP), **Tuần 5 ⏳** (Final integration & reporting — tuần tiếp theo) |
-| Kết quả đã có (Tuần 3–4) | Baseline tốt nhất MLP+HOG: test acc 0,906, Macro-F1 0,899 · CNN+augment: test acc 0,977, Macro-F1 0,976 · MLP landmark: acc 0,846, Macro-F1 0,861 (holdout theo phiên thu) · Web app tiền thân "Tay Nói": **~10 FPS** (chưa đạt 30) · Chưa xuất ONNX |
-| Dữ liệu | Kaggle Sign Language MNIST (27.455 train / 7.172 test, 28×28 xám, 24 lớp) · `keypoint.csv` (33.536 mẫu landmark, 24 chữ, MIT – từ dự án American-Sign-Language-Detection) · Dữ liệu webcam tự thu của nhóm (kế hoạch tuần 5: 30–50 mẫu/chữ) |
+| Tiến độ môn | Lịch môn học theo `docs/course/week1–5.docx`. Tiến độ **thực** của nhóm chỉ được tính bằng kết quả chạy trong repo này (xem `docs/07_MASTER_PLAN.md`) |
+| Kết quả đã có | **Chưa có kết quả nào được kiểm chứng.** Số liệu trong các báo cáo tuần 3–4 cũ không do mã trong repo này sinh ra nên **không dùng** làm bằng chứng, ngưỡng hay mục tiêu (quyết định 2026-11-18). Mọi số liệu về sau đến từ `ml/reports/experiments/*.json` (có seed và git commit) |
+| Dữ liệu | Kaggle Sign Language MNIST (27.455 train / 7.172 test, 28×28 xám, 24 lớp; số đếm đã kiểm trực tiếp trên file) · `keypoint.csv` (36.402 dòng, 33.536 mẫu sau khi bỏ J, Z, 24 chữ; giấy phép MIT, từ dự án American-Sign-Language-Detection; **không có cột người ra dấu hay phiên thu**) · Dữ liệu webcam tự thu của nhóm (kế hoạch: ≥ 3 người × 30–50 mẫu/chữ). Cách Kaggle tạo tập train (số ảnh gốc, số bản augment) **chưa được kiểm chứng**; ta chỉ dựa vào bằng chứng đo được (chia ngẫu nhiên gây rò rỉ) |
 | Quyết định hạ tầng (2026-11-18) | Dự án học tập phi thương mại → **SPA tĩnh deploy Vercel (gói Hobby)**, **không backend, không DB server, không tài khoản**. Tiến độ lưu `localStorage` + Xuất/Nhập JSON; mẫu landmark thu thêm tải về dạng file |
 | Ràng buộc kỹ thuật | Inference trên trình duyệt (privacy: không dữ liệu nào rời máy) · random_seed = 42 · Không chia validation ngẫu nhiên trên MNIST · Chuẩn hóa chỉ fit trên Train · Không lật ngang ảnh MNIST |
 
@@ -32,7 +32,7 @@
 | RQ | Câu hỏi | Bằng chứng / Feature đáp ứng |
 |---|---|---|
 | **RQ1** *(cần nhóm xác nhận lại đúng wording đã nộp tuần 2)* | Mô hình Deep Learning (CNN có augmentation) cải thiện bao nhiêu so với các baseline ML cổ điển, và đặc trưng (pixel vs HOG vs landmark) ảnh hưởng thế nào? | FT-ML-03, FT-ML-04, AI Lab bảng benchmark |
-| **RQ2** | Những chữ cái nào bị nhầm lẫn nhiều nhất và vì sao (họ "nắm tay" A/E/M/N/S/T, họ "2–3 ngón" U/V/W/R/K)? | FT-ML-05 Confusion Matrix, per-class F1, gallery lỗi |
+| **RQ2** | Những chữ cái nào bị nhầm lẫn nhiều nhất và vì sao (giả thuyết ban đầu: các chữ nắm tay và các chữ 2–3 ngón dễ nhầm với nhau; **cần kiểm chứng** bằng Confusion Matrix thật)? | FT-ML-05 Confusion Matrix, per-class F1, gallery lỗi |
 | **RQ3** | Có thể đạt suy luận thời gian thực > 30 FPS trên trình duyệt với độ chính xác chấp nhận được không? | FT-ML-06 ONNX, FT-PERF-01 FPS monitor, Phase 4 |
 
 ## 3. User Personas
@@ -111,7 +111,7 @@ Mã tính năng được dùng xuyên suốt ARCH / DATA / CONTRACTS / PLAN. C�
 | FT-LAB-01 | Bảng Benchmark | So sánh tất cả mô hình: Val/Test Acc, Macro-F1, tỉ lệ sai, latency, số tham số | MUST | K1 `data/experiments/index.json` |
 | FT-LAB-02 | Confusion Matrix & per-class F1 | Heatmap tương tác, chọn mô hình; top cặp nhầm | MUST | K1 `<run_id>.json` |
 | FT-LAB-03 | Live Inference Monitor | Webcam + skeleton + thanh xác suất 24 lớp + thời gian xử lý (MediaPipe/classifier, p50/p95) + ghi benchmark 60 s và tải JSON | MUST | K3 `getPerf`, `recordBenchmark` |
-| FT-LAB-04 | Leakage Demo | Biểu đồ random split vs group split (gap 0,301 → 0,044) | SHOULD | K1 `leakage_study` |
+| FT-LAB-04 | Leakage Demo | Biểu đồ khoảng lệch Val–Test của cùng một mô hình khi chia ngẫu nhiên và khi chia theo nhóm (số đo từ thí nghiệm `leakage_study`) | SHOULD | K1 `leakage_study` |
 
 ## 6. Acceptance Criteria (AC)
 
@@ -125,8 +125,8 @@ Mỗi AC đo được và gắn với rubric (R1 = Problem Definition, R2 = Prob
 | AC-ML-02 | Không có `group_id` nào xuất hiện ở cả train và validation; tập test chính thức không dùng cho bất kỳ lựa chọn mô hình nào (log chứng minh) | R3 | Unit + Integration |
 | AC-ML-03 | Bộ chuẩn hóa (scaler, mean/std) chỉ fit trên train; có test kiểm tra | R3 | Unit |
 | AC-ML-04 | Báo cáo đủ ≥ 5 baseline + ≥ 2 mô hình chính với Val/Test Accuracy, Macro-F1, latency | R3 | Integration |
-| AC-ML-05 | CNN chính đạt **Test Macro-F1 ≥ 0,97** trên Sign Language MNIST (đã đạt 0,976 bản NumPy; bản PyTorch phải tái lập) | R3 | E2E ML |
-| AC-ML-06 | Landmark-MLP đạt **Macro-F1 ≥ 0,85** trên holdout theo phiên; báo cáo thêm Macro-F1 trên **signer-holdout** (người chưa có trong train) — không đặt ngưỡng cứng, nhưng phải báo cáo trung thực | R3 | E2E ML |
+| AC-ML-05 | CNN chính có **Test Macro-F1 cao hơn baseline tốt nhất** (cùng split, cùng cách đánh giá), với chênh lệch lớn hơn độ dao động giữa các seed (≥ 3 seed, báo cáo trung bình ± độ lệch chuẩn). **Không đặt trước ngưỡng tuyệt đối**; nhóm chốt ngưỡng sau khi có kết quả baseline đầu tiên | R3 | E2E ML |
+| AC-ML-06 | Landmark-MLP: báo cáo Macro-F1 trên (a) holdout theo thứ tự thu và (b) **signer-holdout** (người chưa có trong train, từ dữ liệu webcam nhóm thu). Không đặt ngưỡng cứng trước; số (b) là phép đo chính về khả năng dùng thật và phải được báo cáo trung thực dù thấp | R3 | E2E ML |
 | AC-ML-07 | Có Confusion Matrix chuẩn hóa hàng + top-5 cặp nhầm cho mô hình chính; trả lời RQ2 bằng văn bản | R2, R3 | Artifact check |
 | AC-ML-08 | ONNX xuất ra cho kết quả lệch PyTorch ≤ 1e-4 (max abs diff logits) trên 256 mẫu | R3 | Integration |
 | AC-ML-09 | Kết quả landmark-normalize của Python và TypeScript trùng nhau ≤ 1e-6 trên bộ fixture chung | R3 | Integration (cross-language) |
@@ -179,9 +179,9 @@ Không có telemetry (không backend), nên đo bằng **buổi thử nghiệm c
 
 | Rủi ro | Ảnh hưởng | Giảm thiểu |
 |---|---|---|
-| Domain gap Kaggle → webcam thật | Accuracy thật thấp hơn 97,7% | Dùng landmark-MLP cho web; signer-holdout; thu dữ liệu webcam nhóm |
-| FPS hiện chỉ ~10 (MediaPipe là nút cổ chai) | Không đạt RQ3 | MediaPipe Tasks Vision + GPU delegate, VIDEO mode, giảm độ phân giải input, worker (Phase 4) |
-| R/U, N/M, S/N nhầm trên tọa độ 2D | Người học bị chấm sai | Dùng thêm z, góc ngón; ngưỡng 0,60; thêm dữ liệu; feedback "có thể nhầm với…" |
+| Domain gap Kaggle → webcam thật | Điểm trên tập test Kaggle (cùng nguồn với train) có thể cao hơn nhiều so với webcam thật | Dùng landmark-MLP cho web; signer-holdout; thu dữ liệu webcam nhóm; báo cáo cả hai phép đo |
+| Tốc độ xử lý trên trình duyệt **chưa được đo** | Có thể không đạt RQ3 | Đo baseline sớm (P4-01); MediaPipe Tasks Vision + GPU delegate, VIDEO mode, giảm độ phân giải input, worker (Phase 4) |
+| Các cặp chữ dễ nhầm trên tọa độ 2D (chưa kiểm chứng) | Người học bị chấm sai | Phân tích Confusion Matrix thật; dùng thêm z, góc ngón; ngưỡng 0,60; feedback "có thể nhầm với…" |
 | Ít người ra dấu trong dữ liệu | Không tổng quát | Signer-holdout, thu thêm dữ liệu có consent |
 | Dữ liệu từ vựng động (Cấp 3) chưa chốt nguồn/giấy phép | Trễ Cấp 3 | Để COULD; cần quyết định nguồn trước Phase 1B |
 | Ảnh/video mẫu ký hiệu cho thẻ học chưa có nguồn hợp lệ | Thiếu nội dung học | **Cần người dùng cung cấp hoặc chọn nguồn có giấy phép** |
@@ -193,7 +193,7 @@ Không có telemetry (không backend), nên đo bằng **buổi thử nghiệm c
 
 1. Wording chính thức của RQ1–RQ3 đã nộp tuần 2?
 2. Ngày trình bày cuối kỳ (Tuần 5) và hạn nộp GitHub/báo cáo?
-3. Mã nguồn tuần 3–4 (`src/*.py`, web app "Tay Nói") đang nằm ở đâu? Có chuyển vào repo này không?
+3. ~~Mã nguồn tuần 3–4~~ **Đã chốt (2026-11-18):** không dùng; viết lại toàn bộ trong repo này, mọi số liệu tự đo.
 4. Ngôn ngữ giao diện: Tiếng Việt, Tiếng Anh hay song ngữ?
 5. Nguồn hình ảnh/video minh họa cách ra dấu từng chữ (có giấy phép)?
 6. Danh sách từ cho Cấp 2 (Fingerspelling) và từ vựng Cấp 3 — nhóm tự chọn hay muốn tôi đề xuất để duyệt?

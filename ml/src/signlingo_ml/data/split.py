@@ -1,7 +1,8 @@
 """Leakage-free train/validation split (docs/02 §4.2, AC-ML-02).
 
-The Kaggle training set was built by augmenting ~1,704 original photos ~16x each, so a random
-split puts near-copies of the same photo on both sides and inflates validation scores.
+The Kaggle training set consists of heavily augmented copies of a small number of source
+photos (exact numbers unverified), so a random split puts near-copies of the same photo
+on both sides and inflates validation scores (measured by us, see below).
 We recover the (unknown) photo groups by clustering each class on 10x10 thumbnails with Ward
 linkage, then hold out *whole groups* as validation.
 
@@ -28,7 +29,8 @@ def _thumbnails(X: np.ndarray) -> np.ndarray:
 
     Per-image standardisation matters: Kaggle's augmentation changes brightness/contrast, so
     without it copies of one photo do not cluster together and leakage remains. Measured on the
-    real data with the week 3 Logistic Regression baseline: without it val 0.987 vs test 0.691
+    real data with a Logistic Regression baseline (our own measurement): without it val 0.987
+    vs test 0.691
     (gap 0.296, i.e. still leaking); with it val 0.773 vs test 0.705 (gap 0.068).
     """
     t = np.stack([resize(img, THUMB, anti_aliasing=True) for img in X]).reshape(len(X), -1)

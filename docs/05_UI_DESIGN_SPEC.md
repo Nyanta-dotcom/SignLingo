@@ -211,7 +211,7 @@ Tabs: **Benchmark · Phân tích lỗi · Live Monitor · Data Leakage · Về d
 (Mọi số lấy từ file tĩnh `/data/experiments/index.json` do `ml/` sinh — không hardcode.)
 - **Phân tích lỗi:** chọn mô hình → `ConfusionMatrix` 24×24 (chuẩn hóa hàng) + bảng Top cặp nhầm + bar per-class F1 + gallery ảnh sai (nếu có) + khung trả lời **RQ2**.
 - **Live Monitor:** camera + `PredictionBars` 24 lớp + `FpsMeter` (thời gian xử lý khung p50/p95 với vạch 33 ms, MediaPipe ms, classifier ms, FPS xử lý, ORT backend WebGPU/WASM, delegate GPU/CPU) + nút "Ghi 60 s benchmark" lưu vào lịch sử và **tải file JSON** → bằng chứng **RQ3**.
-- **Data Leakage:** biểu đồ cột đôi Val vs Test cho random vs group split, sơ đồ giải thích 1.704 ảnh gốc × ~16 augment.
+- **Data Leakage:** biểu đồ cột đôi Val vs Test cho random vs group split, sơ đồ giải thích vì sao các bản augment của cùng một ảnh gây rò rỉ khi chia ngẫu nhiên (số liệu lấy từ thí nghiệm `leakage_study`).
 - **Về dữ liệu:** phân bố lớp, ảnh mẫu mỗi chữ, giấy phép dataset.
 
 ### 5.6 Hồ sơ (`/profile`)

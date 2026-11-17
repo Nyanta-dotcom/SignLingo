@@ -1,5 +1,5 @@
 # ml/ — Rules (đọc kèm ../CLAUDE.md)
-Context: docs 01 §2/§5.1/§6.1 · 02 §4 · 04 §4 · docs/reports/*. Chỉ sửa `ml/` và `shared/contracts/{schemas,fixtures}`.
+Context: docs 01 §2/§5.1/§6.1 · 02 §4 · 04 §4. Chỉ sửa `ml/` và `shared/contracts/{schemas,fixtures}`.
 
 - Chỉ `data/split.py` được tạo split; script tuning **cấm** đọc test (`load_split("test", final=True)` chỉ trong `evaluate --final`).
 - Mọi `fit()` của scaler/PCA chỉ nhận `X_train`.

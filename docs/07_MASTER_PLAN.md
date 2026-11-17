@@ -3,7 +3,7 @@
 > **Trạng thái:** v0.2 · **Ngày:** 2026-11-18 · **v0.2:** bỏ backend; Phase 2 đổi thành *Client Data & Game*; thêm deploy Vercel.
 > Truy vết: `FT-*`, `AC-*` ([01_PRD](01_PRD.md)) · lưu trữ ([03_DATA_STORAGE](03_DATA_STORAGE.md)) · hợp đồng ([04_CONTRACTS](04_CONTRACTS.md)).
 > **Quy tắc task:** mỗi task ≤ ~100 dòng code nguồn (không tính test/lock/file sinh); 1 task = 1 lượt Agent = 1 commit. Vòng: **Plan → Review Plan → Code → Test**. Task gắn **[R]** phải duyệt plan trước khi code.
-> Ký hiệu: 🎓 = bắt buộc cho chấm điểm Tuần 5 · 🚀 = MVP · ✨ = mở rộng · ♻ = port từ mã Tuần 3–4 nếu có · ☑ = xong · ☐ = chưa.
+> Ký hiệu: 🎓 = bắt buộc cho chấm điểm Tuần 5 · 🚀 = MVP · ✨ = mở rộng · ☑ = xong · ☐ = chưa.
 
 ---
 
@@ -32,7 +32,7 @@ flowchart LR
 P0 còn lại → **P1 (toàn bộ trừ 1B)** → P3-01, P3-07..15, P3-20..22 (Free Practice + AI Lab) → P4-01..07, P4-10..12.
 Phase 2 và phần còn lại của Phase 3 (Skill Tree, Lesson Player đầy đủ, gamification) làm song song nếu đủ người, nếu không thì sau buổi chấm.
 
-> **Phụ thuộc chưa rõ:** mã nguồn Tuần 3–4 (`src/data.py`, `src/train_baselines.py`, `src/cnn_numpy.py`, web "Tay Nói") và file `keypoint.csv` không có trong repo. Nếu được cung cấp, các task ♻ là *port + refactor + thêm test*.
+> **Nguyên tắc số liệu (2026-11-18):** các báo cáo tuần 3–4 cũ và mã đi kèm **không dùng**. Mọi mã được viết lại trong repo này; mọi con số do thí nghiệm của repo sinh ra (JSON có seed + git commit). Dữ liệu đầu vào đã có ở `data/`: Kaggle CSV và `keypoint.csv` (đã kiểm cấu trúc).
 
 ---
 
@@ -64,31 +64,31 @@ Phase 2 và phần còn lại của Phase 3 (Skill Tree, Lesson Player đầy đ
 
 ## Phase 1 — Data & ML Pipeline 🎓
 
-**Mục tiêu:** tái lập Tuần 3–4 trong cấu trúc mới + PyTorch + ONNX + landmark model web + signer-holdout + publish vào `frontend/public/`. **Context:** 01_PRD §2, §5.1, §6.1 · 02_ARCH §4 · 03_DATA §4–5 · 04_CONTRACTS §2–4 · `docs/reports/*`.
+**Mục tiêu:** xây pipeline thật: dữ liệu → baseline → CNN → landmark model → ONNX → publish vào `frontend/public/`, kèm signer-holdout. **Context:** 01_PRD §2, §5.1, §6.1 · 02_ARCH §4 · 03_DATA §4–5 · 04_CONTRACTS §2–4.
 
 ### 1A. Dữ liệu ảnh (Sign Language MNIST)
 
 | ☐ | ID | Task | Files (`ml/src/signlingo_ml/…`) | Guide | Test |
 |---|---|---|---|---|---|
-| ☑ | P1-01 ♻ | Load CSV + quality report (NaN, dup, label range, balance, pixel range) | `data/load.py`, `data/quality.py` | Dataclass `QualityReport`, ghi JSON | Unit: fixture có NaN/dup → đếm đúng |
-| ☑ | P1-02 ♻ | Clean + transform (remap nhãn, /255, reshape) | `data/transform.py` | Hàm thuần | Unit: nhãn 10→9, 24→23; giá trị ∈ [0,1] |
-| ☑ | P1-03 ♻ [R] | Group split: thumbnail 10×10 **chuẩn hóa từng ảnh** → Ward 70 cụm/lớp → ~15% ảnh (nguyên cụm) = val; `split_v1.parquet` | `data/split.py` | Không chuẩn hóa từng ảnh thì copy không gom cùng cụm: đo trên dữ liệu thật (Logistic Regression pixel) val 0,987 / test 0,691 (lệch 0,296, vẫn rò rỉ); có chuẩn hóa: val 0,773 / test 0,705 (lệch 0,068; báo cáo tuần 3 ghi 0,743 / 0,699, lệch 0,044) | Unit: 0 group overlap, bản sao cùng ảnh gốc cùng nhóm kể cả khi đổi sáng/tương phản, tỉ lệ val ≈ 15% ± 3%, deterministic ✅. Thật: 1.680 nhóm, train 23.269 / val 4.186, 24 lớp đều có ở cả hai |
+| ☑ | P1-01 | Load CSV + quality report (NaN, dup, label range, balance, pixel range) | `data/load.py`, `data/quality.py` | Dataclass `QualityReport`, ghi JSON | Unit: fixture có NaN/dup → đếm đúng |
+| ☑ | P1-02 | Clean + transform (remap nhãn, /255, reshape) | `data/transform.py` | Hàm thuần | Unit: nhãn 10→9, 24→23; giá trị ∈ [0,1] |
+| ☑ | P1-03 [R] | Group split: thumbnail 10×10 **chuẩn hóa từng ảnh** → Ward 70 cụm/lớp → ~15% ảnh (nguyên cụm) = val; `split_v1.parquet` | `data/split.py` | Số cụm (70) và kích thước thumbnail là **giả thuyết thiết kế**, chưa được kiểm chứng độc lập (xem P1-10). Số đo của ta trên dữ liệu thật (Logistic Regression pixel): không chuẩn hóa từng ảnh val 0,987 / test 0,691 (vẫn rò rỉ); có chuẩn hóa val 0,773 / test 0,705 | Unit: 0 group overlap, bản sao cùng ảnh gốc cùng nhóm kể cả khi đổi sáng/tương phản, tỉ lệ val ≈ 15% ± 3%, deterministic ✅. Thật: 1.680 nhóm, train 23.269 / val 4.186, 24 lớp đều có ở cả hai |
 | ☑ | P1-04 | Guard: `load_split(name, final=False)` raise nếu đọc `test` khi chưa `final` | `data/access.py` | Dùng ở mọi script train/tune | Unit |
-| ☑ | P1-05 ♻ | Features: pixel 784, HOG 1296 | `features/pixel.py`, `features/hog.py` | scikit-image | Unit: shape |
-| ☐ | P1-06 ♻ | Augment (rot ±10°, shift ±2, zoom .9–1.1, bright/contrast ±15%, **no hflip**) | `features/augment.py` | p = 0,7 | Unit: không hflip; seed tái lập |
+| ☑ | P1-05 | Features: pixel 784, HOG 1296 | `features/pixel.py`, `features/hog.py` | scikit-image | Unit: shape |
+| ☐ | P1-06 | Augment: xoay, dịch, zoom, sáng/tương phản, **no hflip**. Khoảng biến thiên (đề xuất ±10°, ±2 px, 0,9–1,1, ±15%) là **giả thuyết**, chọn trên validation | `features/augment.py` | p = 0,7 | Unit: không hflip; seed tái lập |
 | ☑ | P1-07 | Metrics: acc, macro-F1, per-class F1, CM row-norm, top-k confusions, latency | `evaluate/metrics.py` | Khớp sklearn | Unit |
 | ☑ | P1-08 | Experiment logger theo `experiment.schema.json` (tạo schema trong task này) | `evaluate/logger.py`, `shared/contracts/schemas/experiment.schema.json` | 04 §4.2 | Unit: validate schema |
-| ☐ | P1-09 ♻ | Baselines: Majority, LR, RF(200), LinearSVM, MLP 256-128 × {pixel, HOG} | `train/baselines.py`, `configs/baselines.yaml` | Scaler fit trên train (AC-ML-03) | Unit: scaler mean = mean(X_train) |
+| ☐ | P1-09 | Baselines: Majority, LR, RF(200), LinearSVM, MLP 256-128 × {pixel, HOG}. Danh sách là lựa chọn thiết kế; **kết quả tự đo**, ≥ 3 seed khi có thể | `train/baselines.py`, `configs/baselines.yaml` | Scaler fit trên train (AC-ML-03) | Unit: scaler mean = mean(X_train) |
 | ☐ | P1-10 | Leakage study: LR pixel, random vs group split | `train/leakage_study.py` | kind = `leakage_study` | Integration: gap random > gap group |
 
 ### 1B'. CNN PyTorch
 
 | ☐ | ID | Task | Files | Guide | Test |
 |---|---|---|---|---|---|
-| ☐ | P1-11 | CNN (Conv16→Pool→Conv32→Pool→Dense128+Dropout→24) | `models/cnn.py` | 208.728 tham số như Tuần 4 | Unit: số tham số; shape |
+| ☐ | P1-11 | CNN nhỏ (đề xuất Conv16→Pool→Conv32→Pool→Dense128+Dropout→24). Kiến trúc và hyperparameter chọn trên **validation**, không lấy từ báo cáo cũ | `models/cnn.py` | Số tham số ghi vào log | Unit: shape; đếm tham số |
 | ☐ | P1-12 [R] | Trainer: Adam wd 1e-4, cosine LR, label smoothing .05, batch 128, early stop theo val macro-F1 (patience 3), deterministic | `train/trainer.py` | Dùng lại cho landmark MLP | Unit: 2 epoch tiny → loss giảm; cùng seed → cùng kết quả |
 | ☐ | P1-13 | Sweep 4 cấu hình + tăng epoch tới 30 | `configs/cnn_*.yaml`, `train/run_cnn.py` | Chọn theo val | Integration: 1 config tiny → JSON |
-| ☐ | P1-14 ♻ | So với bản NumPy Tuần 4 (nếu có trọng số) | `evaluate/compare_numpy.py` | | — |
+| ~~P1-14~~ | — | ~~So với bản NumPy tuần 4~~ | — | **Bỏ (2026-11-18)**: không dùng mã cũ | — |
 
 ### 1C. Landmark model (cho web)
 
@@ -96,7 +96,7 @@ Phase 2 và phần còn lại của Phase 3 (Skill Tree, Lesson Player đầy đ
 |---|---|---|---|---|---|
 | ☐ | P1-15 [R] | `normalize_lm_v1` (mirror-to-right, wrist-origin, scale max xy; scale = 0 → None) | `landmarks/normalize.py` | 04 §3.3 | Unit (hypothesis): bất biến tịnh tiến & tỉ lệ |
 | ☐ | P1-16 | Sinh golden fixture `landmarks_lm-v1.json` (≥ 50 mẫu, có tay trái, có ca scale = 0) | `landmarks/fixtures.py` | Ghi vào `shared/contracts/fixtures/` | Unit: round-trip |
-| ◐ | P1-17 | Loader `keypoint.csv` ✅ (bỏ 1 dòng hỏng, bỏ J/Z, `order_split` = 20% cuối mỗi lớp theo thứ tự file). **Còn:** `ingest.py` đọc `ml/data/raw/webcam/*.json` + schema `landmark_capture` | `landmarks/dataset.py` ✅, `landmarks/ingest.py` ☐, `shared/contracts/schemas/landmark_capture.schema.json` ☐ | File thật: 36.402 dòng, 1 dòng hỏng (35522), 2.865 dòng J/Z bị bỏ → **33.536** mẫu, 24 lớp (khớp báo cáo tuần 4). `keypoint.csv` không có session/signer: thứ tự file chỉ là *giả định* thứ tự thu và chưa phải signer-holdout | Unit ✅ (dòng hỏng, ô có khoảng trắng, J/Z, order_split) |
+| ◐ | P1-17 | Loader `keypoint.csv` ✅ (bỏ 1 dòng hỏng, bỏ J/Z, `order_split` = 20% cuối mỗi lớp theo thứ tự file). **Còn:** `ingest.py` đọc `ml/data/raw/webcam/*.json` + schema `landmark_capture` | `landmarks/dataset.py` ✅, `landmarks/ingest.py` ☐, `shared/contracts/schemas/landmark_capture.schema.json` ☐ | File thật: 36.402 dòng, 1 dòng hỏng (35522), 2.865 dòng J/Z bị bỏ → **33.536** mẫu, 24 lớp (số đếm trực tiếp từ file). `keypoint.csv` không có session/signer: thứ tự file chỉ là *giả định* thứ tự thu và chưa phải signer-holdout | Unit ✅ (dòng hỏng, ô có khoảng trắng, J/Z, order_split) |
 | ☐ | P1-18 | Landmark augment: mirror, xoay ±15°, jitter, scale | `landmarks/augment.py` | Sau normalize | Unit |
 | ☐ | P1-19 | Landmark-MLP 42→128→64→24 (PyTorch) qua `trainer.py` | `models/landmark_mlp.py`, `configs/lm_mlp.yaml` | Thử `xyz` nếu đủ dữ liệu webcam | Integration: tiny → JSON |
 | ☐ | P1-20 | Class templates (15 góc khớp mean/std mỗi lớp) + `confusable` từ CM | `landmarks/templates.py` | Dùng cho FT-LRN-04 | Unit: ngón duỗi ≈ 180° |
@@ -275,7 +275,7 @@ Next: P1-04
 
 | # | Việc | Chặn task |
 |---|---|---|
-| U1 | Gửi mã nguồn Tuần 3–4 + `keypoint.csv` | Các task ♻, P1-17 |
+| U1 | ~~Gửi mã nguồn tuần 3–4~~ **Đã có `data/`** (Kaggle CSV + `keypoint.csv`); mã và báo cáo cũ không dùng | — |
 | U2 | Câu chữ chính thức RQ1–RQ3 | P1-27 |
 | U3 | Ngôn ngữ UI (VI/EN/song ngữ) | P3-01..03 (i18n) |
 | U4 | Nội dung `curriculum.json`: danh sách bài, từ Cấp 2, hint; ảnh/âm thanh có giấy phép | P2-14, P3-17 |

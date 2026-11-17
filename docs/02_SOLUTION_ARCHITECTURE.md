@@ -61,11 +61,11 @@ flowchart LR
 | Lớp | Lựa chọn | Lý do | Phương án bị loại |
 |---|---|---|---|
 | ML ngôn ngữ | **Python 3.11** | Hệ sinh thái ML, yêu cầu môn | — |
-| ML framework | **PyTorch 2.x** (CNN, Landmark-MLP, Sequence model) + **scikit-learn** (baseline, HOG via scikit-image) | Export ONNX chuẩn; bản NumPy tuần 4 giữ làm tham chiếu kiểm chứng | TensorFlow.js training (khó tái lập, khó so sánh với sklearn) |
+| ML framework | **PyTorch 2.x** (CNN, Landmark-MLP, Sequence model) + **scikit-learn** (baseline, HOG via scikit-image) | Export ONNX chuẩn | TensorFlow.js training (khó tái lập, khó so sánh với sklearn) |
 | Định dạng mô hình web | **ONNX** (opset 17) chạy bằng **onnxruntime-web** (WebGPU → WASM SIMD fallback) | 1 định dạng cho cả CNN & MLP; quantize int8 được | TF.js (phải convert 2 bước) |
 | Quản lý môi trường ML | **uv** + `pyproject.toml`, khóa `uv.lock` (tạm thời đang dùng `venv` + `pip` vì máy chưa cài uv) | Nhanh, tái lập | conda (nặng) |
 | Thí nghiệm | Config YAML + log JSON trong `reports/experiments/` (commit vào git) | Nhẹ, người chấm đọc được, AI Lab đọc trực tiếp | MLflow (thừa cho quy mô đồ án) |
-| Hand tracking | **`@mediapipe/tasks-vision` HandLandmarker** (runningMode `VIDEO`, delegate `GPU`), tự host | Nhanh hơn đáng kể so với `@mediapipe/hands` legacy (nguyên nhân chính ~10 FPS tuần 4) | Legacy MediaPipe Hands |
+| Hand tracking | **`@mediapipe/tasks-vision` HandLandmarker** (runningMode `VIDEO`, delegate `GPU`), tự host | API hiện hành, hỗ trợ GPU delegate và chế độ VIDEO; tốc độ thực tế **sẽ được đo** ở Phase 4, chưa có số liệu | Legacy MediaPipe Hands |
 | Frontend | **React 19 + TypeScript 6 + Vite** | Phổ biến, hệ sinh thái skill/AI agent tốt; TS ghim 6.x vì typescript-eslint chưa hỗ trợ TS 7 | Next.js (không cần SSR; SPA đủ) |
 | Styling | **Tailwind CSS 4** + CSS variables (design tokens) + **Radix UI primitives** | Dark mode bằng biến; a11y sẵn có | MUI (khó đạt look Duolingo) |
 | State | **Zustand** (session học, camera, UI) + `src/storage/` (persist có version) | Đơn giản, test được | Redux; TanStack Query (không còn server state) |
@@ -204,7 +204,7 @@ stateDiagram-v2
 
 | # | Kỹ thuật | Kỳ vọng |
 |---|---|---|
-| 1 | Chuyển sang `tasks-vision` HandLandmarker, delegate GPU, `numHands: 1` | Bỏ nút cổ chai chính (~10 → 30+ FPS) |
+| 1 | Chuyển sang `tasks-vision` HandLandmarker, delegate GPU, `numHands: 1` | Giảm thời gian xử lý mỗi khung (mức cải thiện **chưa đo**, sẽ so sánh ở P4-01/P4-02) |
 | 2 | Input camera 640×480 (không 1080p); `requestVideoFrameCallback` thay `setInterval` | Không xử lý khung trùng |
 | 3 | Overlay vẽ trên `<canvas>` trực tiếp, không qua React state; React chỉ nhận state đã throttle | Giảm jank main thread |
 | 4 | ORT-web: tái sử dụng session & tensor; WASM SIMD + threads (cần header COOP/COEP) hoặc WebGPU | Classifier < 1 ms |
