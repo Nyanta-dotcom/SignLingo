@@ -24,3 +24,21 @@ Top confusions of that model (true -> predicted, share of the true class):
 |---|---|---|---|---|---|---|
 | group_ward70 | 3 | 0.745 ± 0.040 | 0.690 ± 0.014 | 0.055 ± 0.029 | 2.45 ± 0.05 | 2.59 ± 0.03 |
 | random | 3 | 1.000 ± 0.000 | 0.687 ± 0.004 | 0.312 ± 0.003 | 0.45 ± 0.01 | 2.51 ± 0.00 |
+
+## CNN sweep (validation only; one factor changed from `base`)
+
+| Config | Seeds | Val macro-F1 | Val acc | Best epoch | Params | Train s |
+|---|---|---|---|---|---|---|
+| wide | 3 | 0.975 ± 0.002 | 0.975 ± 0.002 | 11.0 ± 3.6 | 828056 | 147 ± 42 |
+| base | 3 | 0.962 ± 0.015 | 0.962 ± 0.015 | 13.0 ± 1.0 | 208728 | 87 ± 8 |
+| lr_3e-3 | 3 | 0.952 ± 0.043 | 0.953 ± 0.043 | 11.0 ± 4.4 | 208728 | 72 ± 24 |
+| dropout_0.5 | 3 | 0.950 ± 0.009 | 0.951 ± 0.009 | 14.3 ± 1.2 | 208728 | 91 ± 1 |
+| no_aug | 3 | 0.918 ± 0.014 | 0.917 ± 0.014 | 7.3 ± 1.5 | 208728 | 45 ± 9 |
+
+## CNN main (config chosen on validation; test evaluated once)
+
+| Config | Seeds | Val macro-F1 | Test acc | Test macro-F1 |
+|---|---|---|---|---|
+| wide | 3 | 0.975 ± 0.002 | 0.972 ± 0.002 | 0.971 ± 0.003 |
+
+CNN `wide` vs best baseline MLP 256-128 (hog): test macro-F1 0.971 ± 0.003 vs 0.911 ± 0.003 (difference +0.061); the difference exceeds the seed noise (difference > 2 x the larger seed std (heuristic, not a significance test)).
