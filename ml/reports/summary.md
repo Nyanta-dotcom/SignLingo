@@ -41,4 +41,21 @@ Top confusions of that model (true -> predicted, share of the true class):
 |---|---|---|---|---|
 | wide | 3 | 0.975 ± 0.002 | 0.972 ± 0.002 | 0.971 ± 0.003 |
 
+## Landmark MLP sweep (validation only; one factor changed from `base`)
+
+Split: keypoint.csv in file order per class, train | gap | val | gap | test. This is not a signer holdout: the file has no signer or session column.
+
+| Config | Seeds | Val macro-F1 | Val acc | Best epoch | Params | Train s |
+|---|---|---|---|---|---|---|
+| canonical | 3 | 0.746 ± 0.003 | 0.789 ± 0.003 | 27.0 ± 2.6 | 15320 | 8 ± 0 |
+| mirror_aug | 3 | 0.696 ± 0.010 | 0.750 ± 0.008 | 31.0 ± 7.2 | 15320 | 14 ± 3 |
+| no_aug | 3 | 0.630 ± 0.028 | 0.708 ± 0.024 | 34.7 ± 0.6 | 15320 | 10 ± 1 |
+| base | 3 | 0.630 ± 0.023 | 0.710 ± 0.018 | 31.7 ± 4.0 | 15320 | 9 ± 1 |
+
+## Landmark MLP main (config chosen on validation; test part scored once)
+
+| Config | Seeds | Val macro-F1 | Test acc | Test macro-F1 |
+|---|---|---|---|---|
+| canonical | 3 | 0.746 ± 0.003 | 0.709 ± 0.004 | 0.664 ± 0.004 |
+
 CNN `wide` vs best baseline MLP 256-128 (hog): test macro-F1 0.971 ± 0.003 vs 0.911 ± 0.003 (difference +0.061); the difference exceeds the seed noise (difference > 2 x the larger seed std (heuristic, not a significance test)).
