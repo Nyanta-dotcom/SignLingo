@@ -15,6 +15,7 @@ from signlingo_ml.config import REPORTS
 
 BASELINE_KEYS = ["val_macro_f1", "test_acc", "test_macro_f1", "latency_ms", "train_s"]
 LEAK_KEYS = ["val_acc", "test_acc"]
+CNN_KEYS = ["val_macro_f1", "val_acc", "params", "train_s"]
 
 
 def load_records(directory: str | Path) -> list[dict]:
@@ -72,11 +73,47 @@ def aggregate(records: list[dict]) -> dict:
             [x["nn_dist_test_to_train"]["median"] for x in d if "nn_dist_test_to_train" in x]
         )
         leak.append(row)
+
+    def cnn_rows(kind: str, keys: list[str]) -> list[dict]:
+        rs_all = [
+            r for r in records if r["kind"] == kind and r.get("hyperparams", {}).get("config")
+        ]
+        rows = []
+        for tag, rs in _group(rs_all, lambda r: r["hyperparams"]["config"]).items():
+            row = {"config": tag, "n_seeds": len(rs)}
+            for k in keys:
+                row[k] = _stat([r["metrics"][k] for r in rs if k in r["metrics"]])
+            row["best_epoch"] = _stat(
+                [r["hyperparams"]["best_epoch"] for r in rs if "best_epoch" in r["hyperparams"]]
+            )
+            rows.append(row)
+        rows.sort(key=lambda r: (-(r["val_macro_f1"] or {"mean": -1})["mean"], r["config"]))
+        return rows
+
+    cnn_sweep = cnn_rows("ablation", CNN_KEYS)
+    cnn_main = cnn_rows("main", CNN_KEYS + ["test_acc", "test_macro_f1"])
+    cmp_ = None
+    if cnn_main and best and cnn_main[0]["test_macro_f1"] and best["test_macro_f1"]:
+        a, b = cnn_main[0]["test_macro_f1"], best["test_macro_f1"]
+        stds = [s for s in (a["std"], b["std"]) if s is not None]
+        diff = a["mean"] - b["mean"]
+        cmp_ = {
+            "cnn_config": cnn_main[0]["config"],
+            "baseline": f"{best['model_name']} ({best['feature_set']})",
+            "cnn_test_macro_f1": a,
+            "baseline_test_macro_f1": b,
+            "difference": diff,
+            "exceeds_seed_noise": (diff > 2 * max(stds)) if stds else None,
+            "rule": "difference > 2 x the larger seed std (heuristic, not a significance test)",
+        }
     return {
         "baselines": baselines,
         "best_by_val": best,
         "best_detail": best_detail,
         "leakage": leak,
+        "cnn_sweep": cnn_sweep,
+        "cnn_main": cnn_main,
+        "cnn_vs_baseline": cmp_,
     }
 
 
@@ -120,6 +157,42 @@ def render_markdown(agg: dict) -> str:
                 f" | {_fmt(r['val_test_gap'])} | {_fmt(r['nn_val_to_train'], 2)}"
                 f" | {_fmt(r['nn_test_to_train'], 2)} |"
             )
+    if agg.get("cnn_sweep"):
+        out += ["", "## CNN sweep (validation only; one factor changed from `base`)", ""]
+        out += [
+            "| Config | Seeds | Val macro-F1 | Val acc | Best epoch | Params | Train s |",
+            "|---|---|---|---|---|---|---|",
+        ]
+        for r in agg["cnn_sweep"]:
+            out.append(
+                f"| {r['config']} | {r['n_seeds']} | {_fmt(r['val_macro_f1'])} | {_fmt(r['val_acc'])}"
+                f" | {_fmt(r['best_epoch'], 1)} | {r['params']['mean']:.0f} | {_fmt(r['train_s'], 0)} |"
+            )
+    if agg.get("cnn_main"):
+        out += ["", "## CNN main (config chosen on validation; test evaluated once)", ""]
+        out += [
+            "| Config | Seeds | Val macro-F1 | Test acc | Test macro-F1 |",
+            "|---|---|---|---|---|",
+        ]
+        for r in agg["cnn_main"]:
+            out.append(
+                f"| {r['config']} | {r['n_seeds']} | {_fmt(r['val_macro_f1'])}"
+                f" | {_fmt(r['test_acc'])} | {_fmt(r['test_macro_f1'])} |"
+            )
+    c = agg.get("cnn_vs_baseline")
+    if c:
+        verdict = {True: "exceeds", False: "does NOT exceed", None: "cannot be judged against"}[
+            c["exceeds_seed_noise"]
+        ]
+        out += [
+            "",
+            (
+                f"CNN `{c['cnn_config']}` vs best baseline {c['baseline']}: test macro-F1 "
+                f"{_fmt(c['cnn_test_macro_f1'])} vs {_fmt(c['baseline_test_macro_f1'])} "
+                f"(difference {c['difference']:+.3f}); the difference {verdict} the seed noise "
+                f"({c['rule']})."
+            ),
+        ]
     return "\n".join(out) + "\n"
 
 

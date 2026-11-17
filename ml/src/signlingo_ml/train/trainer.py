@@ -137,6 +137,7 @@ def run_cnn(
     num_classes=N_CLASSES,
     model_kwargs=None,
     kind="main",
+    tag=None,
 ) -> dict:
     """Train one configuration and return an experiment record (see experiment.schema.json)."""
     kw = model_kwargs or {}
@@ -174,6 +175,7 @@ def run_cnn(
             **kw,
             "best_epoch": res.best_epoch,
             "stopped_early": res.stopped_early,
+            **({"config": tag} if tag else {}),
         },
         details=details,
         curves=res.history,
