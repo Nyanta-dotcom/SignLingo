@@ -43,6 +43,7 @@
       }
     },
     "curves": { "type": "object" },
+    "diagnostics": { "type": "object" },
     "git_commit": { "type": "string" },
     "seed": { "type": "integer" },
     "run_at": { "type": "string" }

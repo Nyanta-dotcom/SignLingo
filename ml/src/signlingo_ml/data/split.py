@@ -102,3 +102,23 @@ def split_indices(table: pd.DataFrame, name: str) -> np.ndarray:
     if name not in ("train", "val"):
         raise ValueError(f"split table only holds 'train' and 'val', got {name!r}")
     return table.index[table["split"] == name].to_numpy()
+
+
+def load_or_make_split(
+    X: np.ndarray,
+    y: np.ndarray,
+    path: str | Path,
+    n_groups: int = 70,
+    val_frac: float = 0.15,
+    seed: int = SEED,
+) -> pd.DataFrame:
+    """Read the cached split table, or build it once (group + split) and save it."""
+    path = Path(path)
+    if path.exists():
+        table = load_split_table(path)
+        if len(table) != len(y):
+            raise ValueError(f"cached split has {len(table)} rows, data has {len(y)}: delete it")
+        return table
+    groups = assign_groups(X, y, n_groups=n_groups, seed=seed)
+    save_split_table(path, y, groups, group_split(groups, y, val_frac=val_frac, seed=seed))
+    return load_split_table(path)

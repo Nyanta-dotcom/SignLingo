@@ -103,9 +103,12 @@ Golden fixture `shared/contracts/fixtures/landmarks_lm-v1.json` (do `ml` sinh) g
   "per_class_f1": { "A": 0.0 },
   "top_confusions": [ { "true": "N", "pred": "M", "rate": 0.0 } ],
   "curves": { "epoch": [1], "train_loss": [0.0], "val_macro_f1": [0.0] },
+  "diagnostics": { "nn_dist_val_to_train": { "median": 0.0 }, "val_test_gap": 0.0 },
   "git_commit": "…", "seed": 42, "run_at": "ISO"
 }
 ```
+
+`diagnostics` (tùy chọn) chứa số đo phụ của thí nghiệm, ví dụ rò rỉ dữ liệu: khoảng cách từ ảnh validation tới ảnh train gần nhất cùng lớp.
 
 `kind`: `baseline` · `main` · `ablation` · `leakage_study` · `perf_benchmark`.
 `split_strategy`: `random` · `group_ward70` · `session_holdout` · `signer_holdout`.

@@ -18,12 +18,12 @@ def _git_commit() -> str:
 
 
 def build_record(*, run_id, kind, dataset, model_name, feature_set, split_strategy,
-                 metrics, hyperparams=None, details=None, curves=None) -> dict:
+                 metrics, hyperparams=None, details=None, curves=None, seed=SEED) -> dict:
     rec = {
         "run_id": run_id, "kind": kind, "dataset": dataset, "model_name": model_name,
         "feature_set": feature_set, "split_strategy": split_strategy,
         "hyperparams": hyperparams or {}, "metrics": metrics,
-        "git_commit": _git_commit(), "seed": SEED,
+        "git_commit": _git_commit(), "seed": seed,
         "run_at": datetime.now(UTC).isoformat(),
     }
     if details:

@@ -75,17 +75,17 @@ Phase 2 và phần còn lại của Phase 3 (Skill Tree, Lesson Player đầy đ
 | ☑ | P1-03 [R] | Group split: thumbnail 10×10 **chuẩn hóa từng ảnh** → Ward 70 cụm/lớp → ~15% ảnh (nguyên cụm) = val; `split_v1.parquet` | `data/split.py` | Số cụm (70) và kích thước thumbnail là **giả thuyết thiết kế**, chưa được kiểm chứng độc lập (xem P1-10). Số đo của ta trên dữ liệu thật (Logistic Regression pixel): không chuẩn hóa từng ảnh val 0,987 / test 0,691 (vẫn rò rỉ); có chuẩn hóa val 0,773 / test 0,705 | Unit: 0 group overlap, bản sao cùng ảnh gốc cùng nhóm kể cả khi đổi sáng/tương phản, tỉ lệ val ≈ 15% ± 3%, deterministic ✅. Thật: 1.680 nhóm, train 23.269 / val 4.186, 24 lớp đều có ở cả hai |
 | ☑ | P1-04 | Guard: `load_split(name, final=False)` raise nếu đọc `test` khi chưa `final` | `data/access.py` | Dùng ở mọi script train/tune | Unit |
 | ☑ | P1-05 | Features: pixel 784, HOG 1296 | `features/pixel.py`, `features/hog.py` | scikit-image | Unit: shape |
-| ☐ | P1-06 | Augment: xoay, dịch, zoom, sáng/tương phản, **no hflip**. Khoảng biến thiên (đề xuất ±10°, ±2 px, 0,9–1,1, ±15%) là **giả thuyết**, chọn trên validation | `features/augment.py` | p = 0,7 | Unit: không hflip; seed tái lập |
+| ☑ | P1-06 | Augment: xoay, dịch, zoom, sáng/tương phản, **no hflip**. Khoảng biến thiên (đề xuất ±10°, ±2 px, 0,9–1,1, ±15%) là **giả thuyết**, chọn trên validation | `features/augment.py` | p = 0,7 | Unit: không hflip; seed tái lập · Test ✅ (6): shape/dtype/[0,1], seed tái lập, p=0 giữ nguyên, tham số 0 = đồng nhất, không có lật ngang |
 | ☑ | P1-07 | Metrics: acc, macro-F1, per-class F1, CM row-norm, top-k confusions, latency | `evaluate/metrics.py` | Khớp sklearn | Unit |
 | ☑ | P1-08 | Experiment logger theo `experiment.schema.json` (tạo schema trong task này) | `evaluate/logger.py`, `shared/contracts/schemas/experiment.schema.json` | 04 §4.2 | Unit: validate schema |
-| ☐ | P1-09 | Baselines: Majority, LR, RF(200), LinearSVM, MLP 256-128 × {pixel, HOG}. Danh sách là lựa chọn thiết kế; **kết quả tự đo**, ≥ 3 seed khi có thể | `train/baselines.py`, `configs/baselines.yaml` | Scaler fit trên train (AC-ML-03) | Unit: scaler mean = mean(X_train) |
-| ☐ | P1-10 | Leakage study: LR pixel, random vs group split | `train/leakage_study.py` | kind = `leakage_study` | Integration: gap random > gap group |
+| ◐ | P1-09 | Baselines: Majority, LR, RF(200), LinearSVM, MLP 256-128 × {pixel, HOG}. Danh sách là lựa chọn thiết kế; **kết quả tự đo**, ≥ 3 seed khi có thể | `train/baselines.py`, `configs/baselines.yaml` | Scaler fit trên train (AC-ML-03) | Unit: scaler mean = mean(X_train) · Đã chạy thật: Majority, LR, RF, MLP-pixel (RF/MLP 3 seed). **Còn:** Linear SVM-HOG và MLP-HOG đang chạy |
+| ☑ | P1-10 | Leakage study: LR pixel, random vs group split | `train/leakage_study.py` | kind = `leakage_study` | Integration: gap random > gap group · Đã chạy thật 3 seed; thêm chẩn đoán khoảng cách ảnh gần nhất (không dùng test để chọn); schema thêm `diagnostics` tùy chọn |
 
 ### 1B'. CNN PyTorch
 
 | ☐ | ID | Task | Files | Guide | Test |
 |---|---|---|---|---|---|
-| ☐ | P1-11 | CNN nhỏ (đề xuất Conv16→Pool→Conv32→Pool→Dense128+Dropout→24). Kiến trúc và hyperparameter chọn trên **validation**, không lấy từ báo cáo cũ | `models/cnn.py` | Số tham số ghi vào log | Unit: shape; đếm tham số |
+| ☑ | P1-11 | CNN nhỏ (Conv16→Pool→Conv32→Pool→Dense128+Dropout→24). **Nguồn gốc kiến trúc:** các kích thước ban đầu đến từ mô tả trong báo cáo cũ (không đáng tin), chỉ là **giả thuyết xuất phát**; độ rộng là tham số để P1-13 so sánh biến thể trên **validation** | `models/cnn.py` | Số tham số được đo và ghi vào log (bản mặc định 208.728 là hệ quả của kiến trúc, không phải bằng chứng) | Unit ✅: shape, lớp, dropout, seed, gradient, độ rộng tùy chỉnh |
 | ☐ | P1-12 [R] | Trainer: Adam wd 1e-4, cosine LR, label smoothing .05, batch 128, early stop theo val macro-F1 (patience 3), deterministic | `train/trainer.py` | Dùng lại cho landmark MLP | Unit: 2 epoch tiny → loss giảm; cùng seed → cùng kết quả |
 | ☐ | P1-13 | Sweep 4 cấu hình + tăng epoch tới 30 | `configs/cnn_*.yaml`, `train/run_cnn.py` | Chọn theo val | Integration: 1 config tiny → JSON |
 | ~~P1-14~~ | — | ~~So với bản NumPy tuần 4~~ | — | **Bỏ (2026-11-18)**: không dùng mã cũ | — |
