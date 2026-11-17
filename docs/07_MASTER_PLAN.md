@@ -86,7 +86,7 @@ Phase 2 và phần còn lại của Phase 3 (Skill Tree, Lesson Player đầy đ
 | ☐ | ID | Task | Files | Guide | Test |
 |---|---|---|---|---|---|
 | ☑ | P1-11 | CNN nhỏ (Conv16→Pool→Conv32→Pool→Dense128+Dropout→24). **Nguồn gốc kiến trúc:** các kích thước ban đầu đến từ mô tả trong báo cáo cũ (không đáng tin), chỉ là **giả thuyết xuất phát**; độ rộng là tham số để P1-13 so sánh biến thể trên **validation** | `models/cnn.py` | Số tham số được đo và ghi vào log (bản mặc định 208.728 là hệ quả của kiến trúc, không phải bằng chứng) | Unit ✅: shape, lớp, dropout, seed, gradient, độ rộng tùy chỉnh |
-| ☐ | P1-12 [R] | Trainer: Adam wd 1e-4, cosine LR, label smoothing .05, batch 128, early stop theo val macro-F1 (patience 3), deterministic | `train/trainer.py` | Dùng lại cho landmark MLP | Unit: 2 epoch tiny → loss giảm; cùng seed → cùng kết quả |
+| ☑ | P1-12 [R] | Trainer: Adam wd 1e-4, cosine LR, label smoothing .05, batch 128, early stop theo val macro-F1 (patience 3), deterministic | `train/trainer.py` | Dùng lại cho landmark MLP | Unit: 2 epoch tiny → loss giảm; cùng seed → cùng kết quả · Đã duyệt plan. Unit ✅ (6): loss giảm, cùng seed tái lập, early stop theo val, khôi phục epoch tốt nhất, augment mỗi epoch seed mới, test không đọc khi chưa `eval_test`. Đo thật: ~7 s/epoch trên CPU 6 luồng |
 | ☐ | P1-13 | Sweep 4 cấu hình + tăng epoch tới 30 | `configs/cnn_*.yaml`, `train/run_cnn.py` | Chọn theo val | Integration: 1 config tiny → JSON |
 | ~~P1-14~~ | — | ~~So với bản NumPy tuần 4~~ | — | **Bỏ (2026-11-18)**: không dùng mã cũ | — |
 
