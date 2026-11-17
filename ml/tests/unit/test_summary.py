@@ -175,3 +175,26 @@ def test_markdown_lists_cnn_sections(tmp_path):
     ]
     md = render_markdown(aggregate(load_records(_write(tmp_path, recs))))
     assert "CNN sweep" in md and "CNN main" in md
+
+
+def _lm(run_id, kind, tag, seed, **metrics):
+    r = _cnn(run_id, kind, tag, seed, **metrics)
+    r["dataset"], r["model_name"], r["feature_set"] = "landmarks", "Landmark MLP", "landmarks_xy"
+    return r
+
+
+def test_landmark_runs_are_kept_apart_from_the_image_cnn_runs(tmp_path):
+    recs = [
+        _cnn("c1", "ablation", "base", 42, val_macro_f1=0.90, val_acc=0.90, params=10),
+        _lm("l1", "ablation", "base", 42, val_macro_f1=0.60, val_acc=0.60, params=5),
+        _lm("l2", "ablation", "canonical", 42, val_macro_f1=0.70, val_acc=0.70, params=5),
+        _lm("lm1", "main", "canonical", 42, val_macro_f1=0.70, test_macro_f1=0.65, test_acc=0.66),
+        _cnn("cm1", "main", "base", 42, val_macro_f1=0.90, test_macro_f1=0.88, test_acc=0.88),
+    ]
+    agg = aggregate(load_records(_write(tmp_path, recs)))
+    assert [r["config"] for r in agg["cnn_sweep"]] == ["base"]  # only the image CNN
+    assert agg["cnn_sweep"][0]["val_macro_f1"]["mean"] == pytest.approx(0.90)
+    assert [r["config"] for r in agg["lm_sweep"]] == ["canonical", "base"]  # best val first
+    assert [r["config"] for r in agg["lm_main"]] == ["canonical"]
+    md = render_markdown(agg)
+    assert "Landmark MLP sweep" in md and "not a signer holdout" in md

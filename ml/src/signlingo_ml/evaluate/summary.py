@@ -74,9 +74,13 @@ def aggregate(records: list[dict]) -> dict:
         )
         leak.append(row)
 
-    def cnn_rows(kind: str, keys: list[str]) -> list[dict]:
+    def cnn_rows(kind: str, keys: list[str], dataset: str = "sign_mnist") -> list[dict]:
         rs_all = [
-            r for r in records if r["kind"] == kind and r.get("hyperparams", {}).get("config")
+            r
+            for r in records
+            if r["kind"] == kind
+            and r.get("dataset") == dataset
+            and r.get("hyperparams", {}).get("config")
         ]
         rows = []
         for tag, rs in _group(rs_all, lambda r: r["hyperparams"]["config"]).items():
@@ -92,6 +96,8 @@ def aggregate(records: list[dict]) -> dict:
 
     cnn_sweep = cnn_rows("ablation", CNN_KEYS)
     cnn_main = cnn_rows("main", CNN_KEYS + ["test_acc", "test_macro_f1"])
+    lm_sweep = cnn_rows("ablation", CNN_KEYS, "landmarks")
+    lm_main = cnn_rows("main", CNN_KEYS + ["test_acc", "test_macro_f1"], "landmarks")
     cmp_ = None
     if cnn_main and best and cnn_main[0]["test_macro_f1"] and best["test_macro_f1"]:
         a, b = cnn_main[0]["test_macro_f1"], best["test_macro_f1"]
@@ -113,6 +119,8 @@ def aggregate(records: list[dict]) -> dict:
         "leakage": leak,
         "cnn_sweep": cnn_sweep,
         "cnn_main": cnn_main,
+        "lm_sweep": lm_sweep,
+        "lm_main": lm_main,
         "cnn_vs_baseline": cmp_,
     }
 
@@ -175,6 +183,35 @@ def render_markdown(agg: dict) -> str:
             "|---|---|---|---|---|",
         ]
         for r in agg["cnn_main"]:
+            out.append(
+                f"| {r['config']} | {r['n_seeds']} | {_fmt(r['val_macro_f1'])}"
+                f" | {_fmt(r['test_acc'])} | {_fmt(r['test_macro_f1'])} |"
+            )
+    if agg.get("lm_sweep"):
+        out += [
+            "",
+            "## Landmark MLP sweep (validation only; one factor changed from `base`)",
+            "",
+            (
+                "Split: keypoint.csv in file order per class, train | gap | val | gap | test. "
+                "This is not a signer holdout: the file has no signer or session column."
+            ),
+            "",
+            "| Config | Seeds | Val macro-F1 | Val acc | Best epoch | Params | Train s |",
+            "|---|---|---|---|---|---|---|",
+        ]
+        for r in agg["lm_sweep"]:
+            out.append(
+                f"| {r['config']} | {r['n_seeds']} | {_fmt(r['val_macro_f1'])} | {_fmt(r['val_acc'])}"
+                f" | {_fmt(r['best_epoch'], 1)} | {r['params']['mean']:.0f} | {_fmt(r['train_s'], 0)} |"
+            )
+    if agg.get("lm_main"):
+        out += ["", "## Landmark MLP main (config chosen on validation; test part scored once)", ""]
+        out += [
+            "| Config | Seeds | Val macro-F1 | Test acc | Test macro-F1 |",
+            "|---|---|---|---|---|",
+        ]
+        for r in agg["lm_main"]:
             out.append(
                 f"| {r['config']} | {r['n_seeds']} | {_fmt(r['val_macro_f1'])}"
                 f" | {_fmt(r['test_acc'])} | {_fmt(r['test_macro_f1'])} |"

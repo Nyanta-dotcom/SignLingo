@@ -67,8 +67,13 @@ def _macro_f1(y, pred, n: int) -> float:
     return float(f1_score(y, pred, labels=range(n), average="macro", zero_division=0))
 
 
-def train_model(model, X_tr, y_tr, X_val, y_val, cfg: TrainConfig, num_classes=N_CLASSES):
-    """Train `model` in place; on return it holds the best-validation-F1 weights."""
+def train_model(
+    model, X_tr, y_tr, X_val, y_val, cfg: TrainConfig, num_classes=N_CLASSES, augment_fn=None
+):
+    """Train `model` in place; on return it holds the best-validation-F1 weights.
+
+    `augment_fn(X, seed)` replaces the default image augmentation (used for landmark rows).
+    """
     set_determinism(cfg.seed)
     opt = torch.optim.Adam(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
     sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=max(cfg.epochs, 1))
@@ -81,7 +86,7 @@ def train_model(model, X_tr, y_tr, X_val, y_val, cfg: TrainConfig, num_classes=N
     t0 = time.perf_counter()
     for epoch in range(1, cfg.epochs + 1):
         X_ep = (
-            augment_batch(X_tr, seed=cfg.seed * 1000 + epoch) if cfg.augment else X_tr
+            (augment_fn or augment_batch)(X_tr, seed=cfg.seed * 1000 + epoch) if cfg.augment else X_tr
         )  # a new augmentation draw every epoch
         gen = torch.Generator().manual_seed(cfg.seed * 1000 + epoch)
         perm = torch.randperm(len(X_ep), generator=gen)

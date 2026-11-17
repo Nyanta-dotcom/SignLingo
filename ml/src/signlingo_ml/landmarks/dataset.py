@@ -66,3 +66,31 @@ def order_split(y: np.ndarray, val_frac: float = 0.2) -> np.ndarray:
         if n_val:
             split[idx[-n_val:]] = "val"
     return split.astype(str)
+
+
+def order_split3(
+    y: np.ndarray, val_frac: float = 0.2, test_frac: float = 0.2, gap_frac: float = 0.02
+) -> np.ndarray:
+    """Per class, in file order: train | gap | val | gap | test (labels 'train'/'val'/'test'/'gap').
+
+    keypoint.csv has no official test set, no session and no signer column. Rows of one class are
+    long contiguous bursts of near-identical frames, so the segments are separated by a gap that
+    is dropped, to avoid directly adjacent frames on both sides of a boundary. A gap of 2% of a
+    class does not remove all similarity between neighbours; this is NOT a signer holdout and
+    results are optimistic until webcam data from several people exists (P1-21).
+    """
+    split = np.full(len(y), "train", dtype=object)
+    for c in np.unique(y):
+        idx = np.flatnonzero(y == c)
+        n = len(idx)
+        n_val, n_test, gap = round(val_frac * n), round(test_frac * n), round(gap_frac * n)
+        test_start = n - n_test
+        val_end = test_start - gap
+        val_start = val_end - n_val
+        train_end = val_start - gap
+        if gap:
+            split[idx[train_end:val_start]] = "gap"
+            split[idx[val_end:test_start]] = "gap"
+        split[idx[val_start:val_end]] = "val"
+        split[idx[test_start:]] = "test"
+    return split.astype(str)
