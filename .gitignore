@@ -25,3 +25,5 @@ Thumbs.db
 .vscode/
 .claude/settings.local.json
 *.egg-info/
+# user-provided raw datasets and images (large, license unverified)
+/data/
