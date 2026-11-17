@@ -1,0 +1,7 @@
+numpy
+jsonschema
+
+[dev]
+pytest
+ruff
+hypothesis

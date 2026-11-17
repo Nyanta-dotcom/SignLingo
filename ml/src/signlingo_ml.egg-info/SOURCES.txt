@@ -1,0 +1,8 @@
+pyproject.toml
+src/signlingo_ml/__init__.py
+src/signlingo_ml/config.py
+src/signlingo_ml.egg-info/PKG-INFO
+src/signlingo_ml.egg-info/SOURCES.txt
+src/signlingo_ml.egg-info/dependency_links.txt
+src/signlingo_ml.egg-info/requires.txt
+src/signlingo_ml.egg-info/top_level.txt

@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m pytest:*)",
+      "Bash(ruff:*)",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm typecheck:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)"
+    ],
+    "ask": ["Bash(git push:*)", "Bash(rm:*)"]
+  }
+}

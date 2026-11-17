@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ModelManifest",
+  "type": "object",
+  "required": ["model_id", "version", "task", "file", "sha256", "input", "output", "labels", "preprocess_version", "recommended", "metrics", "seed"],
+  "properties": {
+    "model_id": { "type": "string" },
+    "version": { "type": "string", "pattern": "^[0-9]+[.][0-9]+[.][0-9]+$" },
+    "task": { "enum": ["static_letters", "dynamic_words"] },
+    "file": { "type": "string" },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "input": {
+      "type": "object",
+      "required": ["name", "shape", "dtype"],
+      "properties": {
+        "name": { "type": "string" },
+        "shape": { "type": "array", "items": { "type": "integer" } },
+        "dtype": { "const": "float32" },
+        "features": { "enum": ["xy", "xyz"] }
+      }
+    },
+    "output": {
+      "type": "object",
+      "required": ["name", "shape"],
+      "properties": { "name": { "type": "string" }, "shape": { "type": "array", "items": { "type": "integer" } } }
+    },
+    "labels": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "preprocess_version": { "type": "string" },
+    "recommended": {
+      "type": "object",
+      "required": ["threshold", "hold_ms", "smoothing_window"],
+      "properties": {
+        "threshold": { "type": "number", "minimum": 0, "maximum": 1 },
+        "hold_ms": { "type": "integer", "minimum": 0 },
+        "smoothing_window": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "class_templates": { "type": "object" },
+    "metrics": { "type": "object" },
+    "trained_at": { "type": "string" },
+    "git_commit": { "type": "string" },
+    "seed": { "type": "integer" }
+  }
+}
