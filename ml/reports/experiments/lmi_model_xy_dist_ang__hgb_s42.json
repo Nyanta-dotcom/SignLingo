@@ -1,0 +1,24 @@
+{
+  "run_id": "lmi_model_xy_dist_ang__hgb_s42",
+  "kind": "ablation",
+  "dataset": "landmarks",
+  "model_name": "Landmark gradient boosting",
+  "feature_set": "xy_dist_ang",
+  "split_strategy": "session_holdout",
+  "hyperparams": {
+    "config": "xy_dist_ang__hgb",
+    "seed": 42,
+    "split": "file_order_60_20_20_gap2pct",
+    "model": "hgb",
+    "best_epoch": 200
+  },
+  "metrics": {
+    "val_acc": 0.8282135401133314,
+    "val_macro_f1": 0.809952956869855,
+    "params": 0,
+    "train_s": 171.1467479999992
+  },
+  "git_commit": "18e69a7",
+  "seed": 42,
+  "run_at": "2026-11-17T22:47:14.852228+00:00"
+}

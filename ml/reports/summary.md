@@ -29,6 +29,8 @@ Top confusions of that model (true -> predicted, share of the true class):
 
 | Config | Seeds | Val macro-F1 | Val acc | Best epoch | Params | Train s |
 |---|---|---|---|---|---|---|
+| wide_e30 | 3 | 0.980 ± 0.005 | 0.980 ± 0.005 | 9.7 ± 2.5 | 828056 | 170 ± 41 |
+| base_e30 | 3 | 0.977 ± 0.010 | 0.977 ± 0.010 | 17.0 ± 4.4 | 208728 | 137 ± 21 |
 | wide | 3 | 0.975 ± 0.002 | 0.975 ± 0.002 | 11.0 ± 3.6 | 828056 | 147 ± 42 |
 | base | 3 | 0.962 ± 0.015 | 0.962 ± 0.015 | 13.0 ± 1.0 | 208728 | 87 ± 8 |
 | lr_3e-3 | 3 | 0.952 ± 0.043 | 0.953 ± 0.043 | 11.0 ± 4.4 | 208728 | 72 ± 24 |
@@ -39,23 +41,35 @@ Top confusions of that model (true -> predicted, share of the true class):
 
 | Config | Seeds | Val macro-F1 | Test acc | Test macro-F1 |
 |---|---|---|---|---|
+| wide_e30__ens5 | 1 | 0.988 | 0.979 | 0.979 |
+| wide_e30 | 3 | 0.980 ± 0.005 | 0.975 ± 0.002 | 0.974 ± 0.003 |
 | wide | 3 | 0.975 ± 0.002 | 0.972 ± 0.002 | 0.971 ± 0.003 |
 
-## Landmark MLP sweep (validation only; one factor changed from `base`)
+## Landmark sweeps (validation only; config = features__model)
 
 Split: keypoint.csv in file order per class, train | gap | val | gap | test. This is not a signer holdout: the file has no signer or session column.
 
 | Config | Seeds | Val macro-F1 | Val acc | Best epoch | Params | Train s |
 |---|---|---|---|---|---|---|
+| xy_dist_ang__mlp_512_256__ens5 | 1 | 0.857 | 0.861 | - | 1414520 | 125 |
+| xy_dist_ang__mlp_512_256 | 3 | 0.850 ± 0.005 | 0.855 ± 0.003 | 13.0 ± 5.3 | 282904 | 19 ± 4 |
+| xy_dist_ang__mlp_256_128 | 3 | 0.843 ± 0.004 | 0.848 ± 0.002 | 11.3 ± 3.2 | 108696 | 9 ± 1 |
+| xy_dist_ang__mlp_128_64 | 6 | 0.842 ± 0.017 | 0.844 ± 0.014 | 12.3 ± 2.9 | 46168 | 7 ± 1 |
+| xy_dist_ang__hgb | 1 | 0.810 | 0.828 | 200.0 | 0 | 171 |
+| dist_ang__mlp_128_64 | 3 | 0.794 ± 0.012 | 0.798 ± 0.013 | 7.7 ± 5.5 | 40792 | 6 ± 1 |
+| dist__mlp_128_64 | 3 | 0.792 ± 0.002 | 0.804 ± 0.006 | 7.7 ± 2.1 | 36824 | 5 ± 1 |
+| xy__mlp_128_64 | 3 | 0.777 ± 0.007 | 0.817 ± 0.007 | 36.7 ± 9.6 | 15320 | 16 ± 7 |
 | canonical | 3 | 0.746 ± 0.003 | 0.789 ± 0.003 | 27.0 ± 2.6 | 15320 | 8 ± 0 |
 | mirror_aug | 3 | 0.696 ± 0.010 | 0.750 ± 0.008 | 31.0 ± 7.2 | 15320 | 14 ± 3 |
 | no_aug | 3 | 0.630 ± 0.028 | 0.708 ± 0.024 | 34.7 ± 0.6 | 15320 | 10 ± 1 |
 | base | 3 | 0.630 ± 0.023 | 0.710 ± 0.018 | 31.7 ± 4.0 | 15320 | 9 ± 1 |
 
-## Landmark MLP main (config chosen on validation; test part scored once)
+## Landmark main runs (test part scored once per run)
 
 | Config | Seeds | Val macro-F1 | Test acc | Test macro-F1 |
 |---|---|---|---|---|
+| xy_dist_ang__mlp_512_256__ens5 | 1 | 0.857 | 0.782 | 0.778 |
+| xy_dist_ang__mlp_512_256 | 3 | 0.850 ± 0.005 | 0.768 ± 0.021 | 0.769 ± 0.016 |
 | canonical | 3 | 0.746 ± 0.003 | 0.709 ± 0.004 | 0.664 ± 0.004 |
 
-CNN `wide` vs best baseline MLP 256-128 (hog): test macro-F1 0.971 ± 0.003 vs 0.911 ± 0.003 (difference +0.061); the difference exceeds the seed noise (difference > 2 x the larger seed std (heuristic, not a significance test)).
+CNN `wide_e30__ens5` vs best baseline MLP 256-128 (hog): test macro-F1 0.979 vs 0.911 ± 0.003 (difference +0.069); the difference exceeds the seed noise (difference > 2 x the larger seed std (heuristic, not a significance test)).
