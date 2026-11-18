@@ -12,6 +12,7 @@ export type EngineBundle = {
     start(video: HTMLVideoElement): Promise<void>;
     stop(): void;
     subscribe(cb: (e: RecognitionEvent) => void): () => void;
+    setTarget?(letter: string | null, cfg?: { holdMs?: number; threshold?: number; timeLimitMs?: number }): void;
     getPerf?(): PerfSnapshot;
     recordBenchmark?(durationS: number): Promise<Omit<PerfRecord, 'duration_s'> & { duration_s: number }>;
   };
