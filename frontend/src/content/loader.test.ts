@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import curriculum from './curriculum.json';
@@ -65,3 +65,39 @@ describe('loadCurriculum rejects inconsistent content', () => {
     bad((c) => { c.signs[0].media = [{ type: 'image', src: '/media/a.svg' }]; }, /schema/);
   });
 });
+
+describe('pictures of the hands (curriculum media)', () => {
+  const signs = loadCurriculum(curriculum, LABELS).signs;
+  const file = (src: string) => resolve(process.cwd(), 'public', src.replace(/^\//, ''));
+
+  it('gives every letter a picture, with its author and license', () => {
+    for (const s of signs) {
+      const image = s.media?.find((m) => m.type === 'image');
+      expect(image, s.code).toBeDefined();
+      expect(image?.license, s.code).toBe('Public domain');
+      expect(image?.attribution, s.code).toMatch(/wpclipart\.com/);
+    }
+  });
+
+  it('points only at files that exist in the app, one distinct file per letter', () => {
+    const srcs = signs.map((s) => s.media?.[0].src ?? '');
+    expect(new Set(srcs).size).toBe(signs.length);
+    for (const src of srcs) expect(existsSync(file(src)), src).toBe(true);
+  });
+
+  it('ships plain vector drawings: no script, no event handlers, no outside links', () => {
+    for (const s of signs) {
+      const text = readFileSync(file(s.media?.[0].src ?? ''), 'utf-8');
+      expect(text.trimStart().startsWith('<?xml') || text.trimStart().startsWith('<svg'), s.code).toBe(true);
+      expect(text, s.code).not.toMatch(/<script|\son\w+\s*=|javascript:|<foreignObject|<image\b/i);
+      expect(text.replace(/xmlns(:\w+)?="[^"]*"/g, ''), s.code).not.toMatch(/(?:href|src)\s*=\s*"https?:/i);
+    }
+  });
+
+  it('credits the source in the attribution file next to the pictures', () => {
+    const text = readFileSync(resolve(process.cwd(), 'public/media/letters/ATTRIBUTION.md'), 'utf-8');
+    expect(text).toMatch(/wpclipart\.com/);
+    expect(text).toMatch(/Public domain/);
+  });
+});
+
