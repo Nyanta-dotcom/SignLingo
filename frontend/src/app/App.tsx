@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router';
 import { AppShell } from '@/components/layout/AppShell';
-import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { Lab } from '@/features/lab/Lab';
+import { Settings } from '@/features/settings/Settings';
 import { Collect } from '@/features/collect/Collect';
 import { Practice } from '@/features/practice/Practice';
 import { vi } from '@/i18n/vi';
@@ -12,17 +12,6 @@ function Placeholder({ title }: { title: string }) {
     <section>
       <h1 className="text-3xl font-extrabold">{title}</h1>
       <p className="mt-2 text-text-muted">{vi.common.comingSoon}</p>
-    </section>
-  );
-}
-
-function Settings() {
-  const theme = useLearner((s) => s.settings.theme);
-  const update = useLearner((s) => s.updateSettings);
-  return (
-    <section className="flex flex-col gap-4">
-      <h1 className="text-3xl font-extrabold">{vi.nav.settings}</h1>
-      <ThemeToggle value={theme} onChange={(t) => update({ theme: t })} />
     </section>
   );
 }
