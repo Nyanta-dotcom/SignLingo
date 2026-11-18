@@ -61,6 +61,8 @@ export const vi = {
     toPractice: 'Luyện tự do',
     cardTitle: (l: string) => `Chữ ${l}`,
     cardText: 'Ở bước sau bạn sẽ làm dấu này trước camera.',
+    cardImageAlt: (l: string) => `Hình minh họa bàn tay làm chữ ${l}`,
+    cardImageCredit: (by: string, license: string) => `Hình: ${by} (${license})`,
     cardLetter: 'Chữ cái cần học',
     next: 'Tiếp tục',
     perform: 'Hãy ra dấu chữ',

@@ -47,4 +47,21 @@ describe('loadCurriculum rejects inconsistent content', () => {
     c.units[0].lessons[0].items.push({ order: 99, type: 'spell_word', word: 'cab' });
     expect(() => loadCurriculum(c, LABELS)).not.toThrow();
   });
+
+  const withMedia = (src: string) => (c: Record<string, any>) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+    c.signs[0].media = [{ type: 'image', src, license: 'Public domain', attribution: 'someone' }];
+  };
+  it('accepts a picture that is a file of this app', () => {
+    const c = copy();
+    withMedia('/media/letters/A.svg')(c);
+    expect(() => loadCurriculum(c, LABELS)).not.toThrow();
+  });
+  it('rejects pictures from other sites or outside /media/ (the app loads nothing external)', () => {
+    for (const src of ['https://example.com/a.svg', '//cdn.example.com/a.svg', '/other/a.svg', '/media/../secret.svg', 'media/a.svg']) {
+      bad(withMedia(src), /must be a file under \/media\//);
+    }
+  });
+  it('rejects a picture without its license and author (the schema requires both)', () => {
+    bad((c) => { c.signs[0].media = [{ type: 'image', src: '/media/a.svg' }]; }, /schema/);
+  });
 });

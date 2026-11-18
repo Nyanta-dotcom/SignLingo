@@ -25,6 +25,10 @@ export function loadCurriculum(raw: unknown, labels: readonly string[]): Curricu
   for (const s of c.signs) {
     if (signs.has(s.code)) fail(`duplicate sign ${s.code}`);
     signs.set(s.code, s);
+    for (const m of s.media ?? []) {
+      // The app never loads anything from another site (privacy, CSP): pictures must be files of this app.
+      if (!/^\/media\/[\w./-]+$/.test(m.src) || m.src.includes('..')) fail(`media of ${s.code} must be a file under /media/, got "${m.src}"`);
+    }
     if (s.kind === 'static') {
       const letter = s.code.replace(/^LETTER_/, '');
       if (labels[s.model_class_index] !== letter) {
