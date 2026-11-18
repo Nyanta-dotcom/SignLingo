@@ -196,7 +196,7 @@ Phase 2 và phần còn lại của Phase 3 (Skill Tree, Lesson Player đầy đ
 | ☐ | P3-17 🚀 | Item `learn_card`, `perform_sign` (HoldRing, gợi ý, near-miss), `choose_sign` | `features/lesson/items/` | | Unit |
 | ☐ | P3-18 🚀 | Item `spell_word` (chữ lặp cần nhả tay) | như trên | AC-LRN-05 | Unit: "LL" |
 | ☐ | P3-19 🚀 | Màn kết quả (`CompleteResult`) + âm thanh (tắt được) + confetti (reduced-motion) | `features/lesson/` | | Unit |
-| ☐ | P3-20 🎓 | Free Practice (`/practice`) | `features/practice/` | Không trừ tim | Unit |
+| ◐ | P3-20 🎓 | Free Practice (`/practice`) | `features/practice/` | Không trừ tim | Unit · Màn `/practice` + `vision/letterTyper` (giữ chữ 1 s để gõ, nhả tay mới gõ lại cùng chữ nên "LL" chạy được, chịu được 1 khung nhiễu), `HoldRing`, `PredictionBars`, `useRecognition`, engine có `onFrame` để vẽ khung xương thẳng lên canvas. Test ✅ (8 + 4 + 9 + 1). Đã xem thật trên trình duyệt: màn đầu và trạng thái từ chối camera. CHƯA chạy với webcam thật (ô trình duyệt trong app chặn camera): chưa biết độ chính xác, FPS và hình khung xương thực tế. Chưa nối `recordBenchmark` vào UI (thuộc P3-22) |
 | ☐ | P3-21 🎓 | AI Lab Benchmark + Leakage (Recharts) từ `/data/experiments` | `features/lab/` | Không hardcode số | Unit: render từ JSON test |
 | ☐ | P3-22 🎓 | AI Lab ConfusionMatrix SVG + per-class F1 + Live Monitor (24 bars, FpsMeter, ghi & tải benchmark) | `features/lab/` | | Unit |
 | ☐ | P3-23 🚀 | Profile + Settings (theme, tay thuận, camera, âm, mục tiêu, tên; Xuất/Nhập/Xóa có xác nhận) | `features/profile/`, `features/settings/` | | Unit |

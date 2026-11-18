@@ -32,7 +32,7 @@ export function CameraFrame({
   state, stream = null, progress = 0, message, mirror = true, announcement = '', videoRef, canvasRef, onGrant, onRetry,
 }: Props) {
   const flip = mirror ? '-scale-x-100' : '';
-  const showVideo = state === 'tracking' || state === 'no_hand' || state === 'verified';
+  const showVideo = state === 'tracking' || state === 'no_hand' || state === 'verified' || stream !== null;
 
   useEffect(() => {
     if (!stream || typeof videoRef !== 'object' || !videoRef?.current) return;
@@ -52,7 +52,7 @@ export function CameraFrame({
           <canvas ref={canvasRef} width={640} height={480} className={`absolute inset-0 h-full w-full ${flip}`} />
         </>
       )}
-      <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-4 text-center">
+      <div className={`absolute inset-0 flex flex-col items-center justify-center gap-3 p-4 text-center ${state === 'loading' ? 'bg-surface/70' : ''}`}>
         {state === 'loading' && (
           <>
             <p className="font-extrabold">{vi.camera.loading}</p>

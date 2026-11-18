@@ -36,6 +36,8 @@ export type EngineDeps = {
   manifest: Manifest;
   templates: Record<string, ClassTemplate>;
   confusable: Record<string, string[]>;
+  /** Called with every detected frame (or null), unthrottled, for drawing straight onto a canvas. */
+  onFrame?: (frame: HandFrame | null) => void;
   scheduleFrame?: (cb: (nowMs: number) => Promise<void>, video: HTMLVideoElement) => () => void;
   wait?: (ms: number) => Promise<void>;
   now?: () => number;
@@ -92,6 +94,7 @@ export function createRecognitionEngine(deps: EngineDeps) {
     try {
       const frame = tracker.detect(video, nowMs);
       const mpMs = now() - t0;
+      deps.onFrame?.(frame);
       if (!frame) {
         noHandSince ??= nowMs;
         smoother.reset();

@@ -15,7 +15,7 @@ const probsFor = (label: string, p = 0.9) => Float32Array.from(LABELS.map((l) =>
 const flat = Array.from({ length: 15 }, () => 180);
 const templates = { C: { finger_angles: flat, finger_angles_std: flat.map(() => 5) } };
 
-function setup(over: { frame?: HandFrame | null; probs?: Float32Array; confusable?: Record<string, string[]> } = {}) {
+function setup(over: { frame?: HandFrame | null; probs?: Float32Array; confusable?: Record<string, string[]>; onFrame?: (f: HandFrame | null) => void } = {}) {
   let frame: HandFrame | null = 'frame' in over ? (over.frame ?? null) : HAND;
   let probs = over.probs ?? probsFor('C');
   let frameCb: ((nowMs: number) => Promise<void>) | null = null;
@@ -24,7 +24,7 @@ function setup(over: { frame?: HandFrame | null; probs?: Float32Array; confusabl
   const classifier = { load: vi.fn(async () => {}), predict: vi.fn(async () => ({ probs, latencyMs: 1 })), labels: LABELS, backend: 'wasm' as const };
   const engine = createRecognitionEngine({
     tracker, classifier, manifest: { model_id: 'm', version: '1', labels: LABELS, recommended: REC },
-    templates, confusable: over.confusable ?? {},
+    templates, confusable: over.confusable ?? {}, onFrame: over.onFrame,
     scheduleFrame: (cb) => { frameCb = cb; return () => { frameCb = null; }; },
     wait: () => new Promise<void>((r) => waiters.push(r)),
   });
@@ -129,6 +129,17 @@ describe('RecognitionEngine', () => {
     s.engine.stop();
     expect(s.running()).toBe(false);
     expect(s.tracker.close).toHaveBeenCalled();
+  });
+
+  it('calls onFrame for every frame (not throttled) so the canvas can be drawn without React', async () => {
+    const seen: Array<HandFrame | null> = [];
+    const s = setup({ onFrame: (f) => seen.push(f) });
+    await s.engine.start(s.video);
+    for (let t = 0; t < 100; t += 10) await s.tick(t);
+    expect(seen).toHaveLength(10);
+    s.setFrame(null);
+    await s.tick(200);
+    expect(seen.at(-1)).toBeNull();
   });
 
   it('subscribe returns an unsubscribe function', async () => {

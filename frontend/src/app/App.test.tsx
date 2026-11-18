@@ -22,7 +22,7 @@ describe('AppRoutes', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'Học' })).toBeInTheDocument();
   });
 
-  it.each([['/practice', 'Luyện'], ['/dictionary', 'Từ điển'], ['/lab', 'AI Lab'], ['/profile', 'Hồ sơ']])('%s has a page', (path, title) => {
+  it.each([['/practice', 'Luyện tự do'], ['/dictionary', 'Từ điển'], ['/lab', 'AI Lab'], ['/profile', 'Hồ sơ']])('%s has a page', (path, title) => {
     at(path);
     expect(screen.getByRole('heading', { level: 1, name: title })).toBeInTheDocument();
   });
