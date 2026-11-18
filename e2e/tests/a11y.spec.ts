@@ -2,7 +2,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { test, expect } from '@playwright/test';
 
 // P4-08 (AC-UI-02): no WCAG 2 A/AA violations on the main screens, in both themes.
-const SCREENS = ['/learn', '/practice', '/lab', '/profile', '/settings', '/collect'];
+const SCREENS = ['/learn', '/practice', '/lab', '/profile', '/settings', '/collect', '/lesson/U1L1'];
 
 for (const theme of ['light', 'dark'] as const) {
   for (const path of ['/', ...SCREENS]) {

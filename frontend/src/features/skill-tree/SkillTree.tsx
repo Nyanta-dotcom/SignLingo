@@ -15,7 +15,7 @@ import { SkillNode } from './SkillNode';
 
 export type LearnData = { curriculum: Curriculum; model: { model_id: string; version: string } };
 
-async function loadLearnData(): Promise<LearnData> {
+export async function loadLearnData(): Promise<LearnData> {
   const manifest = await loadActiveManifest('static_letters');
   return { curriculum: loadCurriculum(curriculumJson, manifest.labels), model: { model_id: manifest.model_id, version: manifest.version } };
 }

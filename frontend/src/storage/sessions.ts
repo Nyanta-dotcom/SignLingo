@@ -1,6 +1,7 @@
 /** Sessions: start, record attempts, complete (idempotent), abandon (docs/03 §3.3, AC-GAM-01). */
 
 import { loseHeart } from '@/game/hearts';
+import { lessonPassed } from '@/game/lessonFlow';
 import { applyDailyXp } from '@/game/streak';
 import { computeXp } from '@/game/xp';
 import type { LearnerStore } from './learnerStore';
@@ -68,6 +69,10 @@ export function createSessions(learner: LearnerStore, { heartThreshold }: Option
       const total = existing.attempts.length;
       const accuracy = total ? existing.attempts.filter((a) => a.result === 'correct').length / total : 0;
       const isLesson = existing.mode === 'lesson' && existing.lesson_code !== null;
+      // A lesson only counts when enough of it was answered correctly; otherwise there is no XP, progress or streak.
+      if (isLesson && !lessonPassed(accuracy)) {
+        return update(id, (s) => ({ ...s, status: 'abandoned', completed_at: now.toISOString(), accuracy_pct: Math.round(accuracy * 100), xp_awarded: 0 }));
+      }
       const xp = isLesson ? computeXp({ xpReward, accuracy, heartsLost: existing.hearts_lost }).total : 0;
       if (isLesson) {
         const code = existing.lesson_code as string;

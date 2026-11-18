@@ -31,6 +31,16 @@ describe('Settings', () => {
     expect(screen.getByRole('radio', { name: '30 XP' })).toBeChecked();
   });
 
+  it('turns the lesson sounds off and on', () => {
+    render(<Settings />);
+    const box = screen.getByRole('checkbox', { name: /Bật âm báo/ });
+    expect(box).toBeChecked();
+    fireEvent.click(box);
+    expect(store.getState().settings.sound_on).toBe(false);
+    fireEvent.click(box);
+    expect(store.getState().settings.sound_on).toBe(true);
+  });
+
   it('saves the display name when the field loses focus', () => {
     render(<Settings />);
     const input = screen.getByLabelText(/Tên hiển thị/);

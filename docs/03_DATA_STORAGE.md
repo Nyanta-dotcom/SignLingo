@@ -134,6 +134,7 @@ type PerfRecord = {
 | Mục tiêu ngày | `settings.daily_xp_goal` (mặc định 20) |
 | Hearts | Tối đa 5; mất 1 khi `timed_out`/`skipped` trong mode `lesson` **và** độ tin cậy cuối cùng của mô hình ≥ ngưỡng (tránh phạt người học vì mô hình phân vân); hồi 1 tim / 30 phút, tính lười khi đọc |
 | Streak | Ngày (theo múi giờ máy) có `xp_earned ≥ goal` lần đầu → +1; ngày gần nhất đạt mục tiêu < hôm qua → streak về 0 khi đọc |
+| Hoàn thành bài | Chỉ khi ≥ 50% mục trả lời đúng (nhóm đã chốt). Dưới mức đó: không XP, không tiến độ, không streak; phiên ghi `status = 'abandoned'` kèm `accuracy_pct`, các lượt làm vẫn tính vào độ thành thạo từng chữ |
 | Idempotent | `completeSession(id)` gọi lại không cộng XP lần 2 |
 
 > Vì không có server, XP có thể bị người dùng sửa bằng DevTools. Chấp nhận được với dự án học tập; ghi trong phần Giới hạn của báo cáo.

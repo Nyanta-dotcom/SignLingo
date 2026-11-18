@@ -74,6 +74,14 @@ export function Settings() {
       </Card>
 
       <Card className="flex flex-col gap-3">
+        <h2 className="font-extrabold">{t.sound}</h2>
+        <label className="flex min-h-11 items-center gap-3 font-bold">
+          <input type="checkbox" className="size-5" checked={settings.sound_on} onChange={(e) => update({ sound_on: e.target.checked })} />
+          {t.soundOn}
+        </label>
+      </Card>
+
+      <Card className="flex flex-col gap-3">
         <h2 className="font-extrabold">{t.goal}</h2>
         <div role="radiogroup" aria-label={t.goal} className="flex flex-wrap gap-2">
           {GOALS.map((g) => (
