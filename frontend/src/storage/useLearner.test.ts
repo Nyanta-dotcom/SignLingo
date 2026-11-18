@@ -52,4 +52,16 @@ describe('useLearner store', () => {
     expect(useLearner.getState().benchmarks.map((b) => b.id)).toEqual(['b', 'a']);
     expect(make().getState().benchmarks.map((b) => b.id)).toEqual(['b', 'a']);
   });
+
+  it('stores an optional display name (trimmed, capped at 30) and clears it when empty', () => {
+    const useLearner = make();
+    expect(useLearner.getState().profile.display_name).toBeUndefined();
+    useLearner.getState().setDisplayName('  Lan  ');
+    expect(useLearner.getState().profile.display_name).toBe('Lan');
+    expect(make().getState().profile.display_name).toBe('Lan');
+    useLearner.getState().setDisplayName('x'.repeat(50));
+    expect(useLearner.getState().profile.display_name).toHaveLength(30);
+    useLearner.getState().setDisplayName('   ');
+    expect(useLearner.getState().profile.display_name).toBeUndefined();
+  });
 });

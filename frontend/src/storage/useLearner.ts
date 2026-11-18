@@ -6,11 +6,12 @@ import { createBenchmarks } from './benchmarks';
 import { createKV, type KV } from './kv';
 import { createLearnerStore } from './learnerStore';
 import { createSessions } from './sessions';
-import type { Attempt, DailyActivity, LessonProgress, ModelRef, SessionRecord, PerfRecord, Settings, SignStat, Stats } from './types';
+import type { Attempt, DailyActivity, LessonProgress, ModelRef, SessionRecord, PerfRecord, Profile, Settings, SignStat, Stats } from './types';
 
 type Options = { now?: () => Date; heartThreshold: number; appVersion: string };
 
 type State = {
+  profile: Profile;
   settings: Settings;
   stats: Stats;
   progress: Record<string, LessonProgress>;
@@ -21,6 +22,7 @@ type State = {
   saveBenchmark(record: PerfRecord): boolean;
   refresh(): void;
   updateSettings(patch: Partial<Settings>): void;
+  setDisplayName(name: string): void;
   startSession(input: { mode: SessionRecord['mode']; lesson_code: string | null; model: ModelRef }): SessionRecord;
   recordAttempt(id: string, attempt: Attempt): SessionRecord;
   completeSession(id: string, opts: { xpReward?: number }): SessionRecord;
@@ -34,7 +36,7 @@ export function createLearnerState(kv: KV, { now = () => new Date(), heartThresh
   const backup = createBackup(kv, { appVersion, now });
   const bench = createBenchmarks(kv);
   const snapshot = () => ({
-    settings: learner.getSettings(), stats: learner.getStats(), progress: learner.getProgress(),
+    profile: learner.getProfile(), settings: learner.getSettings(), stats: learner.getStats(), progress: learner.getProgress(),
     daily: learner.getDaily(), signStats: learner.getSignStats(), storageAvailable: kv.available,
     benchmarks: bench.listBenchmarks(),
   });
@@ -51,6 +53,7 @@ export function createLearnerState(kv: KV, { now = () => new Date(), heartThresh
       saveBenchmark: (record) => after(bench.saveBenchmark(record)),
       refresh: () => set(snapshot()),
       updateSettings: (patch) => after(void learner.updateSettings(patch)),
+      setDisplayName: (name) => after(void learner.updateProfile({ display_name: name })),
       startSession: (input) => after(sessions.startSession(input)),
       recordAttempt: (id, attempt) => after(sessions.recordAttempt(id, attempt)),
       completeSession: (id, opts) => after(sessions.completeSession(id, opts)),

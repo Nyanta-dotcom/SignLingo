@@ -37,6 +37,14 @@ export function createLearnerStore(kv: KV, clock: Clock = () => new Date()) {
     now: clock,
     timezone: () => getProfile().timezone,
     getProfile,
+    updateProfile(patch: Pick<Profile, 'display_name'>): Profile {
+      const name = patch.display_name?.trim();
+      const { display_name: _old, ...rest } = getProfile();
+      void _old;
+      const next: Profile = name ? { ...rest, display_name: name.slice(0, 30) } : rest;
+      kv.set('profile', next);
+      return next;
+    },
     getSettings: (): Settings => ({ ...DEFAULT_SETTINGS, ...kv.get<Partial<Settings>>('settings', {}) }),
     updateSettings(patch: Partial<Settings>): Settings {
       const next = { ...this.getSettings(), ...patch };
