@@ -22,7 +22,7 @@ Commit viết theo dạng `loại(phạm vi): mô tả ngắn`, ví dụ `feat(f
 |---|---|
 | Frontend | `pnpm lint`, `pnpm typecheck`, `pnpm test --run` |
 | ML | `python -m pytest -q`, `ruff check .` |
-| E2E | `pnpm playwright test` (trong `e2e/`, cần Chrome) |
+| E2E | `pnpm exec playwright test` (trong `e2e/`; đặt `PW_CHANNEL=chrome` để dùng Chrome cài sẵn, và `E2E_PORT=5199` nếu cổng 5173 đang có server khác) |
 
 Không báo "xong" khi test còn đỏ.
 

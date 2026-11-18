@@ -46,5 +46,11 @@ describe('tokens match docs/05 §2', () => {
     expect(contrast(dark['danger-on-bg'], dark['danger-bg'])).toBeGreaterThanOrEqual(4.5);
     expect(contrast(light['danger-fg'], light['surface'])).toBeGreaterThanOrEqual(4.5);
     expect(contrast(light['danger-on-bg'], light['danger-bg'])).toBeGreaterThanOrEqual(4.5);
+    for (const t of [light, dark]) {
+      for (const surface of ['bg', 'surface', 'surface-2']) {
+        expect(contrast(t['brand-fg'], t[surface]), `brand-fg on ${surface}`).toBeGreaterThanOrEqual(4.5);
+      }
+    }
+    expect(contrast(light['brand-fg'], '#eef5ff')).toBeGreaterThanOrEqual(4.5);
   });
 });
