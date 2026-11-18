@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { benchmarkRows, bestBaseline, configId, leakageSummary, parseRuns, stat, type LeakageRun } from './selectors';
+import { benchmarkRows, bestBaseline, configId, inspectableRuns, leakageSummary, parseRuns, stat, weakestFirst, type LeakageRun } from './selectors';
 
 const index = JSON.parse(readFileSync(resolve(process.cwd(), 'public/data/experiments/index.json'), 'utf-8'));
 const runs = parseRuns(index.runs);
@@ -72,5 +72,16 @@ describe('leakageSummary', () => {
     const g = leakageSummary(index.leakage_study);
     const gap = (s: string) => g.find((x) => x.split === s)?.gap.mean ?? NaN;
     expect(gap('random')).toBeGreaterThan(gap('group_ward70'));
+  });
+});
+
+describe('error analysis selectors', () => {
+  it('lists the weakest letters first', () => {
+    expect(weakestFirst({ A: 1, B: 0.5, C: 0.8 }).map((x) => x.label)).toEqual(['B', 'C', 'A']);
+  });
+
+  it('offers main runs of a dataset with the ensemble first', () => {
+    const rs = parseRuns([run('m_s43', 'main', 0.9), run('m_ens', 'main', 0.95), run('b_s42', 'baseline', 0.5), run('x_s42', 'main', 0.9, { dataset: 'landmarks' })]);
+    expect(inspectableRuns(rs, 'sign_mnist').map((r) => r.run_id)).toEqual(['m_ens', 'm_s43']);
   });
 });

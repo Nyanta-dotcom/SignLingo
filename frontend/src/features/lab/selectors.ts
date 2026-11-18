@@ -81,3 +81,15 @@ export function leakageSummary(runs: LeakageRun[]): LeakageGroup[] {
     };
   });
 }
+
+/** Per-class F1 sorted from the weakest letter up, so the problem letters come first. */
+export function weakestFirst(f1: Record<string, number>): Array<{ label: string; f1: number }> {
+  return Object.entries(f1).map(([label, v]) => ({ label, f1: v })).sort((a, b) => a.f1 - b.f1 || a.label.localeCompare(b.label));
+}
+
+/** Main runs of a dataset that can be inspected, best candidate first (ensembles, then the rest). */
+export function inspectableRuns(runs: Run[], dataset: string): Run[] {
+  return runs
+    .filter((r) => r.kind === 'main' && r.dataset === dataset)
+    .sort((a, b) => Number(/_ens/.test(b.run_id)) - Number(/_ens/.test(a.run_id)) || a.run_id.localeCompare(b.run_id));
+}

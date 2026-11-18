@@ -1,15 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
-import { loadExperimentIndex, type ExperimentIndex } from '@/app/staticData';
+import { loadExperimentIndex, type ExperimentIndex, type ExperimentRun } from '@/app/staticData';
 import { vi } from '@/i18n/vi';
 import { Benchmark } from './Benchmark';
+import { ErrorAnalysis } from './ErrorAnalysis';
 import { Leakage } from './Leakage';
 import { parseRuns, type LeakageRun } from './selectors';
 
-type TabId = 'benchmark' | 'leakage';
-const TABS: TabId[] = ['benchmark', 'leakage'];
+type TabId = 'benchmark' | 'errors' | 'leakage';
+const TABS: TabId[] = ['benchmark', 'errors', 'leakage'];
 
 /** AI Lab (/lab, docs/05 §5.5): evidence for the graders, every number read from /data/experiments. */
-export function Lab({ load = loadExperimentIndex }: { load?: () => Promise<ExperimentIndex> }) {
+export function Lab({ load = loadExperimentIndex, loadRun }: { load?: () => Promise<ExperimentIndex>; loadRun?: (id: string) => Promise<ExperimentRun> }) {
   const [index, setIndex] = useState<ExperimentIndex | null>(null);
   const [failed, setFailed] = useState(false);
   const [tab, setTab] = useState<TabId>('benchmark');
@@ -45,6 +46,7 @@ export function Lab({ load = loadExperimentIndex }: { load?: () => Promise<Exper
           </div>
           <div role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`}>
             {tab === 'benchmark' && <Benchmark runs={runs} datasets={datasets} />}
+            {tab === 'errors' && <ErrorAnalysis runs={runs} datasets={datasets} loadRun={loadRun} />}
             {tab === 'leakage' && <Leakage runs={leakage} />}
           </div>
         </>

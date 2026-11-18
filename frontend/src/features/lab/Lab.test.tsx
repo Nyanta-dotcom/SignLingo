@@ -58,3 +58,30 @@ describe('Lab', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent('Không tải được kết quả thí nghiệm.');
   });
 });
+
+describe('Lab error analysis', () => {
+  const fromDisk = (id: string) =>
+    Promise.resolve(JSON.parse(readFileSync(resolve(process.cwd(), `public/data/experiments/${id}.json`), 'utf-8')));
+
+  it('draws the 24x24 matrix and lists the worst confusions of the selected model', async () => {
+    const loadRun = vi.fn(fromDisk);
+    render(<Lab load={load} loadRun={loadRun} />);
+    await screen.findByRole('table');
+    fireEvent.click(screen.getByRole('tab', { name: 'Phân tích lỗi' }));
+    const matrix = await screen.findByRole('img', { name: /Ma trận nhầm 24×24/ });
+    expect(matrix.querySelectorAll('rect')).toHaveLength(24 * 24);
+    expect(loadRun).toHaveBeenCalledWith('cnn_ens_wide_e30_n5');
+    const real = await fromDisk('cnn_ens_wide_e30_n5');
+    const top = real.top_confusions[0];
+    const table = screen.getByRole('table', { name: 'Cặp chữ bị nhầm nhiều nhất' });
+    expect(within(table).getByText(`${top.true} → ${top.pred}`)).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: /F1 của từng chữ/ })).toBeInTheDocument();
+  });
+
+  it('shows an alert when a run cannot be loaded', async () => {
+    render(<Lab load={load} loadRun={vi.fn().mockRejectedValue(new Error('x'))} />);
+    await screen.findByRole('table');
+    fireEvent.click(screen.getByRole('tab', { name: 'Phân tích lỗi' }));
+    expect(await screen.findByRole('alert')).toHaveTextContent('Không tải được kết quả của mô hình này.');
+  });
+});
