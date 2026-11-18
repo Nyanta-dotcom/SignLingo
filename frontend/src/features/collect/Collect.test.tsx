@@ -75,6 +75,10 @@ describe('Collect', () => {
       now = 3100 + i;
       await s.frame(hand());
     }
+    expect(screen.getByRole('group', { name: 'Xem lại chữ B' })).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: 'Khung xương đã ghi của chữ B' })).toBeInTheDocument();
+    expect(screen.getByText('Chưa ghi chữ nào')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Giữ' }));
     expect(screen.getByLabelText('40 khung')).toBeInTheDocument();
     expect(screen.getByText('Đã ghi 1/3 chữ, 40 khung')).toBeInTheDocument();
 
@@ -107,5 +111,50 @@ describe('Collect', () => {
     now = 5000;
     await s.frame(hand());
     expect(screen.getByText('Chưa ghi chữ nào')).toBeInTheDocument();
+  });
+
+  const record = async (s: ReturnType<typeof setup>, letterName: string) => {
+    fireEvent.click(screen.getByRole('button', { name: letterName }));
+    now = 0;
+    fireEvent.click(screen.getByRole('button', { name: `Ghi chữ ${letterName}` }));
+    now = 3000;
+    await s.frame(null);
+    for (let i = 0; i < 40; i += 1) {
+      now = 3100 + i;
+      await s.frame(hand());
+    }
+  };
+
+  it('lets the person discard a take, and nothing is kept', async () => {
+    const s = setup();
+    render(<Collect factory={s.factory} labels={labels} />);
+    fireEvent.change(screen.getByLabelText(/Mã người ra dấu/), { target: { value: 'S01' } });
+    await startCamera();
+    await record(s, 'A');
+    expect(screen.getByRole('button', { name: 'Ghi chữ A' })).toBeDisabled();
+    fireEvent.click(screen.getByRole('button', { name: 'Bỏ' }));
+    expect(screen.queryByRole('group', { name: 'Xem lại chữ A' })).toBeNull();
+    expect(screen.getByText('Chưa ghi chữ nào')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Ghi chữ A' })).toBeEnabled();
+  });
+
+  it('warns before leaving while kept takes are not downloaded, and stops once they are', async () => {
+    const s = setup();
+    render(<Collect factory={s.factory} labels={labels} />);
+    const leave = () => {
+      const e = new Event('beforeunload', { cancelable: true });
+      window.dispatchEvent(e);
+      return e.defaultPrevented;
+    };
+    expect(leave()).toBe(false);
+    fireEvent.change(screen.getByLabelText(/Mã người ra dấu/), { target: { value: 'S01' } });
+    await startCamera();
+    await record(s, 'C');
+    fireEvent.click(screen.getByRole('button', { name: 'Giữ' }));
+    expect(leave()).toBe(true);
+    vi.stubGlobal('URL', { createObjectURL: () => 'blob:x', revokeObjectURL: vi.fn() });
+    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+    fireEvent.click(screen.getByRole('button', { name: 'Tải file JSON' }));
+    expect(leave()).toBe(false);
   });
 });
