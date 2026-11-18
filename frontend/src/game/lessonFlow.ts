@@ -33,8 +33,8 @@ export type Outcome =
   | { result: 'skipped'; lastLabel: string | null; lastConfidence: number | null };
 
 /** The record stored for one finished item. */
-export function toAttempt(item: Item, outcome: Outcome, retries = 0): Attempt {
-  const expected = letterOf(item.sign_code ?? '');
+export function toAttempt(item: Item, outcome: Outcome, retries = 0, expectedLetter?: string): Attempt {
+  const expected = expectedLetter ?? letterOf(item.sign_code ?? '');
   const base = { item_order: item.order, position: null, expected, retries };
   if (outcome.result === 'correct') {
     return { ...base, predicted: outcome.label, confidence: outcome.confidence, result: 'correct', time_to_verify_ms: outcome.timeToVerifyMs, confused_with: null };

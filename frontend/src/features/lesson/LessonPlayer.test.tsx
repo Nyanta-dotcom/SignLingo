@@ -210,6 +210,65 @@ describe('LessonPlayer', () => {
     cleanup();
     open(d, 'L1');
     expect(await screen.findByText(/Bạn hết tim rồi/)).toBeInTheDocument();
+    expect(screen.getByText(/Tim tiếp theo hồi sau khoảng \d+ phút/)).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Luyện tự do' })).toHaveAttribute('href', '/practice');
+  });
+
+  describe('spelling a word', () => {
+    const word = (w: string): Item => ({ order: 1, type: 'spell_word', word: w });
+    const noHand: RecognitionEvent = { type: 'no_hand', sinceMs: 500 };
+
+    it('aims at one letter at a time, in order, and makes a repeated letter wait for a release (HELLO)', async () => {
+      const d = dataFor(lesson('L1', [word('hello')]));
+      const s = open(d, 'L1');
+      await startCamera(s);
+      const targets = () => s.engine.setTarget.mock.calls.map((c) => c[0]);
+      await waitFor(() => expect(targets()).toEqual(['H']));
+      expect(screen.getByRole('list', { name: 'Các chữ của từ HELLO' })).toBeInTheDocument();
+      expect(screen.getByLabelText('H: đang làm')).toBeInTheDocument();
+
+      await s.emit(verified('H'));
+      await waitFor(() => expect(targets()).toEqual(['H', 'E']));
+      await s.emit(verified('E'));
+      await waitFor(() => expect(targets()).toEqual(['H', 'E', 'L']));
+      await s.emit(verified('L'));
+      // the next letter is also L: do not aim at it while the same hand is still held
+      await waitFor(() => expect(targets()).toEqual(['H', 'E', 'L', null]));
+      await s.emit(prediction('L', 0, 0.95));
+      expect(targets()).toEqual(['H', 'E', 'L', null]);
+      await s.emit(noHand);
+      await waitFor(() => expect(targets()).toEqual(['H', 'E', 'L', null, 'L']));
+      expect(screen.getByLabelText('H: đã xong')).toBeInTheDocument();
+
+      await s.emit(verified('L'));
+      await waitFor(() => expect(targets().at(-1)).toBe('O'));
+      expect(screen.queryByRole('status')).toBeNull(); // still spelling: no feedback until the word is complete
+      await s.emit(verified('O'));
+      expect(screen.getByRole('status')).toHaveTextContent('Chính xác!');
+      const attempts = Object.values(store.getState().signStats);
+      expect(attempts.reduce((n, a) => n + a.correct, 0)).toBe(5); // one verified attempt per letter
+      fireEvent.click(screen.getByRole('button', { name: 'Tiếp tục' }));
+      expect(await screen.findByRole('heading', { name: 'Hoàn thành bài học!' })).toBeInTheDocument();
+      expect(store.getState().progress.L1.best_accuracy_pct).toBe(100);
+    });
+
+    it('a different sign (not only an empty frame) also counts as the release', async () => {
+      const d = dataFor(lesson('L1', [word('aa')]));
+      const s = open(d, 'L1');
+      await startCamera(s);
+      await waitFor(() => expect(s.engine.setTarget).toHaveBeenCalledWith('A', expect.any(Object)));
+      await s.emit(verified('A'));
+      await s.emit(prediction('B', 0, 0.9));
+      await waitFor(() => expect(s.engine.setTarget.mock.calls.map((c) => c[0])).toEqual(['A', null, 'A']));
+    });
+
+    it('ends the word as wrong when a letter times out, naming the word', async () => {
+      const d = dataFor(lesson('L1', [word('cab')]));
+      const s = open(d, 'L1');
+      await startCamera(s);
+      await s.emit(verified('C'));
+      await s.emit(timedOut('A', 0.9));
+      expect(screen.getByRole('status')).toHaveTextContent('Chưa đúng. Hãy thử lại chữ CAB');
+    });
   });
 });

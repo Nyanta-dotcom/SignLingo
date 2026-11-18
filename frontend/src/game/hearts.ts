@@ -43,3 +43,10 @@ export function loseHeart<S extends HeartState>(
     lost: true,
   };
 }
+
+/** Milliseconds until the next heart comes back, or null when the bar is already full. */
+export function msToNextHeart(stats: HeartState, now: number): number | null {
+  const current = applyHeartRegen(stats, now);
+  if (current.hearts >= MAX_HEARTS) return null;
+  return Math.max(0, Date.parse(current.hearts_updated_at) + REGEN_MS - now);
+}

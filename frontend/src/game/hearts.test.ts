@@ -1,6 +1,6 @@
-﻿import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import type { Stats } from '@/storage/types';
-import { applyHeartRegen, loseHeart, MAX_HEARTS, REGEN_MS } from './hearts';
+import { applyHeartRegen, loseHeart, MAX_HEARTS, msToNextHeart, REGEN_MS } from './hearts';
 
 type HeartState = Pick<Stats, 'hearts' | 'hearts_updated_at'>;
 const T0 = Date.parse('2026-03-01T10:00:00Z');
@@ -64,3 +64,14 @@ describe('loseHeart', () => {
   });
 });
 
+
+describe('msToNextHeart', () => {
+  it('counts down to the next heart and is null when the bar is full', () => {
+    expect(msToNextHeart(state(3), T0)).toBe(REGEN_MS);
+    expect(msToNextHeart(state(3), T0 + 10 * 60_000)).toBe(REGEN_MS - 10 * 60_000);
+    expect(msToNextHeart(state(MAX_HEARTS), T0)).toBeNull();
+  });
+  it('rolls over after a heart came back in the meantime', () => {
+    expect(msToNextHeart(state(0), T0 + REGEN_MS + 5 * 60_000)).toBe(REGEN_MS - 5 * 60_000);
+  });
+});

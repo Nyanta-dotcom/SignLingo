@@ -30,14 +30,18 @@ export function useLessonRun(lesson: Lesson, model: { model_id: string; version:
     if (session.current?.open) abandonSession(session.current.id);
   }, [abandonSession]);
 
-  /** Records the outcome of the current item and shows feedback (or ends the lesson when out of hearts). */
-  function answer(outcome: Outcome) {
+  /**
+   * Records the outcome of the current item and shows feedback (or ends the lesson when out of hearts).
+   * For a spelled word, `expected` is the letter attempted, `shown` what the feedback names (the word),
+   * and `more` keeps the item open after a verified letter.
+   */
+  function answer(outcome: Outcome, opts: { expected?: string; shown?: string; more?: boolean } = {}) {
     const item = items[index];
     session.current ??= {
       id: startSession({ mode: 'lesson', lesson_code: lesson.code, model }).id, open: true, streakFrom: streak, heartsLost: 0,
     };
     const run = session.current;
-    const attempt = toAttempt(item, outcome);
+    const attempt = toAttempt(item, outcome, 0, opts.expected);
     const record = recordAttempt(run.id, attempt);
     const heartLost = record.hearts_lost > run.heartsLost;
     run.heartsLost = record.hearts_lost;
@@ -46,8 +50,9 @@ export function useLessonRun(lesson: Lesson, model: { model_id: string; version:
       setPhase('no_hearts');
       return;
     }
+    if (opts.more) return;
     const kind = outcome.result === 'correct' ? 'correct' : outcome.result === 'timed_out' ? 'wrong' : 'skipped';
-    setFeedback({ kind, letter: attempt.expected, heartLost });
+    setFeedback({ kind, letter: opts.shown ?? attempt.expected, heartLost });
     setPhase('feedback');
   }
 
