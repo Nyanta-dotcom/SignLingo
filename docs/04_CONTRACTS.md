@@ -130,8 +130,8 @@ export interface HandTracker {                  // vision/landmarker.ts
 }
 
 export interface Classifier {                   // vision/classifier.ts
-  load(manifest: ModelManifest, modelUrl: string): Promise<void>; // kiểm sha256; webgpu → wasm
-  predict(features: Float32Array): { probs: Float32Array; latencyMs: number };
+  load(manifest: ModelManifest, modelUrl: string): Promise<void>; // kiểm sha256; wasm → webgpu (đo thật: WASM nhanh hơn với MLP nhỏ)
+  predict(features: Float32Array): Promise<{ probs: Float32Array; latencyMs: number }>; // async: onnxruntime-web run() trả Promise
   readonly labels: string[];
   readonly backend: 'webgpu' | 'wasm';
 }

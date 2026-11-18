@@ -62,7 +62,7 @@ flowchart LR
 |---|---|---|---|
 | ML ngôn ngữ | **Python 3.11** | Hệ sinh thái ML, yêu cầu môn | — |
 | ML framework | **PyTorch 2.x** (CNN, Landmark-MLP, Sequence model) + **scikit-learn** (baseline, HOG via scikit-image) | Export ONNX chuẩn | TensorFlow.js training (khó tái lập, khó so sánh với sklearn) |
-| Định dạng mô hình web | **ONNX** (opset 17) chạy bằng **onnxruntime-web** (WebGPU → WASM SIMD fallback) | 1 định dạng cho cả CNN & MLP; quantize int8 được | TF.js (phải convert 2 bước) |
+| Định dạng mô hình web | **ONNX** (opset 17) chạy bằng **onnxruntime-web** (ưu tiên WASM, WebGPU dự phòng: đo thật trên máy dev, WASM p50 0,78 ms so với WebGPU 6,4 ms cho MLP này) | 1 định dạng cho cả CNN & MLP; quantize int8 được | TF.js (phải convert 2 bước) |
 | Quản lý môi trường ML | **uv** + `pyproject.toml`, khóa `uv.lock` (tạm thời đang dùng `venv` + `pip` vì máy chưa cài uv) | Nhanh, tái lập | conda (nặng) |
 | Thí nghiệm | Config YAML + log JSON trong `reports/experiments/` (commit vào git) | Nhẹ, người chấm đọc được, AI Lab đọc trực tiếp | MLflow (thừa cho quy mô đồ án) |
 | Hand tracking | **`@mediapipe/tasks-vision` HandLandmarker** (runningMode `VIDEO`, delegate `GPU`), tự host | API hiện hành, hỗ trợ GPU delegate và chế độ VIDEO; tốc độ thực tế **sẽ được đo** ở Phase 4, chưa có số liệu | Legacy MediaPipe Hands |
