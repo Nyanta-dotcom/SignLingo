@@ -41,7 +41,7 @@ export function AppShell({ stats, banner }: { stats: Stats; banner?: ReactNode }
         {vi.nav.skip}
       </a>
       <nav aria-label={vi.nav.sidebar} className="hidden border-r-2 border-border bg-surface p-4 md:block">
-        <p className="mb-6 px-4 text-2xl font-extrabold text-brand-600">{vi.appName}</p>
+        <p className="mb-6 px-4 text-2xl font-extrabold text-brand-fg">{vi.appName}</p>
         <NavList vertical />
       </nav>
       <div className="flex min-h-dvh flex-col pb-20 md:pb-0">

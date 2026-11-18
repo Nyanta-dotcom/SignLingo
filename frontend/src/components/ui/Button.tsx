@@ -4,10 +4,10 @@ import { vi } from '@/i18n/vi';
 
 const VARIANTS = {
   primary: 'bg-brand-600 text-text-on-brand shadow-[0_4px_0_var(--brand-700)]',
-  secondary: 'bg-surface text-brand-600 border-2 border-border shadow-[0_4px_0_var(--border)]',
+  secondary: 'bg-surface text-brand-fg border-2 border-border shadow-[0_4px_0_var(--border)]',
   success: 'bg-success-fg text-bg shadow-[0_4px_0_var(--border)]',
   danger: 'bg-danger-fg text-bg shadow-[0_4px_0_var(--border)]',
-  ghost: 'bg-transparent text-brand-600 shadow-none active:translate-y-0',
+  ghost: 'bg-transparent text-brand-fg shadow-none active:translate-y-0',
 } as const;
 
 const SIZES = { sm: 'min-h-11 px-4 text-sm', md: 'min-h-12 px-6 text-base', lg: 'min-h-14 px-8 text-lg' } as const;

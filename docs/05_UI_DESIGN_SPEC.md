@@ -45,6 +45,7 @@
 | `danger-fg` | `#DC2626` | `#F87171` | Sai, mất tim, ngón lệch |
 | `danger-bg` | `#FEE2E2` | `#2A1215` | Banner sai |
 | `danger-on-bg` | `#B91C1C` | `#F87171` | Chữ trên `danger-bg` (đo thật: `#DC2626` trên `#FEE2E2` chỉ đạt 3,95:1 < 4,5:1) |
+| `brand-fg` | `#1557C0` | `#7CB4FF` | Chữ/liên kết màu xanh trên nền (đo thật bằng axe: `brand-600` chỉ đạt 4,42:1 trên `brand-50` và 4,0:1 trên nền tối). `brand-600` chỉ dùng làm nền nút |
 | `warning-fg` | `#B45309` | `#FBBF24` | "Gần đúng", độ tin cậy thấp |
 | `streak` | `#F59E0B` | `#FBBF24` | Icon ngọn lửa (chỉ icon, không làm nền chữ) |
 | `xp` | `#EAB308` | `#FACC15` | Icon/chip XP |

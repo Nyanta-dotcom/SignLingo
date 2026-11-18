@@ -43,7 +43,7 @@ export function Profile({ labels: given, now = () => new Date() }: { labels?: st
         </div>
         <div>
           <p className="text-2xl font-extrabold">{name ?? t.anonymous}</p>
-          <Link to="/settings" className="font-bold text-brand-600 underline">{vi.nav.settings}</Link>
+          <Link to="/settings" className="font-bold text-brand-fg underline">{vi.nav.settings}</Link>
         </div>
       </div>
 

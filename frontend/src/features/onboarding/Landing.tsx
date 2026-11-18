@@ -14,7 +14,7 @@ export function Landing({ onStart }: { onStart: () => void }) {
     <div className="min-h-dvh bg-bg text-text">
       <main className="mx-auto flex max-w-3xl flex-col items-center gap-8 px-4 py-12 text-center">
         <div className="self-end"><ThemeToggle value={theme} onChange={(next) => update({ theme: next })} /></div>
-        <h1 className="text-5xl font-extrabold text-brand-600">
+        <h1 className="text-5xl font-extrabold text-brand-fg">
           <span className="sr-only">{t.hero}: </span>{vi.appName}
         </h1>
         <p className="max-w-xl text-xl text-text-muted">{t.tagline}</p>
@@ -33,7 +33,7 @@ export function Landing({ onStart }: { onStart: () => void }) {
         <div className="flex flex-col items-center gap-3">
           <Button size="lg" onClick={onStart}>{t.start}</Button>
           <p className="text-sm text-text-muted">{t.cameraNote}</p>
-          <Link to="/lab" className="font-bold text-brand-600 underline">{t.lab}</Link>
+          <Link to="/lab" className="font-bold text-brand-fg underline">{t.lab}</Link>
         </div>
       </main>
     </div>
