@@ -43,7 +43,7 @@ Phase 2 và phần còn lại của Phase 3 (Skill Tree, Lesson Player đầy đ
 | ☐/☑ | ID | Task | Files | Guide | Test |
 |---|---|---|---|---|---|
 | ☑ | P0-01 🎓 | Git init, `.gitignore`, `.editorconfig`, `README.md` khung | gốc | — | — |
-| ☐ | P0-01b | `LICENSE` | gốc | **Chờ người dùng chọn loại giấy phép** | — |
+| ☑ | P0-01b | `LICENSE` | gốc | MIT, chủ bản quyền "SignLingo AI contributors" (đổi tên nếu nhóm muốn) | — |
 | ☑ | P0-02 🎓 | `CLAUDE.md` gốc + `ml/`, `frontend/` + `.claude/settings.json` (permissions) | theo 06 §2 | Đã đồng bộ v0.2 | — |
 | ☑ | P0-03 🎓 | Scaffold `ml/` (pyproject, ruff, pytest, `config.py` seed 42 + 24 nhãn) | `ml/` | Tạm dùng venv + pip | Unit: 3 test config ✅ |
 | ~~P0-04~~ | — | ~~Scaffold backend~~ | — | **Bỏ (v0.2)**, đã xóa thư mục | — |
