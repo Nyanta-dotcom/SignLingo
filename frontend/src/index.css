@@ -1,3 +1,12 @@
 @import 'tailwindcss';
 @import '@fontsource-variable/nunito';
 @import './styles/tokens.css';
+
+@keyframes confetti-fall {
+  from { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+  to { transform: translateY(160px) rotate(360deg); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .confetti-piece { animation: confetti-fall 1.6s ease-in forwards; }
+}

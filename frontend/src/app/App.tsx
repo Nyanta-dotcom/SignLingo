@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes, useNavigate } from 'react-router';
 import { AppShell } from '@/components/layout/AppShell';
+import { LessonPlayer } from '@/features/lesson/LessonPlayer';
 import { Banners } from '@/features/onboarding/Banners';
 import { Landing } from '@/features/onboarding/Landing';
 import { Lab } from '@/features/lab/Lab';
@@ -38,9 +39,9 @@ export function AppRoutes() {
   return (
     <Routes>
       <Route index element={<Home />} />
+      <Route path="lesson/:code" element={<LessonPlayer />} />
       <Route element={<ConnectedShell />}>
         <Route path="learn" element={<SkillTree />} />
-        <Route path="lesson/:code" element={<Placeholder title={vi.learn.lessonSoon} />} />
         <Route path="practice" element={<Practice />} />
         <Route path="collect" element={<Collect />} />
         <Route path="dictionary" element={<Placeholder title={vi.nav.dictionary} />} />

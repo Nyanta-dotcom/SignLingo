@@ -83,3 +83,29 @@ test('blocked storage shows a warning and the app keeps working', async ({ page 
   await expect(page.getByRole('radio', { name: '30 XP' })).toBeChecked();
   expect(errors).toEqual([]);
 });
+
+test('finishing a lesson saves XP and opens the next one, and it all survives a reload (AC-GAM-01)', async ({ page }) => {
+  await page.addInitScript(() => localStorage.getItem('signlingo:v1:onboarded') ?? localStorage.setItem('signlingo:v1:onboarded', 'true'));
+  await page.goto('/learn');
+  await page.getByRole('button', { name: /^Bài 1: A B C D: sẵn sàng$/ }).click();
+  await page.getByRole('link', { name: 'Bắt đầu' }).click();
+  await expect(page).toHaveURL(/\/lesson\/U1L1$/);
+
+  // Each letter is a card followed by a sign to perform; skipping the signs is enough to walk the whole lesson.
+  for (let i = 0; i < 4; i += 1) {
+    await page.getByRole('button', { name: 'Tiếp tục' }).click();
+    await page.getByRole('button', { name: 'Bỏ qua' }).click();
+    await page.getByRole('button', { name: 'Tiếp tục' }).click();
+  }
+  await expect(page.getByRole('heading', { name: 'Hoàn thành bài học!' })).toBeVisible();
+  await page.getByRole('button', { name: 'Tiếp tục' }).last().click();
+  await expect(page).toHaveURL(/\/learn$/);
+  await expect(page.getByRole('button', { name: /^Bài 1: A B C D: đã hoàn thành$/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: /^Bài 2: E F G H: sẵn sàng$/ })).toBeVisible();
+
+  await page.reload();
+  await expect(page.getByRole('button', { name: /^Bài 1: A B C D: đã hoàn thành$/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: /^Bài 2: E F G H: sẵn sàng$/ })).toBeVisible();
+  const stats = JSON.parse(await page.evaluate(() => localStorage.getItem('signlingo:v1:stats') ?? '{}'));
+  expect(stats.total_xp).toBeGreaterThan(0);
+});
