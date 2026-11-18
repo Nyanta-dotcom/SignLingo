@@ -219,9 +219,9 @@ Phase 2 và phần còn lại của Phase 3 (Skill Tree, Lesson Player đầy đ
 | ☐ | P4-04 🎓 [R] | Web Worker: HandLandmarker + ORT trong worker (ImageBitmap) | Interface K3 giữ nguyên | E2E vẫn xanh; số so sánh |
 | ☐ | P4-05 | Quantize int8; Macro-F1 giảm ≤ 0,005 | ml export | ML integration |
 | ☐ | P4-06 🎓 | **Perf E2E**: 60 s fake camera, đọc `getPerf()`, assert frame p50 ≤ 33 ms & p95 ≤ 40 ms (trên máy tham chiếu; CI chỉ cảnh báo) | | AC-PERF-01..03 |
-| ☐ | P4-07 🎓 | Privacy E2E: mọi request cùng origin; không payload ảnh/video/landmark | | AC-PRIV-01, C2, C6 |
-| ☐ | P4-08 | A11y: axe-core 6 màn × 2 theme; bàn phím luồng học | | AC-UI-02 |
-| ☐ | P4-09 | E2E dữ liệu: học 1 bài → reload → XP/streak còn; export → xóa → import; storage bị chặn → banner | | AC-GAM-01, AC-ACC-01/02 |
+| ☑ | P4-07 🎓 | Privacy E2E: mọi request cùng origin; không payload ảnh/video/landmark | | AC-PRIV-01, C2, C6 · E2E ✅ `e2e/tests/privacy.spec.ts`: một phiên thật với camera giả (luyện tập, AI Lab, thu mẫu, cài đặt, hồ sơ) chỉ có request cùng origin, chỉ GET/HEAD/OPTIONS, không có body; `vercel.json` có `connect-src 'self'` và `camera=(self)`. CSP chỉ có hiệu lực trên Vercel nên chưa kiểm trên Preview URL. |
+| ☑ | P4-08 | A11y: axe-core 6 màn × 2 theme; bàn phím luồng học | | AC-UI-02 · E2E ✅ `e2e/tests/a11y.spec.ts`: axe-core (WCAG 2 A/AA, 2.1 A/AA) 7 màn × 2 theme không còn vi phạm; kiểm bằng axe lộ ra lỗi tương phản thật của chữ xanh (4,42:1 và 4,0:1), đã sửa bằng token `brand-fg`. Luồng bàn phím mới thử ở dashboard (chưa có luồng học). |
+| ☑ | P4-09 | E2E dữ liệu: học 1 bài → reload → XP/streak còn; export → xóa → import; storage bị chặn → banner | | AC-GAM-01, AC-ACC-01/02 · E2E ✅ `e2e/tests/data.spec.ts`: landing một lần; cài đặt còn sau khi tải lại; xuất → xóa → nhập ra cùng dữ liệu (AC-ACC-01); file hỏng bị từ chối; storage bị chặn → banner và không lỗi (AC-ACC-02). **Chưa có phần "học 1 bài → XP/streak còn"** vì chưa có Lesson Player (AC-GAM-01). |
 | ☐ | P4-10 🎓 | README gốc + `reports/RESULTS.md` (RQ1–3, bảng, hình, link Vercel, giới hạn, hướng phát triển) | Bám Week 5 | AC-REPO-01..03 |
 | ☐ | P4-11 🎓 | Deploy Production Vercel; chạy lại E2E smoke + perf trên URL production | | URL hoạt động, header đúng |
 | ☐ | P4-12 🎓 | Kịch bản demo + dự phòng (mạng yếu → `pnpm preview` localhost; camera lỗi → video fake) | | Diễn tập |
