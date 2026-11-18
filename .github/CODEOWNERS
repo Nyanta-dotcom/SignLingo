@@ -1,0 +1,3 @@
+# Người được tự động yêu cầu xem xét cho mọi PR. Thêm dòng riêng cho từng thư mục khi nhóm chia việc, ví dụ:
+# /ml/        @ten-github-cua-ban
+* @Nyanta-dotcom
