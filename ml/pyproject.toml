@@ -6,7 +6,7 @@ requires-python = ">=3.11"
 dependencies = ["numpy", "pandas", "scikit-learn", "scikit-image", "scipy", "pyarrow", "jsonschema"]
 
 [project.optional-dependencies]
-dev = ["pytest", "ruff", "hypothesis"]
+dev = ["pytest", "ruff", "hypothesis", "matplotlib"]
 dl = ["torch", "onnx", "onnxruntime"]  # torch CPU build: pip install torch --index-url https://download.pytorch.org/whl/cpu
 
 [build-system]
