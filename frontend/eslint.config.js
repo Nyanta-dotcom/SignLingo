@@ -26,13 +26,31 @@ export default tseslint.config(
   {
     // C4: browser storage only through src/storage/*
     files: ['src/**'],
-    ignores: ['src/storage/**'],
+    ignores: ['src/storage/**', '**/*.test.*'],
     rules: {
       'no-restricted-globals': [
         'error',
         { name: 'localStorage', message: 'Use src/storage/ (docs/03 §3.1).' },
         { name: 'sessionStorage', message: 'Use src/storage/ (docs/03 §3.1).' },
         { name: 'indexedDB', message: 'Use src/storage/ (docs/03 §3.1).' },
+      ],
+    },
+  },
+  {
+    // C5: colours come from design tokens, never loose hex values in components
+    files: ['src/components/**', 'src/features/**', 'src/app/**'],
+    ignores: ['**/*.test.*'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: "Literal[value=/#[0-9a-fA-F]{6}/]",
+          message: 'Use a design token (docs/05 §2), not a hex colour.',
+        },
+        {
+          selector: 'TemplateElement[value.raw=/#[0-9a-fA-F]{6}/]',
+          message: 'Use a design token (docs/05 §2), not a hex colour.',
+        },
       ],
     },
   },

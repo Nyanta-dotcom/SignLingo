@@ -8,7 +8,7 @@ export function resolveTheme(setting: ThemeSetting, systemPrefersDark: boolean):
 }
 
 export function applyTheme(setting: ThemeSetting, root: HTMLElement = document.documentElement): 'light' | 'dark' {
-  const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+  const dark = globalThis.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
   const resolved = resolveTheme(setting, dark);
   root.setAttribute('data-theme', resolved);
   return resolved;

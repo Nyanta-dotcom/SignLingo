@@ -6,7 +6,7 @@ const OPTIONS: ThemeSetting[] = ['system', 'light', 'dark'];
 /** System / light / dark (docs/05 §3). Applies the theme immediately; persisting is the caller's job. */
 export function ThemeToggle({ value, onChange }: { value: ThemeSetting; onChange: (t: ThemeSetting) => void }) {
   return (
-    <div role="radiogroup" aria-label={vi.theme.label} className="inline-flex rounded-full border border-border bg-surface-2 p-1">
+    <div role="radiogroup" aria-label={vi.theme.label} className="inline-flex w-fit rounded-full border border-border bg-surface-2 p-1">
       {OPTIONS.map((option) => (
         <label
           key={option}

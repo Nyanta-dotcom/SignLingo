@@ -4,7 +4,11 @@
  */
 export const vi = {
   appName: 'SignLingo AI',
-  common: { loading: 'Đang tải…' },
+  common: { loading: 'Đang tải…', comingSoon: 'Màn hình này đang được xây dựng.', notFound: 'Không tìm thấy trang', startupError: 'Không tải được dữ liệu khởi động' },
   theme: { label: 'Giao diện', system: 'Hệ thống', light: 'Sáng', dark: 'Tối' },
+  nav: {
+    learn: 'Học', practice: 'Luyện', dictionary: 'Từ điển', lab: 'AI Lab', profile: 'Hồ sơ', settings: 'Cài đặt',
+    skip: 'Bỏ qua điều hướng', sidebar: 'Điều hướng chính', bottom: 'Điều hướng nhanh',
+  },
   stats: { streak: 'ngày liên tiếp', xp: 'điểm XP', hearts: 'tim' },
 } as const;
