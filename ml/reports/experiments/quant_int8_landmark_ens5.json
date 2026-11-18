@@ -1,0 +1,32 @@
+{
+  "run_id": "quant_int8_landmark_ens5",
+  "kind": "ablation",
+  "dataset": "landmarks",
+  "model_name": "Landmark ensemble int8 (dynamic)",
+  "feature_set": "xy_dist_ang",
+  "split_strategy": "session_holdout",
+  "hyperparams": {
+    "source": "landmark-mlp-ens5-1.0.0.onnx",
+    "weight_type": "QInt8",
+    "mode": "dynamic",
+    "fp32_val_macro_f1": 0.8570788990460952,
+    "int8_val_macro_f1": 0.8574847805864462,
+    "f1_drop": -0.0004058815403509275,
+    "max_allowed_drop": 0.005,
+    "accepted": true,
+    "argmax_agreement": 0.9917983895019385,
+    "max_abs_prob_diff": 0.09606698155403137,
+    "fp32_bytes": 5682065,
+    "int8_bytes": 1476212,
+    "fp32_latency_ms_median": 0.180200000613695,
+    "int8_latency_ms_median": 0.1922999981616158,
+    "n_val_rows": 6706
+  },
+  "metrics": {
+    "val_macro_f1": 0.8574847805864462,
+    "params": 0
+  },
+  "git_commit": "0fec256",
+  "seed": 42,
+  "run_at": "2026-11-18T12:34:40.120791+00:00"
+}
