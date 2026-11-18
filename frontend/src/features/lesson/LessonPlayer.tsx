@@ -226,7 +226,6 @@ function Run({ lesson, model, factory, onRetry }: { lesson: Lesson; model: Learn
         )}
 
         {isSign && (
-          <>
             <div className="flex flex-col items-center gap-4">
               <h1 className="text-xl font-extrabold">{speller ? t.spell : t.perform}</h1>
               {speller && (
@@ -252,7 +251,11 @@ function Run({ lesson, model, factory, onRetry }: { lesson: Lesson; model: Learn
               )}
               {performing && live && <div className="w-full max-w-sm"><PredictionBars items={live.topK.slice(0, 3)} caption={vi.practice.top3} /></div>}
             </div>
-            <div className="flex flex-col gap-3">
+        )}
+        {/* The camera stays mounted while it runs, also on cards: the engine holds this very <video>, so a fresh
+            element on the next sign would leave it watching a detached one and no hand would ever be seen. */}
+        {(isSign || running) && (
+            <div className={isSign ? 'flex flex-col gap-3' : 'sr-only'} aria-hidden={!isSign || undefined} inert={!isSign}>
               {running || camera.status === 'error' ? (
                 <CameraFrame
                   state={frameState} stream={camera.stream} progress={rec.progress} message={rec.error ?? camera.error?.message}
@@ -265,12 +268,13 @@ function Run({ lesson, model, factory, onRetry }: { lesson: Lesson; model: Learn
                   <Button size="lg" onClick={() => void camera.start()}>{t.cameraStartBtn}</Button>
                 </Card>
               )}
-              <div className="flex flex-wrap gap-3">
-                <Button variant="ghost" onClick={() => setHideSkeleton((h) => !h)}>{hideSkeleton ? t.showSkeleton : t.hideSkeleton}</Button>
-                <Button variant="secondary" disabled={!performing} onClick={skip}>{t.skip}</Button>
-              </div>
+              {isSign && (
+                <div className="flex flex-wrap gap-3">
+                  <Button variant="ghost" onClick={() => setHideSkeleton((h) => !h)}>{hideSkeleton ? t.showSkeleton : t.hideSkeleton}</Button>
+                  <Button variant="secondary" disabled={!performing} onClick={skip}>{t.skip}</Button>
+                </div>
+              )}
             </div>
-          </>
         )}
       </main>
 

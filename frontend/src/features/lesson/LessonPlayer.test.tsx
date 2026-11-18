@@ -125,6 +125,26 @@ describe('LessonPlayer', () => {
     expect(lessonStatus(d.curriculum.units[0].lessons[1], store.getState().progress)).toBe('locked');
   });
 
+  it('keeps the very same <video> across cards and signs, so the engine never watches a detached element', async () => {
+    const d = dataFor(lesson('L1', [item(1, 'perform_sign', 'A'), item(2, 'learn_card', 'B'), item(3, 'perform_sign', 'B'), item(4, 'learn_card', 'C'), item(5, 'perform_sign', 'C')]));
+    const s = open(d, 'L1');
+    await startCamera(s);
+    const video = document.querySelector('video');
+    expect(video).not.toBeNull();
+    for (const letter of ['A', 'B', 'C'] as const) {
+      await waitFor(() => expect(s.engine.setTarget).toHaveBeenCalledWith(letter, expect.any(Object)));
+      await s.emit(verified(letter));
+      fireEvent.click(screen.getByRole('button', { name: 'Tiếp tục' }));
+      if (letter !== 'C') {
+        expect(document.querySelectorAll('video')).toHaveLength(1);
+        expect(document.querySelector('video')).toBe(video); // the card in between did not replace it
+        fireEvent.click(await screen.findByRole('button', { name: 'Tiếp tục' }));
+      }
+    }
+    expect(s.engine.start).toHaveBeenCalledTimes(1);
+    expect(s.engine.start.mock.calls[0][0]).toBe(video);
+  });
+
   it('does not take a heart when the model was unsure (low confidence at the timeout)', async () => {
     const d = dataFor(lesson('L1', [item(1, 'perform_sign', 'A'), item(2, 'learn_card', 'B')]));
     const s = open(d, 'L1');
