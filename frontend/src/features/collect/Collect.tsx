@@ -10,6 +10,7 @@ import { downloadJson } from '@/lib/downloadJson';
 import { buildCaptureDocument, captureFileName, makeSample, SIGNER_RE, type CaptureSample } from '@/vision/captureDoc';
 import { createCaptureRecorder, type RecorderState } from '@/vision/captureRecorder';
 import type { HandFrame } from '@/vision/types';
+import { Replay } from './Replay';
 import { realEngineFactory, useRecognition, type EngineFactory } from '../practice/useRecognition';
 
 const FRAMES_PER_LETTER = 40;
@@ -29,6 +30,8 @@ export function Collect({ factory = realEngineFactory, labels: given }: { factor
   const [rec, setRec] = useState<RecorderState>({ phase: 'idle' });
   const [samples, setSamples] = useState<Record<string, CaptureSample>>({});
   const [hasHand, setHasHand] = useState(true);
+  const [pending, setPending] = useState<{ letter: string; frames: HandFrame[] } | null>(null);
+  const [saved, setSaved] = useState(true);
 
   useEffect(() => {
     colors.current = { ok: tokenColor('overlay-skeleton'), bad: tokenColor('overlay-joint-bad') };
@@ -42,7 +45,7 @@ export function Collect({ factory = realEngineFactory, labels: given }: { factor
     if (canvas && ctx) drawSkeleton(ctx, frame?.landmarks ?? null, { width: canvas.width, height: canvas.height, color: colors.current.ok, badColor: colors.current.bad });
     const s = recorder.current.push(frame, performance.now());
     if (s.phase === 'done') {
-      setSamples((all) => ({ ...all, [s.letter]: makeSample(s.letter, s.frames, new Date().toISOString(), labels) }));
+      setPending({ letter: s.letter, frames: s.frames });
       recorder.current.cancel();
       shown.current = '';
       setRec({ phase: 'idle' });
@@ -54,13 +57,29 @@ export function Collect({ factory = realEngineFactory, labels: given }: { factor
       setRec(s);
     }
     setHasHand(frame !== null);
-  }, [labels]);
+  }, []);
 
   const engine = useRecognition({ video: videoRef, stream: camera.stream, factory, onFrame });
 
   const running = camera.status === 'ready' || camera.status === 'loading';
   const signerOk = SIGNER_RE.test(signer);
-  const busy = rec.phase === 'countdown' || rec.phase === 'recording';
+  const recording = rec.phase === 'countdown' || rec.phase === 'recording';
+  const busy = recording || pending !== null;
+  useEffect(() => {
+    if (saved) return;
+    const warn = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = '';
+    };
+    window.addEventListener('beforeunload', warn);
+    return () => window.removeEventListener('beforeunload', warn);
+  }, [saved]);
+  const keep = () => {
+    if (!pending) return;
+    setSamples((all) => ({ ...all, [pending.letter]: makeSample(pending.letter, pending.frames, new Date().toISOString(), labels) }));
+    setSaved(false);
+    setPending(null);
+  };
   const frameState = useMemo((): CameraFrameState => {
     if (camera.status === 'error') return camera.error?.code === 'CAMERA_DENIED' ? 'no_permission' : 'error';
     if (engine.phase === 'error') return 'error';
@@ -126,10 +145,10 @@ export function Collect({ factory = realEngineFactory, labels: given }: { factor
             ))}
           </div>
           <div className="mt-4 flex flex-wrap items-center gap-3">
-            {busy ? (
+            {recording ? (
               <Button variant="secondary" onClick={cancel}>{vi.collect.cancel}</Button>
             ) : (
-              <Button disabled={!running || !letter || !signerOk} onClick={() => letter && begin(letter)}>
+              <Button disabled={!running || !letter || !signerOk || pending !== null} onClick={() => letter && begin(letter)}>
                 {letter ? (samples[letter] ? vi.collect.again(letter) : vi.collect.record(letter)) : vi.collect.pickLetter}
               </Button>
             )}
@@ -141,15 +160,27 @@ export function Collect({ factory = realEngineFactory, labels: given }: { factor
           </div>
         </Card>
 
+        {pending && (
+          <Card role="group" aria-label={vi.collect.review(pending.letter)} className="flex flex-col items-center gap-3">
+            <h2 className="font-extrabold">{vi.collect.review(pending.letter)}</h2>
+            <Replay frames={pending.frames} label={vi.collect.replay(pending.letter)} />
+            <p className="text-sm text-text-muted">{vi.collect.recorded(pending.frames.length)}</p>
+            <div className="flex gap-3">
+              <Button onClick={keep}>{vi.collect.keep}</Button>
+              <Button variant="secondary" onClick={() => setPending(null)}>{vi.collect.discard}</Button>
+            </div>
+          </Card>
+        )}
+
         <Card>
           <p className="font-bold">{frames ? vi.collect.summary(Object.keys(samples).length, labels.length, frames) : vi.collect.nothing}</p>
           <div className="mt-3">
             <Button
               variant="success" disabled={!frames || !signerOk}
-              onClick={() => downloadJson(captureFileName(signer, Date.now()), buildCaptureDocument({
+              onClick={() => { setSaved(true); downloadJson(captureFileName(signer, Date.now()), buildCaptureDocument({
                 signerId: signer, sessionId: session.current, samples: Object.values(samples),
                 device: { user_agent: navigator.userAgent, width: videoRef.current?.videoWidth, height: videoRef.current?.videoHeight },
-              }))}
+              })); }}
             >
               {vi.collect.download}
             </Button>
