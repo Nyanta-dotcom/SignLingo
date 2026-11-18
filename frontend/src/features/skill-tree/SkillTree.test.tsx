@@ -30,6 +30,7 @@ const node = (i: number) => screen.getByRole('button', { name: new RegExp(`^${le
 const finish = (code: string) => {
   const a = store.getState();
   const s = a.startSession({ mode: 'lesson', lesson_code: code, model: data.model });
+  a.recordAttempt(s.id, { item_order: 1, position: null, expected: 'A', predicted: 'A', confidence: 0.9, result: 'correct', time_to_verify_ms: 900, retries: 0, confused_with: null });
   a.completeSession(s.id, { xpReward: 10 });
 };
 
