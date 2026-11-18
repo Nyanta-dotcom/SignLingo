@@ -1,5 +1,7 @@
-import { Navigate, Route, Routes } from 'react-router';
+import { Navigate, Route, Routes, useNavigate } from 'react-router';
 import { AppShell } from '@/components/layout/AppShell';
+import { Banners } from '@/features/onboarding/Banners';
+import { Landing } from '@/features/onboarding/Landing';
 import { Lab } from '@/features/lab/Lab';
 import { Profile } from '@/features/profile/Profile';
 import { Settings } from '@/features/settings/Settings';
@@ -19,14 +21,23 @@ function Placeholder({ title }: { title: string }) {
 
 function ConnectedShell() {
   const stats = useLearner((s) => s.stats);
-  return <AppShell stats={{ streak: stats.current_streak, xp: stats.total_xp, hearts: stats.hearts }} />;
+  return <AppShell stats={{ streak: stats.current_streak, xp: stats.total_xp, hearts: stats.hearts }} banner={<Banners />} />;
+}
+
+/** First visit shows the welcome page; every later visit goes straight to the learning path. */
+function Home() {
+  const onboarded = useLearner((s) => s.onboarded);
+  const complete = useLearner((s) => s.completeOnboarding);
+  const navigate = useNavigate();
+  if (onboarded) return <Navigate to="/learn" replace />;
+  return <Landing onStart={() => { complete(); navigate('/learn'); }} />;
 }
 
 export function AppRoutes() {
   return (
     <Routes>
+      <Route index element={<Home />} />
       <Route element={<ConnectedShell />}>
-        <Route index element={<Navigate to="/learn" replace />} />
         <Route path="learn" element={<Placeholder title={vi.nav.learn} />} />
         <Route path="practice" element={<Practice />} />
         <Route path="collect" element={<Collect />} />

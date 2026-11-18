@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { NavLink, Outlet } from 'react-router';
 import { vi } from '@/i18n/vi';
 import { StatChip } from '@/components/ui/StatChip';
@@ -33,7 +34,7 @@ function NavList({ vertical }: { vertical: boolean }) {
 }
 
 /** Desktop: sidebar + content + stat bar. Mobile: stat bar on top, bottom navigation (docs/05 §4). */
-export function AppShell({ stats }: { stats: Stats }) {
+export function AppShell({ stats, banner }: { stats: Stats; banner?: ReactNode }) {
   return (
     <div className="min-h-dvh bg-bg text-text md:grid md:grid-cols-[16rem_1fr]">
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-50 focus:rounded-lg focus:bg-surface focus:p-3">
@@ -49,6 +50,7 @@ export function AppShell({ stats }: { stats: Stats }) {
           <StatChip kind="xp" value={stats.xp} />
           <StatChip kind="hearts" value={stats.hearts} />
         </header>
+        {banner}
         <main id="main" className="flex-1 p-4 md:p-8">
           <Outlet />
         </main>
