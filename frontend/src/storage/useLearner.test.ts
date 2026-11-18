@@ -38,4 +38,18 @@ describe('useLearner store', () => {
     const useLearner = createLearnerState(createKV(null), { now: () => NOW, heartThreshold: 0.6, appVersion: '0.1.0' });
     expect(useLearner.getState().storageAvailable).toBe(false);
   });
+
+  it('keeps recorded benchmarks, newest first, and they survive a reload', () => {
+    const useLearner = make();
+    const rec = (id: string) => ({
+      id, recorded_at: '2026-03-01T00:00:00Z', duration_s: 60 as const, model: MODEL, backend: 'wasm' as const, delegate: 'CPU' as const,
+      worker: false, camera: { width: 640, height: 480, fps_reported: 30 }, frame_ms: { p50: 1, p95: 2, max: 3 },
+      mp_ms: { p50: 1, p95: 2 }, cls_ms: { p50: 1, p95: 2 }, processing_fps_avg: 30, dropped_frames: 0, user_agent: 't',
+    });
+    expect(useLearner.getState().benchmarks).toEqual([]);
+    expect(useLearner.getState().saveBenchmark(rec('a'))).toBe(true);
+    useLearner.getState().saveBenchmark(rec('b'));
+    expect(useLearner.getState().benchmarks.map((b) => b.id)).toEqual(['b', 'a']);
+    expect(make().getState().benchmarks.map((b) => b.id)).toEqual(['b', 'a']);
+  });
 });

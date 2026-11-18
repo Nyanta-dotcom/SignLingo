@@ -6,21 +6,13 @@ import { CameraFrame, type CameraFrameState } from '@/components/vision/CameraFr
 import { drawSkeleton, tokenColor } from '@/components/vision/overlay';
 import { useCamera } from '@/hooks/useCamera';
 import { vi } from '@/i18n/vi';
+import { downloadJson } from '@/lib/downloadJson';
 import { buildCaptureDocument, captureFileName, makeSample, SIGNER_RE, type CaptureSample } from '@/vision/captureDoc';
 import { createCaptureRecorder, type RecorderState } from '@/vision/captureRecorder';
 import type { HandFrame } from '@/vision/types';
 import { realEngineFactory, useRecognition, type EngineFactory } from '../practice/useRecognition';
 
 const FRAMES_PER_LETTER = 40;
-
-function download(name: string, data: unknown) {
-  const url = URL.createObjectURL(new Blob([JSON.stringify(data)], { type: 'application/json' }));
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = name;
-  a.click();
-  URL.revokeObjectURL(url);
-}
 
 /** /collect (docs/03 §4): records landmark samples for P1-21 and lets the learner download them. Never stores images. */
 export function Collect({ factory = realEngineFactory, labels: given }: { factory?: EngineFactory; labels?: string[] }) {
@@ -154,7 +146,7 @@ export function Collect({ factory = realEngineFactory, labels: given }: { factor
           <div className="mt-3">
             <Button
               variant="success" disabled={!frames || !signerOk}
-              onClick={() => download(captureFileName(signer, Date.now()), buildCaptureDocument({
+              onClick={() => downloadJson(captureFileName(signer, Date.now()), buildCaptureDocument({
                 signerId: signer, sessionId: session.current, samples: Object.values(samples),
                 device: { user_agent: navigator.userAgent, width: videoRef.current?.videoWidth, height: videoRef.current?.videoHeight },
               }))}

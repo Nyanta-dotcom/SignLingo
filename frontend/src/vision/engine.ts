@@ -43,6 +43,8 @@ export type EngineDeps = {
   now?: () => number;
   /** Hand tracker delegate. CPU by default: the GPU path is untested on real webcams. */
   delegate?: 'GPU' | 'CPU';
+  /** How many top probabilities each prediction event carries (default 3; the AI Lab asks for all). */
+  topK?: number;
   wasmPath?: string;
   modelAssetPath?: string;
   modelUrl?: string;
@@ -68,7 +70,7 @@ export function createRecognitionEngine(deps: EngineDeps) {
   const now = deps.now ?? (() => performance.now());
   const listeners = new Set<(e: RecognitionEvent) => void>();
   const perf = createPerfMonitor();
-  const smoother = createSmoother(manifest.labels, manifest.recommended.smoothing_window);
+  const smoother = createSmoother(manifest.labels, manifest.recommended.smoothing_window, deps.topK);
   const hold = createHoldVerifier();
 
   let video: HTMLVideoElement | null = null;
