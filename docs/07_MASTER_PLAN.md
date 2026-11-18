@@ -140,11 +140,11 @@ Phase 2 và phần còn lại của Phase 3 (Skill Tree, Lesson Player đầy đ
 | ☐ | ID | Task | Files (`frontend/src/…`) | Guide | Test |
 |---|---|---|---|---|---|
 | ☑ | P2-01 | Types dùng chung (`Settings`, `Stats`, `SessionRecord`, `PerfRecord`, `Curriculum`…) | `storage/types.ts`, `content/types.ts` | Theo 03 §3 | Typecheck · Typecheck ✅ |
-| ☐ | P2-02 [R] | Storage adapter: get/set JSON có try/catch, fallback bộ nhớ, `available`, prefix `signlingo:v1:` | `storage/kv.ts` | Ném lỗi không ra ngoài | Unit: localStorage throw → fallback, `available=false` (AC-ACC-02) |
+| ☑ | P2-02 [R] | Storage adapter: get/set JSON có try/catch, fallback bộ nhớ, `available`, prefix `signlingo:v1:` | `storage/kv.ts` | Ném lỗi không ra ngoài | Unit: localStorage throw → fallback, `available=false` (AC-ACC-02) · Test ✅ (6): storage bị chặn hoặc đầy → bộ nhớ tạm, `available=false`, JSON hỏng → giá trị mặc định |
 | ☑ | P2-03 | Migration framework (`schema_version`, `migrate(v→v+1)`) | `storage/migrate.ts` | v1 là bản đầu | Unit: dữ liệu thiếu version → v1 · Test ✅ (5): thiếu version → v1, chuỗi bước, từ chối bản mới hơn hoặc thiếu bước |
 | ☑ | P2-04 | ESLint C3 (`game/**` không React) + C4 (`no-restricted-globals localStorage` ngoài `storage/**`) | `eslint.config.js` | | Lint bắt vi phạm mẫu · Đã thử: `react` trong `game/`, `localStorage` ngoài `storage/` bị bắt; `storage/` được phép |
-| ☐ | P2-05 [R] | `game/hearts.ts`: `applyHeartRegen`, `loseHeart` (chỉ khi confidence ≥ ngưỡng) | `game/hearts.ts` | Tiêm `now` | Unit: 5 → mất 2 → +65 phút → 5 (cap) |
-| ☐ | P2-06 [R] | `game/streak.ts`: `applyDailyXp` theo múi giờ | `game/streak.ts` | `Intl.DateTimeFormat` lấy ngày theo TZ | Unit: qua nửa đêm, bỏ 1 ngày → 0 (AC-GAM-02) |
+| ☑ | P2-05 [R] | `game/hearts.ts`: `applyHeartRegen`, `loseHeart` (chỉ khi confidence ≥ ngưỡng) | `game/hearts.ts` | Tiêm `now` | Unit: 5 → mất 2 → +65 phút → 5 (cap) · Test ✅ (8): 5 → mất 2 → +65 phút → 5; hồi giữ phần dư; chỉ mất tim khi độ tin cậy ≥ ngưỡng, `null` không bị phạt |
+| ☑ | P2-06 [R] | `game/streak.ts`: `applyDailyXp` theo múi giờ | `game/streak.ts` | `Intl.DateTimeFormat` lấy ngày theo TZ | Unit: qua nửa đêm, bỏ 1 ngày → 0 (AC-GAM-02) · Test ✅ (7): qua nửa đêm theo múi giờ, bỏ 1 ngày → 0, giữ 120 ngày |
 | ☑ | P2-07 | `game/xp.ts`: `computeXp` | `game/xp.ts` | Quy tắc 03 §3.5 | Unit: breakdown · Test ✅ (3) |
 | ☑ | P2-08 | `game/unlock.ts`: `lessonStatus` theo `requires` | `game/unlock.ts` | | Unit · Test ✅ (4) |
 | ☐ | P2-09 | `LearnerStore`: settings, stats, progress, daily, sign_stats | `storage/learnerStore.ts` | Dùng P2-02..08 | Unit |
