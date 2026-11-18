@@ -64,4 +64,21 @@ describe('useLearner store', () => {
     useLearner.getState().setDisplayName('   ');
     expect(useLearner.getState().profile.display_name).toBeUndefined();
   });
+
+  it('remembers that onboarding is done, across reloads', () => {
+    const useLearner = make();
+    expect(useLearner.getState().onboarded).toBe(false);
+    useLearner.getState().completeOnboarding();
+    expect(useLearner.getState().onboarded).toBe(true);
+    expect(make().getState().onboarded).toBe(true);
+  });
+
+  it('records the last export and the day the backup banner was closed', () => {
+    const useLearner = make();
+    expect(useLearner.getState().reminder).toEqual({});
+    useLearner.getState().dismissBackupReminder();
+    expect(useLearner.getState().reminder.dismissed_at).toBe(NOW.toISOString());
+    useLearner.getState().backup.exportBackup();
+    expect(useLearner.getState().reminder).toEqual({ last_export_at: NOW.toISOString() });
+  });
 });

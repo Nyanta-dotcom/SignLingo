@@ -4,10 +4,11 @@ import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { initLearner } from '@/storage/useLearner';
 import { AppRoutes } from './App';
 
+let store: ReturnType<typeof initLearner>;
 beforeAll(() => {
-  initLearner({ heartThreshold: 0.6, appVersion: 'test' }); // not returned: vitest would call it as a teardown
+  store = initLearner({ heartThreshold: 0.6, appVersion: 'test' });
 });
-beforeEach(() => localStorage.clear());
+beforeEach(() => store.getState().backup.clearAll());
 
 const at = (path: string) =>
   render(
@@ -17,8 +18,18 @@ const at = (path: string) =>
   );
 
 describe('AppRoutes', () => {
-  it('sends / to the learning dashboard', () => {
+  it('shows the welcome page on the first visit and the learning dashboard after Start', () => {
     at('/');
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('SignLingo AI');
+    fireEvent.click(screen.getByRole('button', { name: 'Bắt đầu' }));
+    expect(screen.getByRole('heading', { level: 1, name: 'Học' })).toBeInTheDocument();
+    expect(store.getState().onboarded).toBe(true);
+  });
+
+  it('sends / straight to the learning dashboard on later visits', () => {
+    store.getState().completeOnboarding();
+    at('/');
+    expect(screen.queryByRole('button', { name: 'Bắt đầu' })).toBeNull();
     expect(screen.getByRole('heading', { level: 1, name: 'Học' })).toBeInTheDocument();
   });
 

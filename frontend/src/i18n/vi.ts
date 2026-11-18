@@ -43,6 +43,25 @@ export const vi = {
     recognised: (letter: string, pct: number) => `Đã nhận chữ ${letter}, độ tin cậy ${pct}%`,
     aiNote: 'AI đang dùng',
   },
+  landing: {
+    tagline: 'Học bảng chữ cái ngôn ngữ ký hiệu ASL ngay trước webcam của bạn.',
+    points: [
+      { icon: '🖐', title: 'Ra dấu, AI xem', text: 'Camera nhận ra chữ cái bạn đang làm bằng tay, và chỉ ra ngón nào cần chỉnh.' },
+      { icon: '🔒', title: 'Ở lại trên máy bạn', text: 'Nhận diện chạy ngay trong trình duyệt. Không có ảnh hay video nào được gửi đi, không cần tài khoản.' },
+      { icon: '🧪', title: 'Xem AI hoạt động', text: 'AI Lab cho thấy mô hình đúng sai ra sao, dựa trên các thí nghiệm của dự án.' },
+    ],
+    scope: 'Hiện hỗ trợ 24 chữ cái tĩnh của ASL (A đến Y, trừ J và Z, vì hai chữ này cần chuyển động).',
+    cameraNote: 'Khi cần, trình duyệt sẽ xin quyền dùng camera. Bạn có thể tắt bất cứ lúc nào.',
+    start: 'Bắt đầu',
+    lab: 'Xem AI Lab',
+    hero: 'Giới thiệu SignLingo AI',
+  },
+  banners: {
+    storageBlocked: 'Tiến độ sẽ không được lưu: trình duyệt đang chặn lưu trữ. Hãy bật lại cookie và dữ liệu trang, hoặc dùng cửa sổ thường thay vì ẩn danh.',
+    backupTitle: 'Tiến độ chỉ lưu trên trình duyệt này.',
+    backupAction: 'Xuất bản sao lưu',
+    backupClose: 'Đóng nhắc sao lưu',
+  },
   settings: {
     title: 'Cài đặt',
     appearance: 'Giao diện',
