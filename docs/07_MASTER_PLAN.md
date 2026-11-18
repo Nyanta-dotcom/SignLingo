@@ -147,9 +147,9 @@ Phase 2 và phần còn lại của Phase 3 (Skill Tree, Lesson Player đầy đ
 | ☑ | P2-06 [R] | `game/streak.ts`: `applyDailyXp` theo múi giờ | `game/streak.ts` | `Intl.DateTimeFormat` lấy ngày theo TZ | Unit: qua nửa đêm, bỏ 1 ngày → 0 (AC-GAM-02) · Test ✅ (7): qua nửa đêm theo múi giờ, bỏ 1 ngày → 0, giữ 120 ngày |
 | ☑ | P2-07 | `game/xp.ts`: `computeXp` | `game/xp.ts` | Quy tắc 03 §3.5 | Unit: breakdown · Test ✅ (3) |
 | ☑ | P2-08 | `game/unlock.ts`: `lessonStatus` theo `requires` | `game/unlock.ts` | | Unit · Test ✅ (4) |
-| ☐ | P2-09 | `LearnerStore`: settings, stats, progress, daily, sign_stats | `storage/learnerStore.ts` | Dùng P2-02..08 | Unit |
-| ☐ | P2-10 | `LearnerStore` sessions: `startSession`, `recordAttempt`, `completeSession` (idempotent), `abandonSession`; giới hạn 200 bản ghi | `storage/sessions.ts` | | Unit: complete 2 lần → XP 1 lần (AC-GAM-01) |
-| ☐ | P2-11 | Benchmarks: `saveBenchmark`, `listBenchmarks` (≤ 20) | `storage/benchmarks.ts` | | Unit |
+| ☑ | P2-09 | `LearnerStore`: settings, stats, progress, daily, sign_stats | `storage/learnerStore.ts` | Dùng P2-02..08 | Unit · Test ✅ (4): mặc định theo doc, gộp cài đặt qua reload, hồi tim và hết streak khi đọc |
+| ☑ | P2-10 | `LearnerStore` sessions: `startSession`, `recordAttempt`, `completeSession` (idempotent), `abandonSession`; giới hạn 200 bản ghi | `storage/sessions.ts` | | Unit: complete 2 lần → XP 1 lần (AC-GAM-01) · Test ✅ (7): start → attempts → complete → reload; complete 2 lần → XP 1 lần; mất tim chỉ khi tin cậy ≥ ngưỡng; hết tim → `failed_no_hearts`; free practice không mất tim; giới hạn 200. Ngưỡng tim là tham số bắt buộc (chưa đặt giá trị mặc định). Thêm trường `hearts_lost` vào `SessionRecord` (đã cập nhật doc 03 §3.3) |
+| ☑ | P2-11 | Benchmarks: `saveBenchmark`, `listBenchmarks` (≤ 20) | `storage/benchmarks.ts` | | Unit · Test ✅ (2): mới nhất trước, giữ 20 |
 | ☐ | P2-12 | Schemas `backup`, `curriculum` + validator `ajv` | `shared/contracts/schemas/*.json`, `storage/validate.ts` | | Unit |
 | ☐ | P2-13 | Export/Import/Clear backup | `storage/backup.ts` | Hỏi xác nhận ở UI, không ở đây | Integration: export → clear → import ra cùng state (AC-ACC-01); file sai → `BACKUP_INVALID` |
 | ☐ | P2-14 [R] | Curriculum loader + validate + suy `signs` 24 chữ từ `manifest.labels`; **file `curriculum.json` với nội dung do người dùng cung cấp** | `content/loader.ts`, `content/curriculum.json` | Không tự bịa bài/từ/hint | Integration: `model_class_index` khớp `manifest.labels` |

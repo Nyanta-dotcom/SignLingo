@@ -57,6 +57,8 @@ export type SessionRecord = {
   status: 'completed' | 'abandoned' | 'failed_no_hearts';
   accuracy_pct: number | null;
   xp_awarded: number;
+  /** Hearts lost in this session; drives the no-heart-loss XP bonus. */
+  hearts_lost: number;
   attempts: Attempt[];
   perf: {
     fps_avg: number;

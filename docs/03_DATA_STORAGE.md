@@ -97,6 +97,7 @@ type SessionRecord = {
   status: 'completed' | 'abandoned' | 'failed_no_hearts';
   accuracy_pct: number | null;
   xp_awarded: number;             // ghi một lần khi completed (idempotent theo id)
+  hearts_lost: number;            // số tim mất trong phiên; quyết định bonus "không mất tim"
   attempts: Array<{
     item_order: number; position: number | null;   // position: chỉ số chữ trong spell_word
     expected: string; predicted: string | null; confidence: number | null;
