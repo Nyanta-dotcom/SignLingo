@@ -180,12 +180,12 @@ Phase 2 và phần còn lại của Phase 3 (Skill Tree, Lesson Player đầy đ
 |---|---|---|---|---|---|
 | ☐ | P3-07 🎓 | `camera.ts` + `useCamera` (640×480, chọn thiết bị, lỗi DENIED/NOT_FOUND/INSECURE_CONTEXT) | `vision/camera.ts`, `hooks/useCamera.ts` | Dừng track khi unmount | Unit: mock mediaDevices |
 | ☐ | P3-08 🎓 | `HandTracker` tasks-vision (GPU→CPU), script `fetch-mediapipe` tự host wasm + `.task` (ghim version) | `vision/landmarker.ts`, `scripts/fetch-mediapipe.mjs` | `VIDEO`, `numHands: 1` | Integration (Playwright): init trong Chrome |
-| ☐ | P3-09 🎓 | `normalizeLandmarks` lm-v1 | `vision/normalizer.ts` | | **Integration: khớp fixture Python ≤ 1e-6 (AC-ML-09)** |
+| ☑ | P3-09 🎓 | `normalizeLandmarks` lm-v1 | `vision/normalizer.ts` | | **Integration: khớp fixture Python ≤ 1e-6 (AC-ML-09)** · Test ✅ (4): khớp cả 61 ca fixture Python trong 1e-6 (kể cả suy biến → null), cổ tay ở gốc, max = 1 |
 | ☐ | P3-10 🎓 | `Classifier` ORT-web (webgpu→wasm), kiểm sha256, tái dùng tensor | `vision/classifier.ts` | Load theo manifest | Integration: output = Python cho 10 mẫu fixture |
-| ☐ | P3-11 🎓 | `Smoother` (cửa sổ 5 / EMA) + top-K | `vision/smoother.ts` | | Unit |
-| ☐ | P3-12 🎓 | `HoldVerifier` FSM (grace 150 ms, timeLimit) | `vision/holdFsm.ts` | 02 §5.2 | Unit: verified đúng mốc 1000 ms (AC-LRN-01) |
+| ☑ | P3-11 🎓 | `Smoother` (cửa sổ 5 / EMA) + top-K | `vision/smoother.ts` | | Unit · Test ✅ (5): trung bình cửa sổ, một khung nhiễu không đổi nhãn, quên khung cũ, reset |
+| ☑ | P3-12 🎓 | `HoldVerifier` FSM (grace 150 ms, timeLimit) | `vision/holdFsm.ts` | 02 §5.2 | Unit: verified đúng mốc 1000 ms (AC-LRN-01) · Test ✅ (8): verified đúng ở 1000 ms (AC-LRN-01), grace 150 ms, timeout, trạng thái cuối cố định |
 | ☐ | P3-13 🎓 | `RecognitionEngine` + `PerfMonitor` (p50/p95, processing FPS) + throttle 30 Hz + `recordBenchmark` | `vision/engine.ts`, `vision/perf.ts` | rVFC loop | Unit: p95 đúng |
-| ☐ | P3-14 🚀 | `fingerFeedback` (15 góc, so template, `confusable`) | `vision/fingerFeedback.ts` | k = 2σ, min 20° | Unit |
+| ☑ | P3-14 🚀 | `fingerFeedback` (15 góc, so template, `confusable`) | `vision/fingerFeedback.ts` | k = 2σ, min 20° | Unit · Test ✅ (8): 15 góc khớp với bản Python (≤ 0,01°) trên 3 ca fixture; ngưỡng max(2σ, 20°), gợi ý gập/duỗi |
 | ☐ | P3-15 🎓 | `CameraFrame` + overlay canvas (skeleton, ngón đỏ, các state) | `components/vision/` | Mirror CSS | Unit: render các state |
 
 ### 3C. Màn hình

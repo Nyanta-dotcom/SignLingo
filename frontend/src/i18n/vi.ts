@@ -10,5 +10,10 @@ export const vi = {
     learn: 'Học', practice: 'Luyện', dictionary: 'Từ điển', lab: 'AI Lab', profile: 'Hồ sơ', settings: 'Cài đặt',
     skip: 'Bỏ qua điều hướng', sidebar: 'Điều hướng chính', bottom: 'Điều hướng nhanh',
   },
+  fingers: {
+    names: { thumb: 'ngón cái', index: 'ngón trỏ', middle: 'ngón giữa', ring: 'ngón áp út', pinky: 'ngón út' },
+    bendMore: (f: string) => `Gập ${f} nhiều hơn`,
+    straightenMore: (f: string) => `Duỗi ${f} nhiều hơn`,
+  },
   stats: { streak: 'ngày liên tiếp', xp: 'điểm XP', hearts: 'tim' },
 } as const;
