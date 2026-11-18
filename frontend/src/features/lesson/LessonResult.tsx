@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
-import { missedLetters } from '@/game/lessonFlow';
+import { MIN_LESSON_ACCURACY, missedLetters } from '@/game/lessonFlow';
 import { vi } from '@/i18n/vi';
 import { useLearner } from '@/storage/useLearner';
 import type { Result } from './useLessonRun';
@@ -40,6 +40,28 @@ export function LessonResult({ result, onFinish, onRetry }: { result: Result | n
   const t = vi.lesson;
   const seconds = result?.record.completed_at ? Math.max(0, Math.round((Date.parse(result.record.completed_at) - Date.parse(result.record.started_at)) / 1000)) : 0;
   const missed = result ? missedLetters(result.record.attempts) : [];
+  const passed = !result || result.record.status === 'completed';
+
+  if (!passed && result) {
+    return (
+      <section aria-labelledby="done-title" className="mx-auto flex max-w-xl flex-col items-center gap-6 py-8 text-center">
+        <h1 id="done-title" className="text-3xl font-extrabold">{t.notPassed}</h1>
+        <p className="text-lg">{t.notPassedText(MIN_LESSON_ACCURACY * 100, result.record.accuracy_pct ?? 0)}</p>
+        {missed.length > 0 && (
+          <Card className="w-full">
+            <h2 className="font-extrabold">{t.missed}</h2>
+            <ul className="mt-2 flex flex-wrap justify-center gap-2">
+              {missed.map((m) => <li key={m.letter} className="rounded-full bg-surface-2 px-3 py-1 font-bold">{t.missedItem(m.letter, m.misses)}</li>)}
+            </ul>
+          </Card>
+        )}
+        <div className="flex gap-3">
+          <Button size="lg" onClick={onRetry}>{t.tryAgain}</Button>
+          <Button size="lg" variant="secondary" onClick={onFinish}>{t.backToPath}</Button>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section aria-labelledby="done-title" className="relative mx-auto flex max-w-xl flex-col items-center gap-6 py-8 text-center">

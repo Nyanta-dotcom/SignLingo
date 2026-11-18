@@ -84,28 +84,43 @@ test('blocked storage shows a warning and the app keeps working', async ({ page 
   expect(errors).toEqual([]);
 });
 
-test('finishing a lesson saves XP and opens the next one, and it all survives a reload (AC-GAM-01)', async ({ page }) => {
+test('a lesson that is skipped through does not count: no XP, and the next lesson stays locked', async ({ page }) => {
   await page.addInitScript(() => localStorage.getItem('signlingo:v1:onboarded') ?? localStorage.setItem('signlingo:v1:onboarded', 'true'));
   await page.goto('/learn');
   await page.getByRole('button', { name: /^Bài 1: A B C D: sẵn sàng$/ }).click();
   await page.getByRole('link', { name: 'Bắt đầu' }).click();
   await expect(page).toHaveURL(/\/lesson\/U1L1$/);
 
-  // Each letter is a card followed by a sign to perform; skipping the signs is enough to walk the whole lesson.
+  // Each letter is a card followed by a sign to perform; skipping every sign walks the lesson with 0% correct.
   for (let i = 0; i < 4; i += 1) {
     await page.getByRole('button', { name: 'Tiếp tục' }).click();
     await page.getByRole('button', { name: 'Bỏ qua' }).click();
     await page.getByRole('button', { name: 'Tiếp tục' }).click();
   }
-  await expect(page.getByRole('heading', { name: 'Hoàn thành bài học!' })).toBeVisible();
-  await page.getByRole('button', { name: 'Tiếp tục' }).last().click();
+  await expect(page.getByRole('heading', { name: 'Chưa đạt' })).toBeVisible();
+  await page.getByRole('button', { name: 'Về lộ trình' }).click();
   await expect(page).toHaveURL(/\/learn$/);
-  await expect(page.getByRole('button', { name: /^Bài 1: A B C D: đã hoàn thành$/ })).toBeVisible();
-  await expect(page.getByRole('button', { name: /^Bài 2: E F G H: sẵn sàng$/ })).toBeVisible();
-
-  await page.reload();
-  await expect(page.getByRole('button', { name: /^Bài 1: A B C D: đã hoàn thành$/ })).toBeVisible();
-  await expect(page.getByRole('button', { name: /^Bài 2: E F G H: sẵn sàng$/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: /^Bài 1: A B C D: sẵn sàng$/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: /^Bài 2: E F G H: chưa mở$/ })).toBeVisible();
   const stats = JSON.parse(await page.evaluate(() => localStorage.getItem('signlingo:v1:stats') ?? '{}'));
-  expect(stats.total_xp).toBeGreaterThan(0);
+  expect(stats.total_xp ?? 0).toBe(0);
+});
+
+// A real sign cannot be made in front of Chrome's fake camera, so the finished lesson is stored the way the app
+// stores it (docs/03 §3.2). The full play-through, including a verified sign, is covered by the component tests.
+test('a completed lesson and the XP stay after a reload and open the next lesson (AC-GAM-01)', async ({ page }) => {
+  await page.addInitScript(() => {
+    if (localStorage.getItem('signlingo:v1:seeded')) return;
+    localStorage.setItem('signlingo:v1:seeded', 'true');
+    localStorage.setItem('signlingo:v1:onboarded', 'true');
+    localStorage.setItem('signlingo:v1:progress', JSON.stringify({ U1L1: { status: 'completed', best_accuracy_pct: 100, times_completed: 1, last_completed_at: new Date().toISOString() } }));
+    localStorage.setItem('signlingo:v1:stats', JSON.stringify({ total_xp: 20, current_streak: 1, longest_streak: 1, last_goal_date: null, hearts: 5, hearts_updated_at: new Date().toISOString() }));
+  });
+  await page.goto('/learn');
+  await expect(page.getByRole('button', { name: /^Bài 1: A B C D: đã hoàn thành$/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: /^Bài 2: E F G H: sẵn sàng$/ })).toBeVisible();
+  await page.reload();
+  await expect(page.getByRole('button', { name: /^Bài 2: E F G H: sẵn sàng$/ })).toBeVisible();
+  await page.goto('/profile');
+  await expect(page.getByText('Tổng XP').locator('xpath=following-sibling::dd')).toHaveText('20');
 });

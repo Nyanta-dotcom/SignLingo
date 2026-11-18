@@ -62,4 +62,18 @@ describe('LessonResult', () => {
     expect(screen.queryByTestId('confetti')).toBeNull();
     expect(screen.getByText('XP').nextElementSibling).toHaveTextContent('18');
   });
+
+  it('says plainly when the lesson did not count, with no XP and no confetti, and offers to try again', () => {
+    const failed = record({ status: 'abandoned', accuracy_pct: 25, xp_awarded: 0 });
+    const { onRetry, onFinish } = show(failed);
+    expect(screen.getByRole('heading', { name: 'Chưa đạt' })).toBeInTheDocument();
+    expect(screen.getByText(/Cần đúng ít nhất 50%.*Bạn đúng 25%/)).toBeInTheDocument();
+    expect(screen.queryByText('XP')).toBeNull();
+    expect(screen.queryByTestId('confetti')).toBeNull();
+    expect(screen.getByText('S (2 lần)')).toBeInTheDocument();
+    screen.getByRole('button', { name: 'Thử lại' }).click();
+    screen.getByRole('button', { name: 'Về lộ trình' }).click();
+    expect(onRetry).toHaveBeenCalledOnce();
+    expect(onFinish).toHaveBeenCalledOnce();
+  });
 });

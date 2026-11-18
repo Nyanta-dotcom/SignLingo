@@ -109,6 +109,22 @@ describe('LessonPlayer', () => {
     expect(lessonStatus(d.curriculum.units[0].lessons[0], store.getState().progress)).toBe('completed');
   });
 
+  it('does not count a lesson that is mostly skipped: no XP, the next lesson stays locked', async () => {
+    const d = dataFor(lesson('L1', [item(1, 'perform_sign', 'A'), item(2, 'perform_sign', 'B'), item(3, 'perform_sign', 'C')]), lesson('L2', [item(1, 'learn_card', 'D')], ['L1']));
+    const s = open(d, 'L1');
+    await startCamera(s);
+    await s.emit(verified('A'));
+    fireEvent.click(screen.getByRole('button', { name: 'Tiếp tục' }));
+    for (let i = 0; i < 2; i += 1) {
+      fireEvent.click(screen.getByRole('button', { name: 'Bỏ qua' }));
+      fireEvent.click(await screen.findByRole('button', { name: 'Tiếp tục' }));
+    }
+    expect(await screen.findByRole('heading', { name: 'Chưa đạt' })).toBeInTheDocument();
+    expect(store.getState().progress.L1).toBeUndefined();
+    expect(store.getState().stats.total_xp).toBe(0);
+    expect(lessonStatus(d.curriculum.units[0].lessons[1], store.getState().progress)).toBe('locked');
+  });
+
   it('does not take a heart when the model was unsure (low confidence at the timeout)', async () => {
     const d = dataFor(lesson('L1', [item(1, 'perform_sign', 'A'), item(2, 'learn_card', 'B')]));
     const s = open(d, 'L1');

@@ -56,8 +56,33 @@ describe('sessions', () => {
     expect(learner.getStats().hearts).toBe(5);
     sessions.recordAttempt(s.id, attempt({ result: 'timed_out', confidence: 0.8, predicted: 'B' }));
     expect(learner.getStats().hearts).toBe(4);
+    sessions.recordAttempt(s.id, attempt());
+    sessions.recordAttempt(s.id, attempt());
     const done = sessions.completeSession(s.id, { xpReward: 10 });
-    expect(done.xp_awarded).toBe(10 + 0 + 0); // 0% correct, a heart lost
+    expect(done.xp_awarded).toBe(10 + 3 + 0); // 50% correct (accuracy bonus rounds 2.5 up), a heart lost
+  });
+
+  it('does not complete a lesson answered less than half correctly: no XP, no progress, no streak', () => {
+    const { learner, sessions } = setup();
+    const s = sessions.startSession({ mode: 'lesson', lesson_code: 'L1', model: MODEL });
+    sessions.recordAttempt(s.id, attempt());
+    sessions.recordAttempt(s.id, attempt({ result: 'skipped', predicted: null, confidence: null }));
+    sessions.recordAttempt(s.id, attempt({ result: 'skipped', predicted: null, confidence: null }));
+    const done = sessions.completeSession(s.id, { xpReward: 10 });
+    expect(done).toMatchObject({ status: 'abandoned', xp_awarded: 0, accuracy_pct: 33 });
+    expect(learner.getProgress().L1).toBeUndefined();
+    expect(learner.getStats().total_xp).toBe(0);
+    expect(learner.getStats().current_streak).toBe(0);
+    expect(learner.getSignStats().A.attempts).toBe(3); // what was attempted still counts for mastery
+  });
+
+  it('completes a lesson at exactly half correct', () => {
+    const { learner, sessions } = setup();
+    const s = sessions.startSession({ mode: 'lesson', lesson_code: 'L1', model: MODEL });
+    sessions.recordAttempt(s.id, attempt());
+    sessions.recordAttempt(s.id, attempt({ result: 'skipped', predicted: null, confidence: null }));
+    expect(sessions.completeSession(s.id, { xpReward: 10 }).status).toBe('completed');
+    expect(learner.getProgress().L1.status).toBe('completed');
   });
 
   it('ends the session as failed_no_hearts when the last heart goes', () => {

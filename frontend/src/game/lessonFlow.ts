@@ -9,6 +9,10 @@ import type { Attempt } from '@/storage/types';
  */
 export const DEFAULT_TIME_LIMIT_MS = 15_000;
 
+/** Share of items that must be correct for a lesson to count as completed (decided by the team, not measured). */
+export const MIN_LESSON_ACCURACY = 0.5;
+export const lessonPassed = (accuracy: number) => accuracy >= MIN_LESSON_ACCURACY;
+
 export type Recommended = { threshold: number; hold_ms: number };
 export type PerformConfig = { holdMs: number; threshold: number; timeLimitMs: number };
 

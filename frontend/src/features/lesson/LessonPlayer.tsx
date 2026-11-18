@@ -130,8 +130,8 @@ function Run({ lesson, model, factory, onRetry }: { lesson: Lesson; model: Learn
   }, [engine, recommended, rec.phase, target, item]);
 
   useEffect(() => {
-    if (run.phase === 'done') sound.play('finish');
-  }, [run.phase, sound]);
+    if (run.phase === 'done' && (!run.result || run.result.record.status === 'completed')) sound.play('finish');
+  }, [run.phase, run.result, sound]);
 
   const skip = () => {
     if (!performing) return;

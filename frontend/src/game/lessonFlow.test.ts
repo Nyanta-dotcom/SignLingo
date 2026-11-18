@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Item } from '@/content/types';
-import { DEFAULT_TIME_LIMIT_MS, letterOf, missedLetters, performConfig, progressPct, toAttempt } from './lessonFlow';
+import { DEFAULT_TIME_LIMIT_MS, lessonPassed, letterOf, MIN_LESSON_ACCURACY, missedLetters, performConfig, progressPct, toAttempt } from './lessonFlow';
 
 const rec = { threshold: 0.6, hold_ms: 1000 };
 const item = (over: Partial<Item> = {}): Item => ({ order: 3, type: 'perform_sign', sign_code: 'LETTER_C', ...over });
@@ -47,5 +47,12 @@ describe('missedLetters', () => {
 describe('progressPct', () => {
   it('is a rounded percentage, capped, and 0 for an empty lesson', () => {
     expect([progressPct(0, 8), progressPct(3, 8), progressPct(8, 8), progressPct(9, 8), progressPct(1, 0)]).toEqual([0, 38, 100, 100, 0]);
+  });
+});
+
+describe('lessonPassed', () => {
+  it('needs at least half of the items correct', () => {
+    expect(MIN_LESSON_ACCURACY).toBe(0.5);
+    expect([0, 0.49, 0.5, 1].map(lessonPassed)).toEqual([false, false, true, true]);
   });
 });
