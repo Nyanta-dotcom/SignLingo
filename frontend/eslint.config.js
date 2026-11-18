@@ -18,4 +18,22 @@ export default tseslint.config(
     files: ['src/vision/**'],
     rules: { 'no-restricted-imports': ['error', { patterns: ['react', 'react-dom', 'react/*', '**/backend/**', '**/ml/**'] }] },
   },
+  {
+    // C3: game/* is framework-free TypeScript (pure rules, injectable clock)
+    files: ['src/game/**'],
+    rules: { 'no-restricted-imports': ['error', { patterns: ['react', 'react-dom', 'react/*', '**/backend/**', '**/ml/**'] }] },
+  },
+  {
+    // C4: browser storage only through src/storage/*
+    files: ['src/**'],
+    ignores: ['src/storage/**'],
+    rules: {
+      'no-restricted-globals': [
+        'error',
+        { name: 'localStorage', message: 'Use src/storage/ (docs/03 §3.1).' },
+        { name: 'sessionStorage', message: 'Use src/storage/ (docs/03 §3.1).' },
+        { name: 'indexedDB', message: 'Use src/storage/ (docs/03 §3.1).' },
+      ],
+    },
+  },
 );
