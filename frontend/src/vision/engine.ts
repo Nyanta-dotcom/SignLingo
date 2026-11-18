@@ -41,6 +41,8 @@ export type EngineDeps = {
   scheduleFrame?: (cb: (nowMs: number) => Promise<void>, video: HTMLVideoElement) => () => void;
   wait?: (ms: number) => Promise<void>;
   now?: () => number;
+  /** Hand tracker delegate. CPU by default: the GPU path is untested on real webcams. */
+  delegate?: 'GPU' | 'CPU';
   wasmPath?: string;
   modelAssetPath?: string;
   modelUrl?: string;
@@ -143,7 +145,7 @@ export function createRecognitionEngine(deps: EngineDeps) {
       emit({ type: 'loading', progress: 0 });
       try {
         await tracker.init({
-          delegate: 'GPU', numHands: 1,
+          delegate: deps.delegate ?? 'CPU', numHands: 1,
           modelAssetPath: deps.modelAssetPath ?? '/mediapipe/hand_landmarker.task',
           wasmPath: deps.wasmPath ?? '/mediapipe/wasm',
         });
