@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { Lab } from '@/features/lab/Lab';
 import { Collect } from '@/features/collect/Collect';
 import { Practice } from '@/features/practice/Practice';
 import { vi } from '@/i18n/vi';
@@ -40,7 +41,7 @@ export function AppRoutes() {
         <Route path="practice" element={<Practice />} />
         <Route path="collect" element={<Collect />} />
         <Route path="dictionary" element={<Placeholder title={vi.nav.dictionary} />} />
-        <Route path="lab" element={<Placeholder title={vi.nav.lab} />} />
+        <Route path="lab" element={<Lab />} />
         <Route path="profile" element={<Placeholder title={vi.nav.profile} />} />
         <Route path="settings" element={<Settings />} />
         <Route path="*" element={<Placeholder title={vi.common.notFound} />} />
