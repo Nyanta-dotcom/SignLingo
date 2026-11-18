@@ -7,7 +7,7 @@ import { PredictionBars } from '@/components/ui/PredictionBars';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { CameraFrame, type CameraFrameState } from '@/components/vision/CameraFrame';
 import { drawSkeleton, tokenColor } from '@/components/vision/overlay';
-import type { Lesson } from '@/content/types';
+import type { Lesson, Sign } from '@/content/types';
 import { msToNextHeart } from '@/game/hearts';
 import { lessonStatus } from '@/game/unlock';
 import { letterOf, performConfig } from '@/game/lessonFlow';
@@ -19,6 +19,7 @@ import type { FingerHint, HandFrame } from '@/vision/types';
 import { loadLearnData, type LearnData } from '../skill-tree/SkillTree';
 import { realEngineFactory, useRecognition, type EngineFactory } from '../practice/useRecognition';
 import { FeedbackBanner } from './FeedbackBanner';
+import { LearnCard } from './LearnCard';
 import { LessonResult } from './LessonResult';
 import { useLessonRun } from './useLessonRun';
 import { useSpeller } from './useSpeller';
@@ -58,7 +59,7 @@ export function LessonPlayer({ load = loadLearnData, factory = realEngineFactory
   if (gate === 'unknown') return <Notice text={vi.learn.loading} />;
   const wait = msToNextHeart(heartStats, Date.now());
   if (gate === 'blocked') return <Notice text={t.noHeartsStart + (wait === null ? '' : ` ${t.nextHeart(Math.max(1, Math.ceil(wait / 60_000)))}`)} action={<><Link to="/practice" className="font-bold text-brand-fg underline">{t.toPractice}</Link> · {back}</>} />;
-  return <Run key={attempt} lesson={lesson} model={data.model} factory={factory} onRetry={() => { setGate(hearts === 0 ? 'blocked' : 'open'); setAttempt((n) => n + 1); }} />;
+  return <Run key={attempt} lesson={lesson} signs={data.curriculum.signs} model={data.model} factory={factory} onRetry={() => { setGate(hearts === 0 ? 'blocked' : 'open'); setAttempt((n) => n + 1); }} />;
 }
 
 function Notice({ text, action, alert }: { text: string; action?: React.ReactNode; alert?: boolean }) {
@@ -70,7 +71,7 @@ function Notice({ text, action, alert }: { text: string; action?: React.ReactNod
   );
 }
 
-function Run({ lesson, model, factory, onRetry }: { lesson: Lesson; model: LearnData['model']; factory: EngineFactory; onRetry: () => void }) {
+function Run({ lesson, signs, model, factory, onRetry }: { lesson: Lesson; signs: Sign[]; model: LearnData['model']; factory: EngineFactory; onRetry: () => void }) {
   const navigate = useNavigate();
   const run = useLessonRun(lesson, model);
   const { speller, refresh } = useSpeller(run.item);
@@ -216,17 +217,9 @@ function Run({ lesson, model, factory, onRetry }: { lesson: Lesson; model: Learn
       )}
 
       <main className="grid flex-1 gap-6 lg:grid-cols-2">
-        {run.item.type === 'learn_card' && (
-          <Card className="col-span-full flex flex-col items-center gap-4 py-10 text-center">
-            <h1 className="text-2xl font-extrabold">{t.cardTitle(letter)}</h1>
-            <p aria-label={t.cardLetter} className="text-9xl font-extrabold text-brand-fg">{letter}</p>
-            <p className="text-text-muted">{t.cardText}</p>
-            <Button size="lg" onClick={run.advance}>{t.next}</Button>
-          </Card>
-        )}
+        {run.item.type === 'learn_card' && <LearnCard letter={letter} sign={signs.find((x) => x.code === run.item.sign_code)} onNext={run.advance} />}
 
         {isSign && (
-          <>
             <div className="flex flex-col items-center gap-4">
               <h1 className="text-xl font-extrabold">{speller ? t.spell : t.perform}</h1>
               {speller && (
@@ -252,7 +245,11 @@ function Run({ lesson, model, factory, onRetry }: { lesson: Lesson; model: Learn
               )}
               {performing && live && <div className="w-full max-w-sm"><PredictionBars items={live.topK.slice(0, 3)} caption={vi.practice.top3} /></div>}
             </div>
-            <div className="flex flex-col gap-3">
+        )}
+        {/* The camera stays mounted while it runs, also on cards: the engine holds this very <video>, so a fresh
+            element on the next sign would leave it watching a detached one and no hand would ever be seen. */}
+        {(isSign || running) && (
+            <div className={isSign ? 'flex flex-col gap-3' : 'sr-only'} aria-hidden={!isSign || undefined} inert={!isSign}>
               {running || camera.status === 'error' ? (
                 <CameraFrame
                   state={frameState} stream={camera.stream} progress={rec.progress} message={rec.error ?? camera.error?.message}
@@ -265,12 +262,13 @@ function Run({ lesson, model, factory, onRetry }: { lesson: Lesson; model: Learn
                   <Button size="lg" onClick={() => void camera.start()}>{t.cameraStartBtn}</Button>
                 </Card>
               )}
-              <div className="flex flex-wrap gap-3">
-                <Button variant="ghost" onClick={() => setHideSkeleton((h) => !h)}>{hideSkeleton ? t.showSkeleton : t.hideSkeleton}</Button>
-                <Button variant="secondary" disabled={!performing} onClick={skip}>{t.skip}</Button>
-              </div>
+              {isSign && (
+                <div className="flex flex-wrap gap-3">
+                  <Button variant="ghost" onClick={() => setHideSkeleton((h) => !h)}>{hideSkeleton ? t.showSkeleton : t.hideSkeleton}</Button>
+                  <Button variant="secondary" disabled={!performing} onClick={skip}>{t.skip}</Button>
+                </div>
+              )}
             </div>
-          </>
         )}
       </main>
 

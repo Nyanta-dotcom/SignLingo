@@ -6,133 +6,285 @@
       "gloss": "A",
       "kind": "static",
       "model_task": "static_letters",
-      "model_class_index": 0
+      "model_class_index": 0,
+      "media": [
+        {
+          "type": "image",
+          "src": "/media/letters/A.svg",
+          "license": "Public domain",
+          "attribution": "wpclipart.com (Wikimedia Commons)"
+        }
+      ]
     },
     {
       "code": "LETTER_B",
       "gloss": "B",
       "kind": "static",
       "model_task": "static_letters",
-      "model_class_index": 1
+      "model_class_index": 1,
+      "media": [
+        {
+          "type": "image",
+          "src": "/media/letters/B.svg",
+          "license": "Public domain",
+          "attribution": "wpclipart.com (Wikimedia Commons)"
+        }
+      ]
     },
     {
       "code": "LETTER_C",
       "gloss": "C",
       "kind": "static",
       "model_task": "static_letters",
-      "model_class_index": 2
+      "model_class_index": 2,
+      "media": [
+        {
+          "type": "image",
+          "src": "/media/letters/C.svg",
+          "license": "Public domain",
+          "attribution": "wpclipart.com (Wikimedia Commons)"
+        }
+      ]
     },
     {
       "code": "LETTER_D",
       "gloss": "D",
       "kind": "static",
       "model_task": "static_letters",
-      "model_class_index": 3
+      "model_class_index": 3,
+      "media": [
+        {
+          "type": "image",
+          "src": "/media/letters/D.svg",
+          "license": "Public domain",
+          "attribution": "wpclipart.com (Wikimedia Commons)"
+        }
+      ]
     },
     {
       "code": "LETTER_E",
       "gloss": "E",
       "kind": "static",
       "model_task": "static_letters",
-      "model_class_index": 4
+      "model_class_index": 4,
+      "media": [
+        {
+          "type": "image",
+          "src": "/media/letters/E.svg",
+          "license": "Public domain",
+          "attribution": "wpclipart.com (Wikimedia Commons)"
+        }
+      ]
     },
     {
       "code": "LETTER_F",
       "gloss": "F",
       "kind": "static",
       "model_task": "static_letters",
-      "model_class_index": 5
+      "model_class_index": 5,
+      "media": [
+        {
+          "type": "image",
+          "src": "/media/letters/F.svg",
+          "license": "Public domain",
+          "attribution": "wpclipart.com (Wikimedia Commons)"
+        }
+      ]
     },
     {
       "code": "LETTER_G",
       "gloss": "G",
       "kind": "static",
       "model_task": "static_letters",
-      "model_class_index": 6
+      "model_class_index": 6,
+      "media": [
+        {
+          "type": "image",
+          "src": "/media/letters/G.svg",
+          "license": "Public domain",
+          "attribution": "wpclipart.com (Wikimedia Commons)"
+        }
+      ]
     },
     {
       "code": "LETTER_H",
       "gloss": "H",
       "kind": "static",
       "model_task": "static_letters",
-      "model_class_index": 7
+      "model_class_index": 7,
+      "media": [
+        {
+          "type": "image",
+          "src": "/media/letters/H.svg",
+          "license": "Public domain",
+          "attribution": "wpclipart.com (Wikimedia Commons)"
+        }
+      ]
     },
     {
       "code": "LETTER_I",
       "gloss": "I",
       "kind": "static",
       "model_task": "static_letters",
-      "model_class_index": 8
+      "model_class_index": 8,
+      "media": [
+        {
+          "type": "image",
+          "src": "/media/letters/I.svg",
+          "license": "Public domain",
+          "attribution": "wpclipart.com (Wikimedia Commons)"
+        }
+      ]
     },
     {
       "code": "LETTER_K",
       "gloss": "K",
       "kind": "static",
       "model_task": "static_letters",
-      "model_class_index": 9
+      "model_class_index": 9,
+      "media": [
+        {
+          "type": "image",
+          "src": "/media/letters/K.svg",
+          "license": "Public domain",
+          "attribution": "wpclipart.com (Wikimedia Commons)"
+        }
+      ]
     },
     {
       "code": "LETTER_L",
       "gloss": "L",
       "kind": "static",
       "model_task": "static_letters",
-      "model_class_index": 10
+      "model_class_index": 10,
+      "media": [
+        {
+          "type": "image",
+          "src": "/media/letters/L.svg",
+          "license": "Public domain",
+          "attribution": "wpclipart.com (Wikimedia Commons)"
+        }
+      ]
     },
     {
       "code": "LETTER_M",
       "gloss": "M",
       "kind": "static",
       "model_task": "static_letters",
-      "model_class_index": 11
+      "model_class_index": 11,
+      "media": [
+        {
+          "type": "image",
+          "src": "/media/letters/M.svg",
+          "license": "Public domain",
+          "attribution": "wpclipart.com (Wikimedia Commons)"
+        }
+      ]
     },
     {
       "code": "LETTER_N",
       "gloss": "N",
       "kind": "static",
       "model_task": "static_letters",
-      "model_class_index": 12
+      "model_class_index": 12,
+      "media": [
+        {
+          "type": "image",
+          "src": "/media/letters/N.svg",
+          "license": "Public domain",
+          "attribution": "wpclipart.com (Wikimedia Commons)"
+        }
+      ]
     },
     {
       "code": "LETTER_O",
       "gloss": "O",
       "kind": "static",
       "model_task": "static_letters",
-      "model_class_index": 13
+      "model_class_index": 13,
+      "media": [
+        {
+          "type": "image",
+          "src": "/media/letters/O.svg",
+          "license": "Public domain",
+          "attribution": "wpclipart.com (Wikimedia Commons)"
+        }
+      ]
     },
     {
       "code": "LETTER_P",
       "gloss": "P",
       "kind": "static",
       "model_task": "static_letters",
-      "model_class_index": 14
+      "model_class_index": 14,
+      "media": [
+        {
+          "type": "image",
+          "src": "/media/letters/P.svg",
+          "license": "Public domain",
+          "attribution": "wpclipart.com (Wikimedia Commons)"
+        }
+      ]
     },
     {
       "code": "LETTER_Q",
       "gloss": "Q",
       "kind": "static",
       "model_task": "static_letters",
-      "model_class_index": 15
+      "model_class_index": 15,
+      "media": [
+        {
+          "type": "image",
+          "src": "/media/letters/Q.svg",
+          "license": "Public domain",
+          "attribution": "wpclipart.com (Wikimedia Commons)"
+        }
+      ]
     },
     {
       "code": "LETTER_R",
       "gloss": "R",
       "kind": "static",
       "model_task": "static_letters",
-      "model_class_index": 16
+      "model_class_index": 16,
+      "media": [
+        {
+          "type": "image",
+          "src": "/media/letters/R.svg",
+          "license": "Public domain",
+          "attribution": "wpclipart.com (Wikimedia Commons)"
+        }
+      ]
     },
     {
       "code": "LETTER_S",
       "gloss": "S",
       "kind": "static",
       "model_task": "static_letters",
-      "model_class_index": 17
+      "model_class_index": 17,
+      "media": [
+        {
+          "type": "image",
+          "src": "/media/letters/S.svg",
+          "license": "Public domain",
+          "attribution": "wpclipart.com (Wikimedia Commons)"
+        }
+      ]
     },
     {
       "code": "LETTER_T",
       "gloss": "T",
       "kind": "static",
       "model_task": "static_letters",
-      "model_class_index": 18
+      "model_class_index": 18,
+      "media": [
+        {
+          "type": "image",
+          "src": "/media/letters/T.svg",
+          "license": "Public domain",
+          "attribution": "wpclipart.com (Wikimedia Commons)"
+        }
+      ]
     },
     {
       "code": "LETTER_U",

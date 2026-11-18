@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes, useNavigate } from 'react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { LessonPlayer } from '@/features/lesson/LessonPlayer';
+import { HandSheet } from '@/dev/HandSheet';
 import { Banners } from '@/features/onboarding/Banners';
 import { Landing } from '@/features/onboarding/Landing';
 import { Lab } from '@/features/lab/Lab';
@@ -39,6 +40,7 @@ export function AppRoutes() {
   return (
     <Routes>
       <Route index element={<Home />} />
+      {import.meta.env.DEV && <Route path="dev/hands" element={<HandSheet />} />}
       <Route path="lesson/:code" element={<LessonPlayer />} />
       <Route element={<ConnectedShell />}>
         <Route path="learn" element={<SkillTree />} />
