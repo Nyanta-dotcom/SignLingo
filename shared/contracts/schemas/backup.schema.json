@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "backup.schema.json",
+  "title": "SignLingo progress backup (signlingo-backup-YYYYMMDD.json)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "exported_at", "app_version", "data"],
+  "properties": {
+    "schema_version": { "type": "integer", "minimum": 1 },
+    "exported_at": { "type": "string" },
+    "app_version": { "type": "string" },
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "profile": {
+          "type": "object",
+          "required": ["created_at", "timezone"],
+          "properties": {
+            "display_name": { "type": "string" },
+            "created_at": { "type": "string" },
+            "timezone": { "type": "string" }
+          }
+        },
+        "settings": {
+          "type": "object",
+          "properties": {
+            "theme": { "enum": ["system", "light", "dark"] },
+            "handedness": { "enum": ["right", "left"] },
+            "sound_on": { "type": "boolean" },
+            "reduced_motion": { "enum": ["system", "on", "off"] },
+            "daily_xp_goal": { "enum": [10, 20, 30, 50] },
+            "camera_device_id": { "type": "string" }
+          }
+        },
+        "stats": {
+          "type": "object",
+          "required": ["total_xp", "current_streak", "longest_streak", "last_goal_date", "hearts", "hearts_updated_at"],
+          "properties": {
+            "total_xp": { "type": "integer", "minimum": 0 },
+            "current_streak": { "type": "integer", "minimum": 0 },
+            "longest_streak": { "type": "integer", "minimum": 0 },
+            "last_goal_date": { "type": ["string", "null"] },
+            "hearts": { "type": "integer", "minimum": 0, "maximum": 5 },
+            "hearts_updated_at": { "type": "string" }
+          }
+        },
+        "progress": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": ["status", "best_accuracy_pct", "times_completed"],
+            "properties": {
+              "status": { "enum": ["completed", "in_progress"] },
+              "best_accuracy_pct": { "type": "number", "minimum": 0, "maximum": 100 },
+              "times_completed": { "type": "integer", "minimum": 0 },
+              "last_completed_at": { "type": ["string", "null"] }
+            }
+          }
+        },
+        "daily": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": ["xp_earned", "lessons_completed", "goal_met"],
+            "properties": {
+              "xp_earned": { "type": "integer", "minimum": 0 },
+              "lessons_completed": { "type": "integer", "minimum": 0 },
+              "goal_met": { "type": "boolean" }
+            }
+          }
+        },
+        "sign_stats": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": ["attempts", "correct", "avg_time_to_verify_ms"],
+            "properties": {
+              "attempts": { "type": "integer", "minimum": 0 },
+              "correct": { "type": "integer", "minimum": 0 },
+              "avg_time_to_verify_ms": { "type": "number", "minimum": 0 }
+            }
+          }
+        },
+        "sessions": { "type": "array", "maxItems": 200, "items": { "type": "object", "required": ["id", "mode", "started_at", "status", "attempts"] } },
+        "benchmarks": { "type": "array", "maxItems": 20, "items": { "type": "object", "required": ["id", "recorded_at", "backend", "processing_fps_avg"] } }
+      }
+    }
+  }
+}

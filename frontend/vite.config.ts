@@ -13,6 +13,11 @@ export default defineConfig({
   server: { headers: crossOriginIsolation },
   preview: { headers: crossOriginIsolation },
   plugins: [react(), tailwindcss()],
-  resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
+  resolve: {
+    alias: {
+      '@contracts': fileURLToPath(new URL('../shared/contracts', import.meta.url)),
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
   test: { environment: 'jsdom', globals: true, setupFiles: ['./src/test/setup.ts'] },
 });

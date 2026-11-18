@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "curriculum.schema.json",
+  "title": "SignLingo curriculum (content supplied by the team, never invented)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "units", "signs"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "signs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["code", "gloss", "kind", "model_task", "model_class_index"],
+        "properties": {
+          "code": { "type": "string", "minLength": 1 },
+          "gloss": { "type": "string" },
+          "kind": { "enum": ["static", "dynamic"] },
+          "model_task": { "type": "string" },
+          "model_class_index": { "type": "integer", "minimum": 0 },
+          "hints": { "type": "object", "additionalProperties": { "type": "string" } },
+          "media": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["type", "src", "license", "attribution"],
+              "properties": {
+                "type": { "enum": ["image", "video"] },
+                "src": { "type": "string" },
+                "license": { "type": "string", "minLength": 1 },
+                "attribution": { "type": "string", "minLength": 1 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "units": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["code", "level", "title", "order", "lessons"],
+        "properties": {
+          "code": { "type": "string", "minLength": 1 },
+          "level": { "enum": [1, 2, 3] },
+          "title": { "type": "string" },
+          "order": { "type": "integer" },
+          "lessons": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["code", "title", "order", "xp_reward", "requires", "items"],
+              "properties": {
+                "code": { "type": "string", "minLength": 1 },
+                "title": { "type": "string" },
+                "order": { "type": "integer" },
+                "xp_reward": { "type": "integer", "minimum": 0 },
+                "requires": { "type": "array", "items": { "type": "string" } },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["order", "type"],
+                    "properties": {
+                      "order": { "type": "integer" },
+                      "type": { "enum": ["learn_card", "perform_sign", "choose_sign", "spell_word", "perform_dynamic"] },
+                      "sign_code": { "type": "string" },
+                      "word": { "type": "string", "minLength": 1 },
+                      "config": {
+                        "type": "object",
+                        "properties": {
+                          "hold_ms": { "type": "integer", "minimum": 1 },
+                          "threshold": { "type": "number", "minimum": 0, "maximum": 1 },
+                          "time_limit_ms": { "type": "integer", "minimum": 1 }
+                        }
+                      }
+                    },
+                    "if": { "properties": { "type": { "const": "spell_word" } } },
+                    "then": { "required": ["word"] },
+                    "else": { "required": ["sign_code"] }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
