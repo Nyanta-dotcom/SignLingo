@@ -7,6 +7,9 @@ import { Profile } from '@/features/profile/Profile';
 import { Settings } from '@/features/settings/Settings';
 import { Collect } from '@/features/collect/Collect';
 import { Practice } from '@/features/practice/Practice';
+import { Learn } from '@/features/learn/Learn';
+import { Lesson, LessonDone } from '@/features/learn/Lesson';
+import { Dictionary } from '@/features/dictionary/Dictionary';
 import { vi } from '@/i18n/vi';
 import { useLearner } from '@/storage/useLearner';
 
@@ -38,10 +41,12 @@ export function AppRoutes() {
     <Routes>
       <Route index element={<Home />} />
       <Route element={<ConnectedShell />}>
-        <Route path="learn" element={<Placeholder title={vi.nav.learn} />} />
+        <Route path="learn" element={<Learn />} />
+        <Route path="lesson/:id" element={<Lesson />} />
+        <Route path="lesson/:id/done" element={<LessonDone />} />
         <Route path="practice" element={<Practice />} />
         <Route path="collect" element={<Collect />} />
-        <Route path="dictionary" element={<Placeholder title={vi.nav.dictionary} />} />
+        <Route path="dictionary" element={<Dictionary />} />
         <Route path="lab" element={<Lab />} />
         <Route path="profile" element={<Profile />} />
         <Route path="settings" element={<Settings />} />
