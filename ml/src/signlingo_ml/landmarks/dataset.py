@@ -94,3 +94,36 @@ def order_split3(
         split[idx[val_start:val_end]] = "val"
         split[idx[test_start:]] = "test"
     return split.astype(str)
+
+
+def _runs(y: np.ndarray) -> list[tuple[int, int]]:
+    """(start, end) of every maximal run of equal labels in file order."""
+    starts = np.flatnonzero(np.r_[True, y[1:] != y[:-1]])
+    return list(zip(starts, np.r_[starts[1:], len(y)], strict=True))
+
+
+def block_split(
+    y: np.ndarray, min_block: int = 50, val_frac: float = 0.2, gap_frac: float = 0.02
+) -> np.ndarray:
+    """Hold out a whole recording block per class (P1-21, option D).
+
+    keypoint.csv has no signer or session column, but each class is a few long contiguous
+    blocks of one label (probably separate recordings). Test = the LAST block of each class with at
+    least `min_block` rows. Validation = the last `val_frac` of the class's other rows in file
+    order (after a dropped gap), the rest is train. Classes with no such block get no test rows.
+    This is a recording-block holdout, NOT a signer holdout: blocks may come from one person.
+    """
+    split = np.full(len(y), "train", dtype=object)
+    runs = _runs(y)
+    for c in np.unique(y):
+        idx = np.flatnonzero(y == c)
+        big = [r for r in runs if y[r[0]] == c and r[1] - r[0] >= min_block]
+        if big:
+            s, e = big[-1]
+            split[s:e] = "test"
+        rest = idx[split[idx] != "test"]
+        n_val, gap = round(val_frac * len(rest)), round(gap_frac * len(rest))
+        if n_val:
+            split[rest[len(rest) - n_val - gap : len(rest) - n_val]] = "gap"
+            split[rest[len(rest) - n_val :]] = "val"
+    return split.astype(str)

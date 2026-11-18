@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "landmark_capture.schema.json",
+  "title": "Landmark capture file (from /collect or ml/tools/capture.py)",
+  "description": "Raw hand landmarks with a letter label. No images or video. signer_id is an anonymous code (S01, S02...).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "preprocess_version", "signer_id", "capture_session_id", "samples"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "preprocess_version": { "const": "raw" },
+    "signer_id": { "type": "string", "pattern": "^S[0-9]{2,}$" },
+    "capture_session_id": { "type": "string", "minLength": 1 },
+    "device": { "type": "object" },
+    "samples": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sign_code", "frames"],
+        "properties": {
+          "sign_code": { "type": "string", "pattern": "^LETTER_[A-Y]$" },
+          "handedness": { "enum": ["Left", "Right"] },
+          "captured_at": { "type": "string" },
+          "frames": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "array",
+              "minItems": 21,
+              "maxItems": 21,
+              "items": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 3,
+                "items": { "type": "number" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
