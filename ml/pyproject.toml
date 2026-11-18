@@ -8,6 +8,7 @@ dependencies = ["numpy", "pandas", "scikit-learn", "scikit-image", "scipy", "pya
 [project.optional-dependencies]
 dev = ["pytest", "ruff", "hypothesis", "matplotlib"]
 dl = ["torch", "onnx", "onnxruntime"]  # torch CPU build: pip install torch --index-url https://download.pytorch.org/whl/cpu
+capture = ["opencv-python", "mediapipe"]  # only for ml/tools/capture.py (P1-21 data collection)
 
 [build-system]
 requires = ["setuptools>=68"]

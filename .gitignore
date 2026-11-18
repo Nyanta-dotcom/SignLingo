@@ -29,3 +29,4 @@ Thumbs.db
 /data/
 # earlier course reports: figures were not produced by code in this repo, so never published or cited
 /docs/reports/
+ml/data/models/
