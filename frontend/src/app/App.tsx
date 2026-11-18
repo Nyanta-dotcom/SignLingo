@@ -1,6 +1,8 @@
 import { Navigate, Route, Routes } from 'react-router';
 import { AppShell } from '@/components/layout/AppShell';
-import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { Lab } from '@/features/lab/Lab';
+import { Profile } from '@/features/profile/Profile';
+import { Settings } from '@/features/settings/Settings';
 import { Collect } from '@/features/collect/Collect';
 import { Practice } from '@/features/practice/Practice';
 import { vi } from '@/i18n/vi';
@@ -11,17 +13,6 @@ function Placeholder({ title }: { title: string }) {
     <section>
       <h1 className="text-3xl font-extrabold">{title}</h1>
       <p className="mt-2 text-text-muted">{vi.common.comingSoon}</p>
-    </section>
-  );
-}
-
-function Settings() {
-  const theme = useLearner((s) => s.settings.theme);
-  const update = useLearner((s) => s.updateSettings);
-  return (
-    <section className="flex flex-col gap-4">
-      <h1 className="text-3xl font-extrabold">{vi.nav.settings}</h1>
-      <ThemeToggle value={theme} onChange={(t) => update({ theme: t })} />
     </section>
   );
 }
@@ -40,8 +31,8 @@ export function AppRoutes() {
         <Route path="practice" element={<Practice />} />
         <Route path="collect" element={<Collect />} />
         <Route path="dictionary" element={<Placeholder title={vi.nav.dictionary} />} />
-        <Route path="lab" element={<Placeholder title={vi.nav.lab} />} />
-        <Route path="profile" element={<Placeholder title={vi.nav.profile} />} />
+        <Route path="lab" element={<Lab />} />
+        <Route path="profile" element={<Profile />} />
         <Route path="settings" element={<Settings />} />
         <Route path="*" element={<Placeholder title={vi.common.notFound} />} />
       </Route>

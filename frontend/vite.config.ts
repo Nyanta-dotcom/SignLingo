@@ -10,7 +10,8 @@ const crossOriginIsolation = {
 };
 
 export default defineConfig({
-  server: { headers: crossOriginIsolation },
+  // The vendored wasm/model files are never edited; watching them gives EBUSY on Windows and can stall HMR.
+  server: { headers: crossOriginIsolation, watch: { ignored: ['**/public/ort/**', '**/public/mediapipe/**'] } },
   preview: { headers: crossOriginIsolation },
   plugins: [react(), tailwindcss()],
   resolve: {

@@ -32,3 +32,4 @@ Thumbs.db
 ml/data/models/
 frontend/public/mediapipe/
 frontend/public/ort/
+*.tsbuildinfo

@@ -1,7 +1,7 @@
 /** Loads the static JSON that ml/ published (docs/04 §4). Same-origin only; every file is schema-checked. */
 
 import {
-  validateExperimentIndex, validateModelIndex, validateModelManifest, type Validation,
+  validateExperiment, validateExperimentIndex, validateModelIndex, validateModelManifest, type Validation,
 } from '@/storage/validate';
 
 export class StaticDataError extends Error {
@@ -34,6 +34,17 @@ async function getJson<T>(path: string, check: (d: unknown) => Validation): Prom
 }
 
 export const loadModelIndex = () => getJson<ModelIndex>('/models/index.json', validateModelIndex);
+export type ExperimentRun = {
+  run_id: string; model_name: string; dataset: string; split_strategy: string;
+  confusion_matrix?: { labels: string[]; matrix: number[][]; normalized: 'row' | 'none' };
+  per_class_f1?: Record<string, number>;
+  top_confusions?: Array<{ true: string; pred: string; rate: number }>;
+} & Record<string, unknown>;
+
+export const loadExperimentRun = (runId: string) => {
+  if (!/^[A-Za-z0-9_.-]+$/.test(runId)) throw new StaticDataError('HTTP_ERROR', `bad run id ${runId}`);
+  return getJson<ExperimentRun>(`/data/experiments/${runId}.json`, validateExperiment);
+};
 export const loadExperimentIndex = () => getJson<ExperimentIndex>('/data/experiments/index.json', validateExperimentIndex);
 
 export async function loadActiveManifest(task: string): Promise<ModelManifest> {
