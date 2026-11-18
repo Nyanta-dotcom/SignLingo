@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { Collect } from '@/features/collect/Collect';
 import { Practice } from '@/features/practice/Practice';
 import { vi } from '@/i18n/vi';
 import { useLearner } from '@/storage/useLearner';
@@ -37,6 +38,7 @@ export function AppRoutes() {
         <Route index element={<Navigate to="/learn" replace />} />
         <Route path="learn" element={<Placeholder title={vi.nav.learn} />} />
         <Route path="practice" element={<Practice />} />
+        <Route path="collect" element={<Collect />} />
         <Route path="dictionary" element={<Placeholder title={vi.nav.dictionary} />} />
         <Route path="lab" element={<Placeholder title={vi.nav.lab} />} />
         <Route path="profile" element={<Placeholder title={vi.nav.profile} />} />
