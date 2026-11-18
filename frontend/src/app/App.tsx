@@ -5,6 +5,7 @@ import { Landing } from '@/features/onboarding/Landing';
 import { Lab } from '@/features/lab/Lab';
 import { Profile } from '@/features/profile/Profile';
 import { Settings } from '@/features/settings/Settings';
+import { SkillTree } from '@/features/skill-tree/SkillTree';
 import { Collect } from '@/features/collect/Collect';
 import { Practice } from '@/features/practice/Practice';
 import { vi } from '@/i18n/vi';
@@ -38,7 +39,8 @@ export function AppRoutes() {
     <Routes>
       <Route index element={<Home />} />
       <Route element={<ConnectedShell />}>
-        <Route path="learn" element={<Placeholder title={vi.nav.learn} />} />
+        <Route path="learn" element={<SkillTree />} />
+        <Route path="lesson/:code" element={<Placeholder title={vi.learn.lessonSoon} />} />
         <Route path="practice" element={<Practice />} />
         <Route path="collect" element={<Collect />} />
         <Route path="dictionary" element={<Placeholder title={vi.nav.dictionary} />} />
