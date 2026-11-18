@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import type { Sign } from '@/content/types';
 import { vi } from '@/i18n/vi';
+import { HandIllustration } from './HandIllustration';
 
 /** Introduces a letter: the big letter and, when the curriculum has one, a picture of the hand with its source. */
 export function LearnCard({ letter, sign, onNext }: { letter: string; sign?: Sign; onNext: () => void }) {
@@ -12,6 +13,12 @@ export function LearnCard({ letter, sign, onNext }: { letter: string; sign?: Sig
       <h1 className="text-2xl font-extrabold">{t.cardTitle(letter)}</h1>
       <div className="flex flex-wrap items-center justify-center gap-8">
         <p aria-label={t.cardLetter} className="text-9xl font-extrabold text-brand-fg">{letter}</p>
+        {!image && (
+          <figure className="flex flex-col items-center gap-2">
+            <HandIllustration letter={letter} className="h-56 w-auto" />
+            <figcaption className="max-w-48 text-xs text-text-muted">{t.cardArtCredit}</figcaption>
+          </figure>
+        )}
         {image && (
           <figure className="flex flex-col items-center gap-2">
             <img src={image.src} alt={t.cardImageAlt(letter)} className="h-56 w-auto rounded-[var(--radius-xl)] bg-white p-2" />

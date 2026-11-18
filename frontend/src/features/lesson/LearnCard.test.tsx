@@ -17,13 +17,14 @@ describe('LearnCard', () => {
   it('works without a picture and moves on when asked', () => {
     const onNext = vi.fn();
     render(<LearnCard letter="B" sign={sign()} onNext={onNext} />);
-    expect(screen.queryByRole('img')).toBeNull();
+    expect(screen.getByRole('img', { name: 'Hình minh họa bàn tay làm chữ B' }).tagName.toLowerCase()).toBe('svg'); // the drawn hand
+    expect(screen.getByText(/Hình minh họa của SignLingo/)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Tiếp tục' }));
     expect(onNext).toHaveBeenCalledOnce();
   });
 
-  it('ignores videos for now and only uses an image', () => {
+  it('ignores videos for now and falls back to the drawing', () => {
     render(<LearnCard letter="C" sign={sign([{ type: 'video', src: '/media/c.mp4', license: 'x', attribution: 'y' }])} onNext={() => {}} />);
-    expect(screen.queryByRole('img')).toBeNull();
+    expect(screen.getByRole('img', { name: 'Hình minh họa bàn tay làm chữ C' }).tagName.toLowerCase()).toBe('svg');
   });
 });

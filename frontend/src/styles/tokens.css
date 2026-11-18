@@ -19,6 +19,8 @@
   --danger-fg: #dc2626;
   --danger-bg: #fee2e2;
   --danger-on-bg: #b91c1c; /* text on danger-bg: #dc2626 gives only 3.95:1 there */
+  --skin: #f4c7a1; /* cartoon hand illustrations (lesson cards) */
+  --skin-line: #3b2a20;
   --brand-fg: #1557c0; /* blue TEXT on surfaces: brand-600 gives only 4.42:1 on brand-50 and 4.0:1 on dark */
   --warning-fg: #b45309;
   --streak: #f59e0b;
@@ -54,6 +56,8 @@
   --danger-fg: #f87171;
   --danger-bg: #2a1215;
   --danger-on-bg: #f87171;
+  --skin: #f4c7a1;
+  --skin-line: #1a110c;
   --brand-fg: #7cb4ff;
   --warning-fg: #fbbf24;
   --streak: #fbbf24;
