@@ -1,0 +1,132 @@
+/* Design tokens (docs/05 §2). The ONLY place hex colours may appear; components use the utilities below. */
+
+:root {
+  --brand-50: #eef5ff;
+  --brand-100: #d9e8ff;
+  --brand-200: #b5d2ff;
+  --brand-300: #7cb4ff;
+  --brand-400: #4c9aff;
+  --brand-500: #2f86ff;
+  --brand-600: #1d6fe8;
+  --brand-700: #1557c0;
+  --brand-800: #12459a;
+  --brand-900: #0f3570;
+  --sky-400: #38bdf8;
+  --sky-500: #0ea5e9;
+
+  --success-fg: #15803d;
+  --success-bg: #dcfce7;
+  --danger-fg: #dc2626;
+  --danger-bg: #fee2e2;
+  --danger-on-bg: #b91c1c; /* text on danger-bg: #dc2626 gives only 3.95:1 there */
+  --warning-fg: #b45309;
+  --streak: #f59e0b;
+  --xp: #eab308;
+  --heart: #ef4444;
+
+  --bg: #f5f9ff;
+  --surface: #ffffff;
+  --surface-2: #eef3fb;
+  --border: #d6e0ee;
+  --text: #0f172a;
+  --text-muted: #475569;
+  --text-on-brand: #ffffff;
+  --focus-ring: #2f86ff;
+  --overlay-skeleton: #0ea5e9;
+  --overlay-joint-ok: #22c55e;
+  --overlay-joint-bad: #ef4444;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 28px;
+  --motion-fast: 120ms;
+  --motion-base: 200ms;
+  --motion-bounce: 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  --card-shadow: 0 2px 0 var(--border);
+}
+
+:root[data-theme='dark'] {
+  --success-fg: #4ade80;
+  --success-bg: #0f2a1b;
+  --danger-fg: #f87171;
+  --danger-bg: #2a1215;
+  --danger-on-bg: #f87171;
+  --warning-fg: #fbbf24;
+  --streak: #fbbf24;
+  --xp: #facc15;
+  --heart: #f87171;
+
+  --bg: #0b1220;
+  --surface: #111a2e;
+  --surface-2: #18233b;
+  --border: #263354;
+  --text: #e6edf8;
+  --text-muted: #9aa8c1;
+  --focus-ring: #7cb4ff;
+  --overlay-skeleton: #38bdf8;
+  --overlay-joint-ok: #4ade80;
+  --overlay-joint-bad: #f87171;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-fast: 0ms;
+    --motion-base: 0ms;
+    --motion-bounce: 0ms;
+  }
+}
+
+/* Tailwind theme: utilities such as bg-brand-600, text-muted, border-border read the variables above. */
+@theme inline {
+  --color-brand-50: var(--brand-50);
+  --color-brand-100: var(--brand-100);
+  --color-brand-200: var(--brand-200);
+  --color-brand-300: var(--brand-300);
+  --color-brand-400: var(--brand-400);
+  --color-brand-500: var(--brand-500);
+  --color-brand-600: var(--brand-600);
+  --color-brand-700: var(--brand-700);
+  --color-brand-800: var(--brand-800);
+  --color-brand-900: var(--brand-900);
+  --color-sky-400: var(--sky-400);
+  --color-sky-500: var(--sky-500);
+  --color-success-fg: var(--success-fg);
+  --color-success-bg: var(--success-bg);
+  --color-danger-fg: var(--danger-fg);
+  --color-danger-bg: var(--danger-bg);
+  --color-danger-on-bg: var(--danger-on-bg);
+  --color-warning-fg: var(--warning-fg);
+  --color-streak: var(--streak);
+  --color-xp: var(--xp);
+  --color-heart: var(--heart);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-text-on-brand: var(--text-on-brand);
+  --color-focus-ring: var(--focus-ring);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 28px;
+}
+
+html {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'Nunito Variable', system-ui, sans-serif;
+  font-weight: 600;
+  transition:
+    background-color var(--motion-base) ease,
+    color var(--motion-base) ease;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}

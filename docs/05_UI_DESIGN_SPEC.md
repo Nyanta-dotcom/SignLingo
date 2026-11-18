@@ -44,6 +44,7 @@
 | `success-bg` | `#DCFCE7` | `#0F2A1B` | Banner đúng |
 | `danger-fg` | `#DC2626` | `#F87171` | Sai, mất tim, ngón lệch |
 | `danger-bg` | `#FEE2E2` | `#2A1215` | Banner sai |
+| `danger-on-bg` | `#B91C1C` | `#F87171` | Chữ trên `danger-bg` (đo thật: `#DC2626` trên `#FEE2E2` chỉ đạt 3,95:1 < 4,5:1) |
 | `warning-fg` | `#B45309` | `#FBBF24` | "Gần đúng", độ tin cậy thấp |
 | `streak` | `#F59E0B` | `#FBBF24` | Icon ngọn lửa (chỉ icon, không làm nền chữ) |
 | `xp` | `#EAB308` | `#FACC15` | Icon/chip XP |
