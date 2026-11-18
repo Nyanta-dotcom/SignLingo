@@ -1,0 +1,548 @@
+{
+  "schema_version": 1,
+  "signs": [
+    {
+      "code": "LETTER_A",
+      "gloss": "A",
+      "kind": "static",
+      "model_task": "static_letters",
+      "model_class_index": 0
+    },
+    {
+      "code": "LETTER_B",
+      "gloss": "B",
+      "kind": "static",
+      "model_task": "static_letters",
+      "model_class_index": 1
+    },
+    {
+      "code": "LETTER_C",
+      "gloss": "C",
+      "kind": "static",
+      "model_task": "static_letters",
+      "model_class_index": 2
+    },
+    {
+      "code": "LETTER_D",
+      "gloss": "D",
+      "kind": "static",
+      "model_task": "static_letters",
+      "model_class_index": 3
+    },
+    {
+      "code": "LETTER_E",
+      "gloss": "E",
+      "kind": "static",
+      "model_task": "static_letters",
+      "model_class_index": 4
+    },
+    {
+      "code": "LETTER_F",
+      "gloss": "F",
+      "kind": "static",
+      "model_task": "static_letters",
+      "model_class_index": 5
+    },
+    {
+      "code": "LETTER_G",
+      "gloss": "G",
+      "kind": "static",
+      "model_task": "static_letters",
+      "model_class_index": 6
+    },
+    {
+      "code": "LETTER_H",
+      "gloss": "H",
+      "kind": "static",
+      "model_task": "static_letters",
+      "model_class_index": 7
+    },
+    {
+      "code": "LETTER_I",
+      "gloss": "I",
+      "kind": "static",
+      "model_task": "static_letters",
+      "model_class_index": 8
+    },
+    {
+      "code": "LETTER_K",
+      "gloss": "K",
+      "kind": "static",
+      "model_task": "static_letters",
+      "model_class_index": 9
+    },
+    {
+      "code": "LETTER_L",
+      "gloss": "L",
+      "kind": "static",
+      "model_task": "static_letters",
+      "model_class_index": 10
+    },
+    {
+      "code": "LETTER_M",
+      "gloss": "M",
+      "kind": "static",
+      "model_task": "static_letters",
+      "model_class_index": 11
+    },
+    {
+      "code": "LETTER_N",
+      "gloss": "N",
+      "kind": "static",
+      "model_task": "static_letters",
+      "model_class_index": 12
+    },
+    {
+      "code": "LETTER_O",
+      "gloss": "O",
+      "kind": "static",
+      "model_task": "static_letters",
+      "model_class_index": 13
+    },
+    {
+      "code": "LETTER_P",
+      "gloss": "P",
+      "kind": "static",
+      "model_task": "static_letters",
+      "model_class_index": 14
+    },
+    {
+      "code": "LETTER_Q",
+      "gloss": "Q",
+      "kind": "static",
+      "model_task": "static_letters",
+      "model_class_index": 15
+    },
+    {
+      "code": "LETTER_R",
+      "gloss": "R",
+      "kind": "static",
+      "model_task": "static_letters",
+      "model_class_index": 16
+    },
+    {
+      "code": "LETTER_S",
+      "gloss": "S",
+      "kind": "static",
+      "model_task": "static_letters",
+      "model_class_index": 17
+    },
+    {
+      "code": "LETTER_T",
+      "gloss": "T",
+      "kind": "static",
+      "model_task": "static_letters",
+      "model_class_index": 18
+    },
+    {
+      "code": "LETTER_U",
+      "gloss": "U",
+      "kind": "static",
+      "model_task": "static_letters",
+      "model_class_index": 19
+    },
+    {
+      "code": "LETTER_V",
+      "gloss": "V",
+      "kind": "static",
+      "model_task": "static_letters",
+      "model_class_index": 20
+    },
+    {
+      "code": "LETTER_W",
+      "gloss": "W",
+      "kind": "static",
+      "model_task": "static_letters",
+      "model_class_index": 21
+    },
+    {
+      "code": "LETTER_X",
+      "gloss": "X",
+      "kind": "static",
+      "model_task": "static_letters",
+      "model_class_index": 22
+    },
+    {
+      "code": "LETTER_Y",
+      "gloss": "Y",
+      "kind": "static",
+      "model_task": "static_letters",
+      "model_class_index": 23
+    }
+  ],
+  "units": [
+    {
+      "code": "U1",
+      "level": 1,
+      "title": "Bảng chữ cái ASL",
+      "order": 1,
+      "lessons": [
+        {
+          "code": "U1L1",
+          "title": "Bài 1: A B C D",
+          "order": 1,
+          "xp_reward": 10,
+          "requires": [],
+          "items": [
+            {
+              "order": 1,
+              "type": "learn_card",
+              "sign_code": "LETTER_A"
+            },
+            {
+              "order": 2,
+              "type": "perform_sign",
+              "sign_code": "LETTER_A"
+            },
+            {
+              "order": 3,
+              "type": "learn_card",
+              "sign_code": "LETTER_B"
+            },
+            {
+              "order": 4,
+              "type": "perform_sign",
+              "sign_code": "LETTER_B"
+            },
+            {
+              "order": 5,
+              "type": "learn_card",
+              "sign_code": "LETTER_C"
+            },
+            {
+              "order": 6,
+              "type": "perform_sign",
+              "sign_code": "LETTER_C"
+            },
+            {
+              "order": 7,
+              "type": "learn_card",
+              "sign_code": "LETTER_D"
+            },
+            {
+              "order": 8,
+              "type": "perform_sign",
+              "sign_code": "LETTER_D"
+            }
+          ]
+        },
+        {
+          "code": "U1L2",
+          "title": "Bài 2: E F G H",
+          "order": 2,
+          "xp_reward": 10,
+          "requires": [
+            "U1L1"
+          ],
+          "items": [
+            {
+              "order": 1,
+              "type": "learn_card",
+              "sign_code": "LETTER_E"
+            },
+            {
+              "order": 2,
+              "type": "perform_sign",
+              "sign_code": "LETTER_E"
+            },
+            {
+              "order": 3,
+              "type": "learn_card",
+              "sign_code": "LETTER_F"
+            },
+            {
+              "order": 4,
+              "type": "perform_sign",
+              "sign_code": "LETTER_F"
+            },
+            {
+              "order": 5,
+              "type": "learn_card",
+              "sign_code": "LETTER_G"
+            },
+            {
+              "order": 6,
+              "type": "perform_sign",
+              "sign_code": "LETTER_G"
+            },
+            {
+              "order": 7,
+              "type": "learn_card",
+              "sign_code": "LETTER_H"
+            },
+            {
+              "order": 8,
+              "type": "perform_sign",
+              "sign_code": "LETTER_H"
+            }
+          ]
+        },
+        {
+          "code": "U1L3",
+          "title": "Bài 3: I K L M",
+          "order": 3,
+          "xp_reward": 10,
+          "requires": [
+            "U1L2"
+          ],
+          "items": [
+            {
+              "order": 1,
+              "type": "learn_card",
+              "sign_code": "LETTER_I"
+            },
+            {
+              "order": 2,
+              "type": "perform_sign",
+              "sign_code": "LETTER_I"
+            },
+            {
+              "order": 3,
+              "type": "learn_card",
+              "sign_code": "LETTER_K"
+            },
+            {
+              "order": 4,
+              "type": "perform_sign",
+              "sign_code": "LETTER_K"
+            },
+            {
+              "order": 5,
+              "type": "learn_card",
+              "sign_code": "LETTER_L"
+            },
+            {
+              "order": 6,
+              "type": "perform_sign",
+              "sign_code": "LETTER_L"
+            },
+            {
+              "order": 7,
+              "type": "learn_card",
+              "sign_code": "LETTER_M"
+            },
+            {
+              "order": 8,
+              "type": "perform_sign",
+              "sign_code": "LETTER_M"
+            }
+          ]
+        },
+        {
+          "code": "U1L4",
+          "title": "Bài 4: N O P Q",
+          "order": 4,
+          "xp_reward": 10,
+          "requires": [
+            "U1L3"
+          ],
+          "items": [
+            {
+              "order": 1,
+              "type": "learn_card",
+              "sign_code": "LETTER_N"
+            },
+            {
+              "order": 2,
+              "type": "perform_sign",
+              "sign_code": "LETTER_N"
+            },
+            {
+              "order": 3,
+              "type": "learn_card",
+              "sign_code": "LETTER_O"
+            },
+            {
+              "order": 4,
+              "type": "perform_sign",
+              "sign_code": "LETTER_O"
+            },
+            {
+              "order": 5,
+              "type": "learn_card",
+              "sign_code": "LETTER_P"
+            },
+            {
+              "order": 6,
+              "type": "perform_sign",
+              "sign_code": "LETTER_P"
+            },
+            {
+              "order": 7,
+              "type": "learn_card",
+              "sign_code": "LETTER_Q"
+            },
+            {
+              "order": 8,
+              "type": "perform_sign",
+              "sign_code": "LETTER_Q"
+            }
+          ]
+        },
+        {
+          "code": "U1L5",
+          "title": "Bài 5: R S T U",
+          "order": 5,
+          "xp_reward": 10,
+          "requires": [
+            "U1L4"
+          ],
+          "items": [
+            {
+              "order": 1,
+              "type": "learn_card",
+              "sign_code": "LETTER_R"
+            },
+            {
+              "order": 2,
+              "type": "perform_sign",
+              "sign_code": "LETTER_R"
+            },
+            {
+              "order": 3,
+              "type": "learn_card",
+              "sign_code": "LETTER_S"
+            },
+            {
+              "order": 4,
+              "type": "perform_sign",
+              "sign_code": "LETTER_S"
+            },
+            {
+              "order": 5,
+              "type": "learn_card",
+              "sign_code": "LETTER_T"
+            },
+            {
+              "order": 6,
+              "type": "perform_sign",
+              "sign_code": "LETTER_T"
+            },
+            {
+              "order": 7,
+              "type": "learn_card",
+              "sign_code": "LETTER_U"
+            },
+            {
+              "order": 8,
+              "type": "perform_sign",
+              "sign_code": "LETTER_U"
+            }
+          ]
+        },
+        {
+          "code": "U1L6",
+          "title": "Bài 6: V W X Y",
+          "order": 6,
+          "xp_reward": 10,
+          "requires": [
+            "U1L5"
+          ],
+          "items": [
+            {
+              "order": 1,
+              "type": "learn_card",
+              "sign_code": "LETTER_V"
+            },
+            {
+              "order": 2,
+              "type": "perform_sign",
+              "sign_code": "LETTER_V"
+            },
+            {
+              "order": 3,
+              "type": "learn_card",
+              "sign_code": "LETTER_W"
+            },
+            {
+              "order": 4,
+              "type": "perform_sign",
+              "sign_code": "LETTER_W"
+            },
+            {
+              "order": 5,
+              "type": "learn_card",
+              "sign_code": "LETTER_X"
+            },
+            {
+              "order": 6,
+              "type": "perform_sign",
+              "sign_code": "LETTER_X"
+            },
+            {
+              "order": 7,
+              "type": "learn_card",
+              "sign_code": "LETTER_Y"
+            },
+            {
+              "order": 8,
+              "type": "perform_sign",
+              "sign_code": "LETTER_Y"
+            }
+          ]
+        },
+        {
+          "code": "U1L7",
+          "title": "Ôn tập các chữ dễ nhầm",
+          "order": 7,
+          "xp_reward": 10,
+          "requires": [
+            "U1L6"
+          ],
+          "items": [
+            {
+              "order": 1,
+              "type": "perform_sign",
+              "sign_code": "LETTER_B"
+            },
+            {
+              "order": 2,
+              "type": "perform_sign",
+              "sign_code": "LETTER_K"
+            },
+            {
+              "order": 3,
+              "type": "perform_sign",
+              "sign_code": "LETTER_L"
+            },
+            {
+              "order": 4,
+              "type": "perform_sign",
+              "sign_code": "LETTER_M"
+            },
+            {
+              "order": 5,
+              "type": "perform_sign",
+              "sign_code": "LETTER_N"
+            },
+            {
+              "order": 6,
+              "type": "perform_sign",
+              "sign_code": "LETTER_O"
+            },
+            {
+              "order": 7,
+              "type": "perform_sign",
+              "sign_code": "LETTER_S"
+            },
+            {
+              "order": 8,
+              "type": "perform_sign",
+              "sign_code": "LETTER_T"
+            },
+            {
+              "order": 9,
+              "type": "perform_sign",
+              "sign_code": "LETTER_U"
+            },
+            {
+              "order": 10,
+              "type": "perform_sign",
+              "sign_code": "LETTER_X"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
