@@ -84,7 +84,7 @@ export const vi = {
     masteryEmpty: 'Chưa có lượt luyện nào. Hãy học một bài để thấy tiến bộ ở đây.',
     masteryItem: (l: string, pct: number, n: number) => `Chữ ${l}: ${pct}% đúng trong ${n} lượt`,
     notTried: 'chưa luyện',
-    legend: 'Ít', legendMore: 'Nhiều',
+    activeDays: (n: number) => `${n} ngày có hoạt động trong 12 tuần qua`,
   },
   collect: {
     title: 'Thu dữ liệu landmark',
