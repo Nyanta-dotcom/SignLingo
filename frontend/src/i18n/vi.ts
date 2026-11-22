@@ -196,6 +196,7 @@ export const vi = {
     title: 'Đăng nhập',
     subtitle: 'Lưu tiến độ học trên mọi thiết bị và tham gia bảng xếp hạng.',
     skip: 'Học tiếp không cần đăng nhập',
+    menu: (name: string) => `Tài khoản ${name}`,
     off: 'Tính năng tài khoản chưa được bật trên bản này. Bạn vẫn học được đầy đủ.',
   },
   account: {

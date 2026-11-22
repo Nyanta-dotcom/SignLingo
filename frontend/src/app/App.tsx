@@ -4,6 +4,7 @@ import { AppShell } from '@/components/layout/AppShell';
 import { Alphabet } from '@/features/alphabet/Alphabet';
 import { LessonPlayer } from '@/features/lesson/LessonPlayer';
 import { HandSheet } from '@/dev/HandSheet';
+import { AccountMenu } from '@/features/account/AccountMenu';
 import { LoginPage } from '@/features/account/LoginPage';
 import { AboutPage } from '@/features/onboarding/AboutPage';
 import { Banners } from '@/features/onboarding/Banners';
@@ -34,8 +35,8 @@ function Placeholder({ title }: { title: string }) {
 
 function ConnectedShell() {
   const stats = useLearner((s) => s.stats);
-  const signedOut = useAccount((s) => s.status === 'signed_out');
-  return <AppShell stats={{ streak: stats.current_streak, xp: stats.total_xp, hearts: stats.hearts }} banner={<Banners />} loginLink={signedOut} />;
+  const hasAccount = useAccount((s) => s.status === 'signed_in' || s.status === 'signed_out');
+  return <AppShell stats={{ streak: stats.current_streak, xp: stats.total_xp, hearts: stats.hearts }} banner={<Banners />} account={hasAccount ? <AccountMenu /> : undefined} />;
 }
 
 /** Pre-app 3-page marketing routes. First visit to `/` shows Home; returning visits go straight to `/learn`. */
