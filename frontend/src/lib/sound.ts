@@ -1,7 +1,7 @@
-/** Short synthesised sounds (no audio files): joyful Duolingo-style chimes for correct, wrong, and lesson finished. */
+/** Short synthesised sounds (no audio files): Duolingo-style chimes & tactile UI interaction pops. */
 
-export type SoundName = 'correct' | 'wrong' | 'finish';
-type Tone = { freq: number; at: number; dur: number; type?: OscillatorType; vol?: number };
+export type SoundName = 'correct' | 'wrong' | 'finish' | 'click' | 'tab';
+type Tone = { freq: number; freqEnd?: number; at: number; dur: number; type?: OscillatorType; vol?: number };
 
 const PATTERNS: Record<SoundName, Tone[]> = {
   // Crisp rising two-note chime with a gentle octave shimmer
@@ -21,11 +21,19 @@ const PATTERNS: Record<SoundName, Tone[]> = {
     { freq: 659.25, at: 0.11, dur: 0.13, type: 'triangle', vol: 0.16 },
     { freq: 783.99, at: 0.22, dur: 0.13, type: 'triangle', vol: 0.17 },
     { freq: 987.77, at: 0.33, dur: 0.12, type: 'triangle', vol: 0.17 },
-    // Climax chord: C6 + G5 + E5 + bright C7 sparkle
     { freq: 1046.5, at: 0.44, dur: 0.55, type: 'triangle', vol: 0.2 },
     { freq: 783.99, at: 0.44, dur: 0.52, type: 'sine', vol: 0.12 },
     { freq: 659.25, at: 0.44, dur: 0.5, type: 'sine', vol: 0.1 },
     { freq: 2093, at: 0.48, dur: 0.38, type: 'sine', vol: 0.06 },
+  ],
+  // Tactile Duolingo-style soft bubble-pop for buttons & interactive cards
+  click: [
+    { freq: 520, freqEnd: 780, at: 0, dur: 0.055, type: 'sine', vol: 0.09 },
+    { freq: 1040, at: 0, dur: 0.028, type: 'triangle', vol: 0.03 },
+  ],
+  // Light, airy tick for navigation items, tabs, radios, and checkboxes
+  tab: [
+    { freq: 440, freqEnd: 580, at: 0, dur: 0.042, type: 'sine', vol: 0.07 },
   ],
 };
 
@@ -48,6 +56,10 @@ export function createSound({ enabled, makeContext }: { enabled: () => boolean; 
           const gain = ctx.createGain();
           osc.type = t.type ?? 'triangle';
           osc.frequency.value = t.freq;
+          if (t.freqEnd && typeof osc.frequency.exponentialRampToValueAtTime === 'function') {
+            osc.frequency.setValueAtTime?.(t.freq, start + t.at);
+            osc.frequency.exponentialRampToValueAtTime(t.freqEnd, start + t.at + t.dur);
+          }
           gain.gain.setValueAtTime(t.vol ?? 0.15, start + t.at);
           gain.gain.exponentialRampToValueAtTime(0.001, start + t.at + t.dur);
           osc.connect(gain).connect(ctx.destination);

@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import { createSound } from './sound';
+import { createSound, type SoundName } from './sound';
+import { classifyInteractiveTarget } from './uiSound';
 
 function fakeContext() {
   const oscillators: Array<{ frequency: { value: number }; start: ReturnType<typeof vi.fn> }> = [];
@@ -28,17 +29,41 @@ describe('createSound', () => {
     expect(oscillators.length).toBeGreaterThan(0);
   });
 
-  it('has a distinct sound for each event (different notes)', () => {
-    const notes = (name: 'correct' | 'wrong' | 'finish') => {
+  it('has a distinct sound for each event (lesson feedback and UI interactions)', () => {
+    const notes = (name: SoundName) => {
       const { ctx, oscillators } = fakeContext();
       createSound({ enabled: () => true, makeContext: () => ctx }).play(name);
       return oscillators.map((o) => o.frequency.value);
     };
-    expect(new Set([notes('correct').join(), notes('wrong').join(), notes('finish').join()]).size).toBe(3);
+    const all: SoundName[] = ['correct', 'wrong', 'finish', 'click', 'tab'];
+    expect(new Set(all.map((n) => notes(n).join())).size).toBe(all.length);
   });
 
   it('never throws when audio is missing or blocked', () => {
     expect(() => createSound({ enabled: () => true, makeContext: () => null }).play('wrong')).not.toThrow();
     expect(() => createSound({ enabled: () => true, makeContext: () => { throw new Error('blocked'); } }).play('finish')).not.toThrow();
+  });
+});
+
+describe('classifyInteractiveTarget', () => {
+  it('maps buttons to click, links/tabs/radios to tab, and ignores disabled or non-interactive elements', () => {
+    const btn = document.createElement('button');
+    const span = document.createElement('span');
+    btn.appendChild(span);
+    expect(classifyInteractiveTarget(span)).toBe('click');
+
+    btn.disabled = true;
+    expect(classifyInteractiveTarget(span)).toBeNull();
+
+    const link = document.createElement('a');
+    link.href = '/learn';
+    expect(classifyInteractiveTarget(link)).toBe('tab');
+
+    const tab = document.createElement('button');
+    tab.setAttribute('role', 'tab');
+    expect(classifyInteractiveTarget(tab)).toBe('tab');
+
+    const plain = document.createElement('p');
+    expect(classifyInteractiveTarget(plain)).toBeNull();
   });
 });

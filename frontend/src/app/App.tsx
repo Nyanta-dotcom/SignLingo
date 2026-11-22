@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useRef } from 'react';
 import { Navigate, Route, Routes, useNavigate } from 'react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { Alphabet } from '@/features/alphabet/Alphabet';
@@ -12,6 +13,8 @@ import { SkillTree } from '@/features/skill-tree/SkillTree';
 import { Collect } from '@/features/collect/Collect';
 import { Practice } from '@/features/practice/Practice';
 import { vi } from '@/i18n/vi';
+import { createSound } from '@/lib/sound';
+import { attachUiSound } from '@/lib/uiSound';
 import { useLearner } from '@/storage/useLearner';
 
 function Placeholder({ title }: { title: string }) {
@@ -37,7 +40,17 @@ function Home() {
   return <Landing onStart={() => { complete(); navigate('/learn'); }} />;
 }
 
+/** Plays subtle Duolingo-style pop/tick sounds on interactive clicks while sound is enabled. */
+function useGlobalUiSound() {
+  const soundOn = useLearner((s) => s.settings.sound_on);
+  const enabledRef = useRef(soundOn);
+  enabledRef.current = soundOn;
+  const sound = useMemo(() => createSound({ enabled: () => enabledRef.current }), []);
+  useEffect(() => attachUiSound((kind) => sound.play(kind)), [sound]);
+}
+
 export function AppRoutes() {
+  useGlobalUiSound();
   return (
     <Routes>
       <Route index element={<Home />} />
