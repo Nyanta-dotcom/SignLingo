@@ -43,7 +43,7 @@ export type EngineDeps = {
   scheduleFrame?: (cb: (nowMs: number) => Promise<void>, video: HTMLVideoElement) => () => void;
   wait?: (ms: number) => Promise<void>;
   now?: () => number;
-  /** Hand tracker delegate. GPU by default (the tracker falls back to CPU when GPU will not start); CPU-only measured p50 29.8 ms, too slow for 30 FPS. */
+  /** Hand tracker delegate. CPU by default: on the team laptop GPU measured slower (MediaPipe p50 76.1 ms vs 28.8 ms on CPU). */
   delegate?: 'GPU' | 'CPU';
   /** How many top probabilities each prediction event carries (default 3; the AI Lab asks for all). */
   topK?: number;
@@ -239,7 +239,7 @@ export function createRecognitionEngine(deps: EngineDeps) {
       emit({ type: 'loading', progress: 0 });
       try {
         await tracker.init({
-          delegate: deps.delegate ?? 'GPU', numHands: 1,
+          delegate: deps.delegate ?? 'CPU', numHands: 1,
           modelAssetPath: deps.modelAssetPath ?? '/mediapipe/hand_landmarker.task',
           wasmPath: deps.wasmPath ?? '/mediapipe/wasm',
         });

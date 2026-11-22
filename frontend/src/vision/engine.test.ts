@@ -197,10 +197,10 @@ describe('RecognitionEngine frame loop speed', () => {
   }
   const video = { videoWidth: 640, videoHeight: 480 } as HTMLVideoElement;
 
-  it('runs the hand tracker on the GPU by default (it falls back to CPU by itself)', async () => {
+  it('runs the hand tracker on the CPU by default (GPU measured slower on the team laptop)', async () => {
     const s = loop(async () => ({ probs: probsFor('C'), latencyMs: 1 }));
     await s.engine.start(video);
-    expect(s.tracker.init).toHaveBeenCalledWith(expect.objectContaining({ delegate: 'GPU' }));
+    expect(s.tracker.init).toHaveBeenCalledWith(expect.objectContaining({ delegate: 'CPU' }));
   });
 
   it('asks for the next camera frame before processing this one, so a frame arriving mid-processing is not missed', async () => {
