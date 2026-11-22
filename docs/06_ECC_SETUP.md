@@ -33,7 +33,7 @@ SignLingo/
 ```
 
 ### 2.1 `CLAUDE.md` gốc — điểm chính
-- `docs/` là nguồn sự thật; kiến trúc **không tự viết backend**; hình camera và landmark không rời trình duyệt; tài khoản và đồng bộ tiến độ tùy chọn qua Supabase (ADR_backend_sync).
+- `docs/` là nguồn sự thật; kiến trúc **backend là Supabase, không tự viết server**; hình camera và landmark không rời trình duyệt; tài khoản và đồng bộ tiến độ tùy chọn qua Supabase (ADR_backend_sync).
 - Workflow mỗi task: đọc task → PLAN (chờ duyệt nếu [R]) → test trước → code ≤ 100 dòng → chạy lint + test → cập nhật plan.
 - Cấm: tự thêm dữ liệu nội dung; hardcode metrics; **thêm backend/server/DB/gọi API ngoài khi chưa có ADR**; sửa ngoài khối; đổi stack; sửa `docs/course`, `docs/reports`, `ml/data/raw`.
 - Lệnh: `ml` (pytest + ruff), `frontend` (lint + test + typecheck), `e2e` (playwright).
@@ -48,7 +48,7 @@ SignLingo/
 ### 2.3 `frontend/CLAUDE.md` — điểm chính
 - Chỉ dùng design tokens từ docs/05; cấm hex rời trong component.
 - `src/vision/*`, `src/game/*` là TypeScript thuần, không import React.
-- Không tự viết backend: chỉ fetch file tĩnh cùng origin (`/models`, `/data`, `/mediapipe`, `/media`); ngoại lệ duy nhất là Supabase, chỉ gọi từ `src/sync/supabase.ts`.
+- Backend là Supabase, không tự viết server: ngoài Supabase chỉ fetch file tĩnh cùng origin (`/models`, `/data`, `/mediapipe`, `/media`); Supabase chỉ gọi từ `src/sync/supabase.ts`.
 - Mọi đọc/ghi storage qua `src/storage/` (try/catch, `schema_version`).
 - Vòng lặp khung hình không đi qua React state; UI nhận event throttle ≤ 30 Hz.
 - Mỗi component có test cho các state ở docs/05 §3; a11y kiểm bằng axe trong E2E.

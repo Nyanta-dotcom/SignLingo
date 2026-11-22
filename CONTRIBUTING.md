@@ -30,7 +30,7 @@ Không báo "xong" khi test còn đỏ.
 
 - **Số liệu:** mọi con số trong tài liệu, AI Lab và báo cáo phải đến từ thí nghiệm chạy trong repo này (`ml/reports/experiments/*.json`) hoặc từ phép đo ghi rõ nguồn. Không dùng số liệu, ngưỡng hay mã từ các báo cáo tuần 3–4 cũ (đã loại, không đáng tin). Không hardcode số liệu trong frontend.
 - **Nội dung học:** không tự thêm bài học, từ vựng, ảnh, tài khoản hay số liệu. Hỏi người phụ trách nội dung.
-- **Không tự viết backend:** ứng dụng là trang tĩnh; không thêm máy chủ, cơ sở dữ liệu hay gọi API ngoài khi chưa có ADR được duyệt. Ngoại lệ đã duyệt: tài khoản và đồng bộ tiến độ qua Supabase (`docs/drafts/ADR_backend_sync_DRAFT.md`), chỉ gọi từ `frontend/src/sync/supabase.ts`. Hình camera và landmark không bao giờ rời trình duyệt. Không bao giờ đưa khóa `service_role`/`sb_secret_…` vào repo, Vercel hay trình duyệt.
+- **Backend là Supabase, không tự viết server:** ứng dụng là trang tĩnh; không thêm máy chủ, cơ sở dữ liệu hay gọi API ngoài nào khác khi chưa có ADR được duyệt. Supabase lo tài khoản và đồng bộ tiến độ (`docs/drafts/ADR_backend_sync_DRAFT.md`), chỉ gọi từ `frontend/src/sync/supabase.ts`. Hình camera và landmark không bao giờ rời trình duyệt. Không bao giờ đưa khóa `service_role`/`sb_secret_…` vào repo, Vercel hay trình duyệt.
 - **Không commit:** dữ liệu thô, ảnh hay video của người, mô hình lớn hơn 50 MB, file `.env`, khóa bí mật.
 - **Không sửa:** `docs/course/`, `ml/data/raw/`. Thay đổi `shared/contracts/` là một task riêng.
 - **Ngẫu nhiên:** dùng `random_seed = 42` ở mọi nơi có ngẫu nhiên.

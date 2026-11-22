@@ -13,9 +13,9 @@ Real-time ASL learning web app (Duolingo-style) + final project for *Introductio
 
 ## Kiến trúc
 
-Không tự viết backend. Frontend là trang tĩnh (Vite + React + TypeScript) chạy MediaPipe và ONNX Runtime trong trình duyệt; tiến độ học lưu ở `localStorage`. Phần huấn luyện mô hình là pipeline Python chạy offline trong `ml/`, xuất mô hình ONNX và số liệu thí nghiệm vào `frontend/public/`. Không có ảnh, video hay dữ liệu bàn tay nào rời khỏi máy người dùng.
+**Backend dùng Supabase** (dịch vụ có sẵn, nhóm không tự viết hay vận hành server). Frontend là trang tĩnh (Vite + React + TypeScript) chạy MediaPipe và ONNX Runtime trong trình duyệt; tiến độ học lưu ở `localStorage` và, khi người học đăng nhập, được đồng bộ lên Supabase. Phần huấn luyện mô hình là pipeline Python chạy offline trong `ml/`, xuất mô hình ONNX và số liệu thí nghiệm vào `frontend/public/`. Không có ảnh, video hay dữ liệu bàn tay nào rời khỏi máy người dùng.
 
-**Tùy chọn:** đăng nhập (email + mật khẩu) để đồng bộ tiến độ giữa các máy và tham gia bảng xếp hạng, qua dịch vụ có sẵn Supabase (Auth + Postgres với Row Level Security). Chỉ tiến độ học được lưu. Không cấu hình Supabase thì app vẫn chạy đầy đủ. Thiết lập: [`supabase/README.md`](supabase/README.md); thiết kế: [`docs/drafts/ADR_backend_sync_DRAFT.md`](docs/drafts/ADR_backend_sync_DRAFT.md).
+**Backend Supabase (tùy chọn):** đăng ký và đăng nhập (email + mật khẩu) để đồng bộ tiến độ giữa các máy và tham gia bảng xếp hạng, gồm Auth + Postgres với Row Level Security. Chỉ tiến độ học được lưu. Không cấu hình Supabase thì app vẫn chạy đầy đủ. Thiết lập: [`supabase/README.md`](supabase/README.md); thiết kế: [`docs/drafts/ADR_backend_sync_DRAFT.md`](docs/drafts/ADR_backend_sync_DRAFT.md).
 
 ## Chạy thử nhanh (frontend)
 

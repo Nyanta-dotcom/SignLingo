@@ -24,7 +24,7 @@
 | Tiến độ môn | Lịch môn học theo `docs/course/week1–5.docx`. Tiến độ **thực** của nhóm chỉ được tính bằng kết quả chạy trong repo này (xem `docs/07_MASTER_PLAN.md`) |
 | Kết quả đã có | **Chưa có kết quả nào được kiểm chứng.** Số liệu trong các báo cáo tuần 3–4 cũ không do mã trong repo này sinh ra nên **không dùng** làm bằng chứng, ngưỡng hay mục tiêu (quyết định 2026-11-18). Mọi số liệu về sau đến từ `ml/reports/experiments/*.json` (có seed và git commit) |
 | Dữ liệu | Kaggle Sign Language MNIST (27.455 train / 7.172 test, 28×28 xám, 24 lớp; số đếm đã kiểm trực tiếp trên file) · `keypoint.csv` (36.402 dòng, 33.536 mẫu sau khi bỏ J, Z, 24 chữ; giấy phép MIT, từ dự án American-Sign-Language-Detection; **không có cột người ra dấu hay phiên thu**) · Dữ liệu webcam tự thu của nhóm (kế hoạch: ≥ 3 người × 30–50 mẫu/chữ). Cách Kaggle tạo tập train (số ảnh gốc, số bản augment) **chưa được kiểm chứng**; ta chỉ dựa vào bằng chứng đo được (chia ngẫu nhiên gây rò rỉ) |
-| Quyết định hạ tầng (2026-11-18, sửa 2026-11-22) | Dự án học tập phi thương mại → **SPA tĩnh deploy Vercel (gói Hobby)**, không tự viết server. Tiến độ lưu `localStorage` (local-first). **Từ 2026-11-22:** tài khoản tùy chọn qua Supabase (Auth + Postgres) để đồng bộ tiến độ và tham gia bảng xếp hạng; xem [ADR_backend_sync](drafts/ADR_backend_sync_DRAFT.md). Mẫu landmark thu thêm vẫn tải về dạng file |
+| Quyết định hạ tầng (2026-11-18, sửa 2026-11-22) | Dự án học tập phi thương mại → **SPA tĩnh deploy Vercel (gói Hobby)**, **backend là Supabase** (dịch vụ có sẵn, không tự viết server). Tiến độ lưu `localStorage` (local-first). **Từ 2026-11-22:** tài khoản tùy chọn trên Supabase (Auth + Postgres) để đồng bộ tiến độ và tham gia bảng xếp hạng; xem [ADR_backend_sync](drafts/ADR_backend_sync_DRAFT.md). Mẫu landmark thu thêm vẫn tải về dạng file |
 | Ràng buộc kỹ thuật | Inference trên trình duyệt (privacy: hình camera và landmark không rời máy; chỉ tiến độ học được đồng bộ khi người học tự đăng nhập) · random_seed = 42 · Không chia validation ngẫu nhiên trên MNIST · Chuẩn hóa chỉ fit trên Train · Không lật ngang ảnh MNIST |
 
 ### 2.1 Research Questions (dùng cho rubric "3 Research Questions")
@@ -51,7 +51,7 @@
 | **MUST (bắt buộc cho Tuần 5 / chấm điểm)** | Pipeline ML tái lập được · Baseline vs CNN vs Landmark-MLP · Group split chống leakage · Xuất ONNX · Web nhận diện real-time > 30 FPS · Cấp độ 1 (bảng chữ cái) với Hold-to-Verify · Free Practice · AI Lab hiển thị kết quả từ JSON · Deploy Vercel · README |
 | **SHOULD (MVP)** | Skill Tree · XP, Streak, Hearts · Âm thanh · Phản hồi sửa lỗi ngón tay · Cấp độ 2 Fingerspelling · Nhập/Xóa tiến độ · Trang thu mẫu landmark · Bảng chữ cái tra cứu · **(đã làm, 2026-11-22)** J, Z động và số 0–10 bằng luật hình học · tài khoản tùy chọn + đồng bộ tiến độ · bảng xếp hạng tự nguyện · trang giới thiệu (Trang chủ, Tính năng, Cách hoạt động, Giới thiệu & Liên hệ) |
 | **COULD (mở rộng)** | Cấp độ 3 từ vựng động (chuỗi landmark) · mô hình học máy cho J, Z, số (thay luật) · đăng nhập Google · PWA offline |
-| **WON'T (lần này)** | Tự viết backend/server · telemetry, analytics · chế độ tối (đã bỏ 2026-11-22, giao diện chỉ sáng) · App mobile native · Nhận diện câu ASL liên tục · VSL · Biểu cảm khuôn mặt |
+| **WON'T (lần này)** | Tự viết backend/server riêng (đã dùng Supabase) · telemetry, analytics · chế độ tối (đã bỏ 2026-11-22, giao diện chỉ sáng) · App mobile native · Nhận diện câu ASL liên tục · VSL · Biểu cảm khuôn mặt |
 
 ## 5. Danh sách tính năng (Features – Ft)
 

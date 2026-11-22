@@ -3,7 +3,7 @@ Context: Prototype + docs 05, 01, 02, 03, 04. Chỉ sửa `frontend/` và `e2e/`
 
 - Chỉ dùng design tokens (CSS vars/Tailwind theme) từ docs/05; cấm hex rời trong component.
 - `src/vision/*` là TypeScript thuần, không import React.
-- Không tự viết backend: chỉ fetch file tĩnh cùng origin (`/models`, `/data`, `/mediapipe`, `/media`). Ngoại lệ duy nhất: Supabase (tùy chọn), chỉ gọi từ `src/sync/supabase.ts`.
+- Backend là Supabase, không tự viết server: ngoài Supabase chỉ fetch file tĩnh cùng origin (`/models`, `/data`, `/mediapipe`, `/media`). Supabase (tùy chọn) chỉ gọi từ `src/sync/supabase.ts`.
 - Mọi đọc/ghi `localStorage`/IndexedDB qua `src/storage/` (try/catch, có `schema_version`); không gọi storage trực tiếp trong component.
 - Vòng lặp khung hình không đi qua React state; UI nhận event throttle ≤ 30 Hz.
 - Mỗi component có test Testing Library cho các state ở docs/05 §3.
