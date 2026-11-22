@@ -4,11 +4,11 @@ import { describe, expect, it } from 'vitest';
 import { AppShell, NAV_ITEMS } from './AppShell';
 
 const stats = { streak: 4, xp: 340, hearts: 5 };
-const renderAt = (path: string) =>
+const renderAt = (path: string, loginLink = false) =>
   render(
     <MemoryRouter initialEntries={[path]}>
       <Routes>
-        <Route element={<AppShell stats={stats} />}>
+        <Route element={<AppShell stats={stats} loginLink={loginLink} />}>
           <Route path="/learn" element={<p>trang học</p>} />
           <Route path="/lab" element={<p>trang lab</p>} />
         </Route>
@@ -17,6 +17,16 @@ const renderAt = (path: string) =>
   );
 
 describe('AppShell', () => {
+  it('offers a sign-in link in the top bar only when asked (signed out)', () => {
+    renderAt('/learn', true);
+    expect(screen.getByRole('link', { name: 'Đăng nhập' })).toHaveAttribute('href', '/login');
+  });
+
+  it('has no sign-in link by default', () => {
+    renderAt('/learn');
+    expect(screen.queryByRole('link', { name: 'Đăng nhập' })).toBeNull();
+  });
+
   it('shows the five tabs in the sidebar and in the bottom navigation', () => {
     renderAt('/learn');
     expect(NAV_ITEMS).toHaveLength(6);

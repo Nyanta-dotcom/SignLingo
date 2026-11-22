@@ -4,6 +4,7 @@ import { AppShell } from '@/components/layout/AppShell';
 import { Alphabet } from '@/features/alphabet/Alphabet';
 import { LessonPlayer } from '@/features/lesson/LessonPlayer';
 import { HandSheet } from '@/dev/HandSheet';
+import { LoginPage } from '@/features/account/LoginPage';
 import { AboutPage } from '@/features/onboarding/AboutPage';
 import { Banners } from '@/features/onboarding/Banners';
 import { FeaturesPage } from '@/features/onboarding/FeaturesPage';
@@ -20,6 +21,7 @@ import { vi } from '@/i18n/vi';
 import { createSound } from '@/lib/sound';
 import { attachUiSound } from '@/lib/uiSound';
 import { useLearner } from '@/storage/useLearner';
+import { useAccount } from '@/sync/useAccount';
 
 function Placeholder({ title }: { title: string }) {
   return (
@@ -32,7 +34,8 @@ function Placeholder({ title }: { title: string }) {
 
 function ConnectedShell() {
   const stats = useLearner((s) => s.stats);
-  return <AppShell stats={{ streak: stats.current_streak, xp: stats.total_xp, hearts: stats.hearts }} banner={<Banners />} />;
+  const signedOut = useAccount((s) => s.status === 'signed_out');
+  return <AppShell stats={{ streak: stats.current_streak, xp: stats.total_xp, hearts: stats.hearts }} banner={<Banners />} loginLink={signedOut} />;
 }
 
 /** Pre-app 3-page marketing routes. First visit to `/` shows Home; returning visits go straight to `/learn`. */
@@ -98,6 +101,7 @@ export function AppRoutes() {
       <Route path="features" element={<FeaturesRoute />} />
       <Route path="how-it-works" element={<HowItWorksRoute />} />
       <Route path="about" element={<AboutRoute />} />
+      <Route path="login" element={<LoginPage />} />
       {import.meta.env.DEV && <Route path="dev/hands" element={<HandSheet />} />}
       <Route path="lesson/:code" element={<LessonPlayer />} />
       <Route element={<ConnectedShell />}>
