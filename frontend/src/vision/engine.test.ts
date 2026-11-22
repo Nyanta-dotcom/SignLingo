@@ -178,3 +178,50 @@ describe('RecognitionEngine', () => {
     expect(typeof rec.id).toBe('string');
   });
 });
+
+describe('RecognitionEngine frame loop speed', () => {
+  function loop(predict: () => Promise<{ probs: Float32Array; latencyMs: number }>) {
+    let cb: ((t: number) => Promise<void>) | null = null;
+    const scheduleFrame = vi.fn((next: (t: number) => Promise<void>) => { cb = next; return () => { cb = null; }; });
+    const scheduledAtDetect: number[] = [];
+    const tracker = {
+      init: vi.fn(async () => {}), close: vi.fn(), delegate: 'GPU' as const,
+      detect: vi.fn(() => { scheduledAtDetect.push(scheduleFrame.mock.calls.length); return HAND; }),
+    };
+    const classifier = { load: vi.fn(async () => {}), predict: vi.fn(predict), labels: LABELS, backend: 'wasm' as const };
+    const engine = createRecognitionEngine({
+      tracker, classifier, manifest: { model_id: 'm', version: '1', labels: LABELS, recommended: REC },
+      templates, confusable: {}, scheduleFrame, wait: async () => {},
+    });
+    return { engine, tracker, scheduleFrame, scheduledAtDetect, tick: (t: number) => cb!(t) };
+  }
+  const video = { videoWidth: 640, videoHeight: 480 } as HTMLVideoElement;
+
+  it('runs the hand tracker on the GPU by default (it falls back to CPU by itself)', async () => {
+    const s = loop(async () => ({ probs: probsFor('C'), latencyMs: 1 }));
+    await s.engine.start(video);
+    expect(s.tracker.init).toHaveBeenCalledWith(expect.objectContaining({ delegate: 'GPU' }));
+  });
+
+  it('asks for the next camera frame before processing this one, so a frame arriving mid-processing is not missed', async () => {
+    const s = loop(async () => ({ probs: probsFor('C'), latencyMs: 1 }));
+    await s.engine.start(video);
+    await s.tick(0);
+    expect(s.scheduledAtDetect).toEqual([2]);
+  });
+
+  it('a frame that arrives while the last one is still processing keeps the loop going without running twice', async () => {
+    let finish: (() => void) | null = null;
+    const s = loop(() => new Promise((r) => { finish = () => r({ probs: probsFor('C'), latencyMs: 1 }); }));
+    await s.engine.start(video);
+    const first = s.tick(0);
+    await s.tick(33);
+    expect(s.tracker.detect).toHaveBeenCalledTimes(1);
+    expect(s.scheduleFrame).toHaveBeenCalledTimes(3);
+    await vi.waitFor(() => expect(finish).not.toBeNull());
+    finish!();
+    await first;
+    void s.tick(66); // detect runs before the (never-finishing) classifier call
+    expect(s.tracker.detect).toHaveBeenCalledTimes(2);
+  });
+});

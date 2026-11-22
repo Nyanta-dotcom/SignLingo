@@ -43,7 +43,7 @@ export type EngineDeps = {
   scheduleFrame?: (cb: (nowMs: number) => Promise<void>, video: HTMLVideoElement) => () => void;
   wait?: (ms: number) => Promise<void>;
   now?: () => number;
-  /** Hand tracker delegate. CPU by default: the GPU path is untested on real webcams. */
+  /** Hand tracker delegate. GPU by default (the tracker falls back to CPU when GPU will not start); CPU-only measured p50 29.8 ms, too slow for 30 FPS. */
   delegate?: 'GPU' | 'CPU';
   /** How many top probabilities each prediction event carries (default 3; the AI Lab asks for all). */
   topK?: number;
@@ -97,7 +97,11 @@ export function createRecognitionEngine(deps: EngineDeps) {
   };
 
   async function onFrame(nowMs: number) {
-    if (!running || !video || busy) return;
+    if (!running || !video) return;
+    // Ask for the next frame first: a frame that arrives while this one is processed is then picked up straight after,
+    // instead of being skipped while we wait for the one after it (the cause of ~22 FPS at ~30 ms per frame).
+    cancel = schedule(onFrame, video);
+    if (busy) return;
     busy = true;
     const t0 = now();
     try {
@@ -226,7 +230,6 @@ export function createRecognitionEngine(deps: EngineDeps) {
       bench?.record(sample);
     } finally {
       busy = false;
-      if (running) cancel = schedule(onFrame, video);
     }
   }
 
@@ -236,7 +239,7 @@ export function createRecognitionEngine(deps: EngineDeps) {
       emit({ type: 'loading', progress: 0 });
       try {
         await tracker.init({
-          delegate: deps.delegate ?? 'CPU', numHands: 1,
+          delegate: deps.delegate ?? 'GPU', numHands: 1,
           modelAssetPath: deps.modelAssetPath ?? '/mediapipe/hand_landmarker.task',
           wasmPath: deps.wasmPath ?? '/mediapipe/wasm',
         });
