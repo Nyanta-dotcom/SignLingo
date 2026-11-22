@@ -6,11 +6,11 @@ const LEADER_EMAIL = 'hung.nguyen240919@vnuk.udn.vn';
 const REPO_URL = 'https://github.com/Nyanta-dotcom/SignLingo';
 
 const TEAM = [
-  { name: 'Nguyễn Tuấn Hưng', id: '24090019', role: 'Trưởng nhóm; kiến trúc, tài khoản & đồng bộ tiến độ, bảng xếp hạng, triển khai; quản lý mã nguồn' },
-  { name: 'Nguyễn Hữu Triết', id: '24090003', role: 'Pipeline học máy: thu thập, tiền xử lý dữ liệu, huấn luyện và đánh giá mô hình' },
-  { name: 'Trần Công Sanh', id: '24090009', role: 'Nhận diện thời gian thực trong trình duyệt: MediaPipe, ONNX Runtime, ký hiệu động J, Z' },
-  { name: 'Nguyễn Thảo Anh', id: '24090028', role: 'Giao diện và trải nghiệm: lộ trình học, bài học, bảng chữ cái, các trang giới thiệu' },
-  { name: 'Nguyễn Anh Dũng', id: '24090021', role: 'AI Lab, đo hiệu năng, kiểm thử tự động; báo cáo và slide thuyết trình' },
+  { name: 'Nguyễn Tuấn Hưng', id: '24090019', role: 'Trưởng nhóm; tài khoản và đồng bộ tiến độ (Supabase), bảng xếp hạng, triển khai Vercel, trang Giới thiệu & Liên hệ; quản lý mã nguồn' },
+  { name: 'Nguyễn Hữu Triết', id: '24090003', role: 'Pipeline học máy: thu thập, tiền xử lý dữ liệu, huấn luyện và đánh giá mô hình nhận diện chữ cái' },
+  { name: 'Trần Công Sanh', id: '24090009', role: 'Nhận diện thời gian thực trong trình duyệt: MediaPipe, ONNX Runtime, đo hiệu năng camera' },
+  { name: 'Nguyễn Thảo Anh', id: '24090028', role: 'AI Lab (kết quả thí nghiệm), kiểm thử tự động; báo cáo và slide thuyết trình' },
+  { name: 'Nguyễn Anh Dũng', id: '24090021', role: 'Thiết kế lại giao diện, các trang giới thiệu, nhận diện số 0–10 và ký hiệu động J, Z, âm thanh bài học' },
 ] as const;
 
 const linkClass = 'font-bold text-brand-fg underline underline-offset-2 hover:text-brand-500';
