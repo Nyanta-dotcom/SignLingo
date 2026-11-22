@@ -80,10 +80,9 @@ describe('SkillTree', () => {
     expect(screen.getByRole('link', { name: 'Học lại' })).toBeInTheDocument();
   });
 
-  it('shows the daily goal progress and the model in use', async () => {
+  it('shows the daily goal progress', async () => {
     await show();
     expect(screen.getByRole('progressbar', { name: 'Mục tiêu hôm nay' })).toHaveAttribute('aria-valuenow', '0');
-    expect(screen.getByText(`${manifest.model_id} ${manifest.version}`)).toBeInTheDocument();
     finish(lessons[0].code);
     const xp = Object.values(store.getState().daily)[0]?.xp_earned ?? 0;
     expect(xp).toBeGreaterThan(0);

@@ -4,7 +4,7 @@ import { loadActiveManifest } from '@/app/staticData';
 import { AccountCard } from '@/features/account/AccountCard';
 import { JoinCard } from '@/features/leaderboard/JoinCard';
 import { Card } from '@/components/ui/Card';
-import { SettingsIcon } from '@/components/ui/Icons';
+import { BoltIcon, FlameIcon, SettingsIcon, StarIcon } from '@/components/ui/Icons';
 import { dateKey } from '@/game/streak';
 import { vi } from '@/i18n/vi';
 import { useLearner } from '@/storage/useLearner';
@@ -13,6 +13,12 @@ import { buildHeatmap, type HeatDay } from './heatmap';
 const LEVEL_CLASS: Record<HeatDay['level'], string> = {
   0: 'bg-surface-2', 1: 'bg-brand-200', 2: 'bg-brand-300', 3: 'bg-brand-500', 4: 'bg-brand-600',
 };
+
+const STAT_ICONS = [
+  { Icon: BoltIcon, bg: 'bg-warning-bg/70 text-xp' },
+  { Icon: FlameIcon, bg: 'bg-warning-bg/70 text-streak' },
+  { Icon: StarIcon, bg: 'bg-brand-100 text-brand-fg' },
+] as const;
 
 /** Profile: XP, streaks, 12-week activity and per-letter mastery, all from the learner's own data. */
 export function Profile({ labels: given, now = () => new Date() }: { labels?: string[]; now?: () => Date }) {
@@ -59,19 +65,34 @@ export function Profile({ labels: given, now = () => new Date() }: { labels?: st
       </Card>
 
       <dl className="grid grid-cols-3 gap-3.5">
-        {([[t.xp, String(stats.total_xp)], [t.streak, t.days(stats.current_streak)], [t.longest, t.days(stats.longest_streak)]] as const).map(([k, v]) => (
-          <Card key={k} className="p-4 text-center">
-            <dt className="text-xs font-extrabold uppercase tracking-wider text-text-muted">{k}</dt>
-            <dd className="mt-1 text-2xl font-black text-brand-fg">{v}</dd>
-          </Card>
-        ))}
+        {([[t.xp, String(stats.total_xp)], [t.streak, t.days(stats.current_streak)], [t.longest, t.days(stats.longest_streak)]] as const).map(([k, v], idx) => {
+          const { Icon, bg } = STAT_ICONS[idx];
+          return (
+            <Card key={k} className="flex flex-col items-center gap-1.5 p-4 text-center">
+              <span aria-hidden="true" className={`inline-flex size-9 items-center justify-center rounded-xl ${bg}`}>
+                <Icon className="size-5" />
+              </span>
+              <dt className="text-xs font-extrabold uppercase tracking-wider text-text-muted">{k}</dt>
+              <dd className="text-2xl font-black tabular-nums text-brand-fg">{v}</dd>
+            </Card>
+          );
+        })}
       </dl>
 
       <AccountCard />
       <JoinCard />
 
       <Card>
-        <h2 className="text-lg font-black text-text">{t.heatmap}</h2>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h2 className="text-lg font-black text-text">{t.heatmap}</h2>
+          <div aria-hidden="true" className="flex items-center gap-1 text-[11px] font-extrabold text-text-muted">
+            <span>Ít</span>
+            {([0, 1, 2, 3, 4] as const).map((lvl) => (
+              <span key={lvl} className={`size-3 rounded-sm ${LEVEL_CLASS[lvl]}`} />
+            ))}
+            <span>Nhiều</span>
+          </div>
+        </div>
         <div role="img" aria-label={t.heatmapLabel} className="mt-4 flex gap-1.5 overflow-x-auto pb-1">
           {grid.map((week) => (
             <div key={week[0].date} className="flex flex-col gap-1.5">
@@ -97,12 +118,15 @@ export function Profile({ labels: given, now = () => new Date() }: { labels?: st
               return (
                 <li
                   key={l} aria-label={pct === null ? `${l}: ${t.notTried}` : t.masteryItem(l, pct, s.attempts)}
-                  className={`flex flex-col items-center rounded-2xl border-2 p-2.5 ${
+                  className={`flex flex-col items-center gap-1 rounded-2xl border-2 p-2.5 ${
                     pct !== null && pct >= 80 ? 'border-brand-300 bg-brand-50' : 'border-border bg-surface'
                   }`}
                 >
                   <span className="text-xl font-black text-text" aria-hidden="true">{l}</span>
-                  <span className="text-xs font-extrabold text-text-muted" aria-hidden="true">{pct === null ? '—' : `${pct}%`}</span>
+                  <span className="text-xs font-extrabold tabular-nums text-text-muted" aria-hidden="true">{pct === null ? '—' : `${pct}%`}</span>
+                  <span aria-hidden="true" className="mt-0.5 h-1.5 w-full overflow-hidden rounded-full bg-surface-2">
+                    {pct !== null && <span className="progress-fill block h-full rounded-full" style={{ width: `${pct}%` }} />}
+                  </span>
                 </li>
               );
             })}

@@ -3,7 +3,7 @@
  * Keeping every string here makes adding English a data change, not a component change.
  */
 export const vi = {
-  appName: 'SignLingo AI',
+  appName: 'SignLingo',
   common: { loading: 'Đang tải…', comingSoon: 'Màn hình này đang được xây dựng.', notFound: 'Không tìm thấy trang', startupError: 'Không tải được dữ liệu khởi động' },
   theme: { label: 'Giao diện', system: 'Hệ thống', light: 'Sáng', dark: 'Tối' },
   nav: {
@@ -25,22 +25,26 @@ export const vi = {
     label: 'Khung camera',
   },
   alphabet: {
-    title: 'Bảng chữ cái',
-    intro: 'Bấm vào một chữ để xem thao tác tay chuẩn của chữ đó (gồm 24 chữ tĩnh và 2 chữ động J, Z).',
-    open: (l: string) => `Xem thao tác chữ ${l}`,
-    back: 'Bảng chữ cái',
+    title: 'Bảng chữ cái & Chữ số',
+    intro: 'Bấm vào một ký hiệu để xem thao tác tay chuẩn: đủ 26 chữ cái ASL (A–Z) và 11 chữ số cơ bản (0–10).',
+    lettersTab: 'Chữ cái (A – Z)',
+    numbersTab: 'Chữ số (0 – 10)',
+    open: (l: string) => (/^\d+$/.test(l) ? `Xem thao tác số ${l}` : `Xem thao tác chữ ${l}`),
+    back: 'Bảng chữ cái & Chữ số',
     howTo: 'Làm theo đúng hướng bàn tay trong hình và giữ yên khoảng 1 giây. Luyện với camera để AI kiểm tra giúp bạn.',
     howToDynamic: (l: string) => (
       l === 'J'
         ? 'Giơ thẳng ngón út (như chữ I), rồi vẽ nét móc chữ J từ trên xuống và hất cong lên trong không trung.'
-        : 'Giơ thẳng ngón trỏ (như chữ D), rồi vẽ đường ziczac hình chữ Z (ngang → chéo xuống → ngang) trong không trung.'
+        : l === '10'
+          ? 'Giơ thẳng ngón cái lên trên nắm tay rồi lắc nhẹ cổ tay qua lại để tạo số 10.'
+          : 'Giơ thẳng ngón trỏ (như chữ D), rồi vẽ đường ziczac hình chữ Z (ngang → chéo xuống → ngang) trong không trung.'
     ),
     dynamicBadge: 'Động',
     practice: 'Luyện với camera',
-    prev: (l: string) => `Chữ trước: ${l}`,
-    next: (l: string) => `Chữ sau: ${l}`,
-    unknown: (l: string) => `Không có chữ ${l} trong bảng chữ cái của ứng dụng.`,
-    notIncluded: 'J và Z là 2 chữ cái động — bạn vẽ theo đường mũi tên hồng trong không trung trước camera.',
+    prev: (l: string) => (/^\d+$/.test(l) ? `Số trước: ${l}` : `Chữ trước: ${l}`),
+    next: (l: string) => (/^\d+$/.test(l) ? `Số sau: ${l}` : `Chữ sau: ${l}`),
+    unknown: (l: string) => `Không có ký hiệu ${l} trong ứng dụng.`,
+    notIncluded: 'J, Z và số 10 là các ký hiệu động — bạn thực hiện chuyển động theo mũi tên hồng trước camera.',
     loadError: 'Không tải được bảng chữ cái.',
   },
   practice: {
@@ -78,7 +82,7 @@ export const vi = {
     nextHeart: (min: number) => `Tim tiếp theo hồi sau khoảng ${min} phút.`,
     toPath: 'Về lộ trình',
     toPractice: 'Luyện tự do',
-    cardTitle: (l: string) => `Chữ ${l}`,
+    cardTitle: (l: string) => (/^\d+$/.test(l) ? `Số ${l}` : `Chữ ${l}`),
     cardText: 'Ở bước sau bạn sẽ làm dấu này trước camera.',
     cardImageAlt: (l: string) => `Hình minh họa bàn tay làm chữ ${l}`,
     referenceCaption: 'Mẫu để đối chiếu',
@@ -91,6 +95,7 @@ export const vi = {
     dynamicHint: {
       J: 'Giơ ngón út, kéo xuống rồi hất cong tạo nét móc chữ J.',
       Z: 'Giơ ngón trỏ, vẽ đường ziczac ngang → chéo xuống → ngang.',
+      '10': 'Giơ ngón cái lên và lắc nhẹ cổ tay qua lại để tạo số 10.',
     } as Record<string, string>,
     spell: 'Hãy đánh vần từ',
     wordCells: (w: string) => `Các chữ của từ ${w}`,
@@ -147,14 +152,14 @@ export const vi = {
     tagline: 'Học bảng chữ cái ngôn ngữ ký hiệu ASL ngay trước webcam của bạn.',
     points: [
       { icon: '🖐', title: 'Ra dấu, AI xem', text: 'Camera nhận ra chữ cái bạn đang làm bằng tay, và chỉ ra ngón nào cần chỉnh.' },
-      { icon: '🔒', title: 'Ở lại trên máy bạn', text: 'Nhận diện chạy ngay trong trình duyệt. Không có ảnh hay video nào được gửi đi, không cần tài khoản.' },
+      { icon: '🔒', title: 'Riêng tư & đồng bộ', text: 'AI nhận diện chạy ngay trong trình duyệt. Không có ảnh hay video nào được gửi đi; chỉ tiến độ học được đồng bộ lên cơ sở dữ liệu khi bạn đăng nhập.' },
       { icon: '🧪', title: 'Xem AI hoạt động', text: 'AI Lab cho thấy mô hình đúng sai ra sao, dựa trên các thí nghiệm của dự án.' },
     ],
-    scope: 'Hỗ trợ đủ 26 chữ cái ASL: 24 chữ cái tĩnh và 2 chữ cái động J, Z (nhận diện bằng quỹ đạo tay).',
+    scope: 'Hỗ trợ đủ 26 chữ cái ASL (24 chữ cái tĩnh, 2 chữ động J, Z) và 11 chữ số cơ bản (0–10).',
     cameraNote: 'Khi cần, trình duyệt sẽ xin quyền dùng camera. Bạn có thể tắt bất cứ lúc nào.',
     start: 'Bắt đầu',
     lab: 'Xem AI Lab',
-    hero: 'Giới thiệu SignLingo AI',
+    hero: 'Giới thiệu SignLingo',
   },
   banners: {
     storageBlocked: 'Tiến độ sẽ không được lưu: trình duyệt đang chặn lưu trữ. Hãy bật lại cookie và dữ liệu trang, hoặc dùng cửa sổ thường thay vì ẩn danh.',
@@ -167,13 +172,13 @@ export const vi = {
     goal: 'Mục tiêu XP mỗi ngày',
     goalOption: (xp: number) => `${xp} XP`,
     name: 'Tên hiển thị (tùy chọn)',
-    nameHelp: 'Chỉ lưu trên trình duyệt này, dùng để hiện chữ cái đầu ở Hồ sơ.',
+    nameHelp: 'Dùng để hiển thị ở Hồ sơ và tự động đồng bộ cùng tài khoản khi bạn đăng nhập.',
     camera: 'Camera',
     cameraAuto: 'Tự chọn',
     cameraN: (n: number) => `Camera ${n}`,
     cameraHelp: 'Chọn webcam dùng cho các màn luyện tập. Tên thiết bị chỉ hiện sau khi bạn đã cấp quyền camera.',
     data: 'Dữ liệu của bạn',
-    dataNote: 'Tiến độ được lưu trên trình duyệt này. Muốn giữ tiến độ trên nhiều thiết bị, hãy đăng nhập ở trang Hồ sơ.',
+    dataNote: 'Tiến độ học được lưu trên trình duyệt và đồng bộ lên cơ sở dữ liệu khi bạn đăng nhập tài khoản ở mục Hồ sơ. Hình ảnh camera không bao giờ rời khỏi máy.',
     storageBlocked: 'Trình duyệt đang chặn lưu trữ, nên tiến độ sẽ mất khi đóng tab.',
     import: 'Nhập tiến độ',
     importConfirm: 'Nhập file này sẽ ghi đè toàn bộ tiến độ hiện tại. Tiếp tục?',

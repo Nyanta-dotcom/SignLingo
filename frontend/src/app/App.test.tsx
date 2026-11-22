@@ -20,7 +20,7 @@ const at = (path: string) =>
 describe('AppRoutes', () => {
   it('shows the welcome page on the first visit and the learning dashboard after Start', () => {
     at('/');
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('SignLingo AI');
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('SignLingo');
     fireEvent.click(screen.getByRole('button', { name: 'Bắt đầu' }));
     expect(screen.getByRole('heading', { level: 1, name: 'Học' })).toBeInTheDocument();
     expect(store.getState().onboarded).toBe(true);
@@ -33,7 +33,7 @@ describe('AppRoutes', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'Học' })).toBeInTheDocument();
   });
 
-  it.each([['/practice', 'Luyện tự do'], ['/alphabet', 'Bảng chữ cái'], ['/dictionary', 'Bảng chữ cái'], ['/lab', 'AI Lab'], ['/profile', 'Hồ sơ']])('%s has a page', (path, title) => {
+  it.each([['/practice', 'Luyện tự do'], ['/alphabet', 'Bảng chữ cái & Chữ số'], ['/dictionary', 'Bảng chữ cái & Chữ số'], ['/lab', 'AI Lab'], ['/profile', 'Hồ sơ']])('%s has a page', (path, title) => {
     at(path);
     expect(screen.getByRole('heading', { level: 1, name: title })).toBeInTheDocument();
   });
