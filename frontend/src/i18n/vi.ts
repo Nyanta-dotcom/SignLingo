@@ -192,6 +192,12 @@ export const vi = {
     clearOk: 'Đã xóa toàn bộ dữ liệu.',
     cancel: 'Hủy',
   },
+  login: {
+    title: 'Đăng nhập',
+    subtitle: 'Lưu tiến độ học trên mọi thiết bị và tham gia bảng xếp hạng.',
+    skip: 'Học tiếp không cần đăng nhập',
+    off: 'Tính năng tài khoản chưa được bật trên bản này. Bạn vẫn học được đầy đủ.',
+  },
   account: {
     title: 'Tài khoản',
     intro: 'Đăng nhập để giữ tiến trình khi đổi máy. Chỉ tiến trình học (XP, chuỗi ngày, trạng thái bài) được lưu; hình camera và dữ liệu bàn tay không bao giờ rời máy bạn. Không đăng nhập vẫn dùng được đầy đủ.',
