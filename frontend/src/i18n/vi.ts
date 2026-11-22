@@ -158,9 +158,6 @@ export const vi = {
   },
   banners: {
     storageBlocked: 'Tiến độ sẽ không được lưu: trình duyệt đang chặn lưu trữ. Hãy bật lại cookie và dữ liệu trang, hoặc dùng cửa sổ thường thay vì ẩn danh.',
-    backupTitle: 'Tiến độ chỉ lưu trên trình duyệt này.',
-    backupAction: 'Xuất bản sao lưu',
-    backupClose: 'Đóng nhắc sao lưu',
   },
   settings: {
     title: 'Cài đặt',
@@ -176,9 +173,8 @@ export const vi = {
     cameraN: (n: number) => `Camera ${n}`,
     cameraHelp: 'Chọn webcam dùng cho các màn luyện tập. Tên thiết bị chỉ hiện sau khi bạn đã cấp quyền camera.',
     data: 'Dữ liệu của bạn',
-    dataNote: 'Mọi dữ liệu chỉ nằm trên trình duyệt này, không gửi đi đâu. Hãy xuất file để sao lưu hoặc chuyển sang máy khác.',
-    storageBlocked: 'Trình duyệt đang chặn lưu trữ, nên tiến độ sẽ mất khi đóng tab. Hãy xuất file để giữ lại.',
-    export: 'Xuất tiến độ',
+    dataNote: 'Tiến độ được lưu trên trình duyệt này. Muốn giữ tiến độ trên nhiều thiết bị, hãy đăng nhập ở trang Hồ sơ.',
+    storageBlocked: 'Trình duyệt đang chặn lưu trữ, nên tiến độ sẽ mất khi đóng tab.',
     import: 'Nhập tiến độ',
     importConfirm: 'Nhập file này sẽ ghi đè toàn bộ tiến độ hiện tại. Tiếp tục?',
     importYes: 'Ghi đè và nhập',

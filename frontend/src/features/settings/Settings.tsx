@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { vi } from '@/i18n/vi';
-import { downloadBackup } from '@/lib/downloadBackup';
 import { useLearner } from '@/storage/useLearner';
 import type { Settings as SettingsData } from '@/storage/types';
 
@@ -118,7 +117,6 @@ export function Settings() {
         <p className="text-text-muted">{t.dataNote}</p>
         {!available && <p role="alert" className="font-bold text-warning-fg">{t.storageBlocked}</p>}
         <div className="flex flex-wrap gap-3">
-          <Button variant="secondary" onClick={() => downloadBackup(backup.exportBackup())}>{t.export}</Button>
           <Button variant="secondary" onClick={() => picker.current?.click()}>{t.import}</Button>
           <input ref={picker} type="file" accept="application/json,.json" className="sr-only" tabIndex={-1} aria-label={t.import} onChange={(e) => void onFile(e.target.files?.[0])} />
           <Button variant="danger" onClick={() => { setNotice(null); setPending({ kind: 'clear' }); }}>{t.clear}</Button>
