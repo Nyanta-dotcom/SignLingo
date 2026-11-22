@@ -44,7 +44,7 @@ flowchart LR
   Repo --> SPA
 
   subgraph Browser["Trình duyệt người học"]
-    CAM[Webcam] --> MP[MediaPipe Tasks Vision<br/>HandLandmarker · GPU mặc định, lùi CPU]
+    CAM[Webcam] --> MP[MediaPipe Tasks Vision<br/>HandLandmarker · CPU mặc định]
     MP --> NORM[Landmark Normalizer TS]
     NORM --> ORT[onnxruntime-web<br/>Classifier]
     ORT --> POST[Smoother + Threshold<br/>Hold-to-Verify FSM]
@@ -75,7 +75,7 @@ flowchart LR
 | Định dạng mô hình web | **ONNX** (opset 17) chạy bằng **onnxruntime-web** (ưu tiên WASM, WebGPU dự phòng: đo thật trên máy dev, WASM p50 0,78 ms so với WebGPU 6,4 ms cho MLP này) | 1 định dạng cho cả CNN & MLP; quantize int8 được | TF.js (phải convert 2 bước) |
 | Quản lý môi trường ML | **uv** + `pyproject.toml`, khóa `uv.lock` (tạm thời đang dùng `venv` + `pip` vì máy chưa cài uv) | Nhanh, tái lập | conda (nặng) |
 | Thí nghiệm | Config YAML + log JSON trong `reports/experiments/` (commit vào git) | Nhẹ, người chấm đọc được, AI Lab đọc trực tiếp | MLflow (thừa cho quy mô đồ án) |
-| Hand tracking | **`@mediapipe/tasks-vision` HandLandmarker** (runningMode `VIDEO`, delegate **GPU mặc định**, tự lùi về CPU khi GPU không khởi động được), tự host | API hiện hành, chế độ VIDEO; lần đo 60 s đầu tiên với CPU (Chrome 157, Windows) cho thời gian khung p50 29,8 ms, p95 38,6 ms nhưng chỉ xử lý 22,6 khung/giây, nên chuyển sang GPU. Số đo với GPU **chưa có**, đo bằng Live Monitor của AI Lab | Legacy MediaPipe Hands |
+| Hand tracking | **`@mediapipe/tasks-vision` HandLandmarker** (runningMode `VIDEO`, delegate **CPU mặc định**; GPU có thể bật và tự lùi về CPU khi lỗi), tự host | API hiện hành, chế độ VIDEO. Đo trên laptop của nhóm (Chrome 157, Windows, Live Monitor của AI Lab): CPU cho MediaPipe p50 28,8 ms (khung p50 29,8 ms, p95 38,6 ms, 22,6 khung/giây, ghi 60 s); GPU cho MediaPipe p50 76,1 ms (khung p50 77,3 ms, p95 87,9 ms, 9,2 khung/giây, đọc trên màn hình), tức GPU chậm hơn khoảng 2,6 lần nên giữ CPU | Legacy MediaPipe Hands |
 | Frontend | **React 19 + TypeScript 6 + Vite** | Phổ biến, hệ sinh thái skill/AI agent tốt; TS ghim 6.x vì typescript-eslint chưa hỗ trợ TS 7 | Next.js (không cần SSR; SPA đủ) |
 | Styling | **Tailwind CSS 4** + CSS variables (design tokens) + `@radix-ui/react-slot` + font Nunito tự host | Tông hồng, **chỉ chế độ sáng** (cài đặt giao diện vẫn lưu nhưng luôn áp dụng sáng) | MUI (khó đạt look Duolingo) |
 | State | **Zustand** (session học, camera, UI) + `src/storage/` (persist có version) | Đơn giản, test được | Redux; TanStack Query (không còn server state) |
@@ -167,7 +167,7 @@ flowchart TD
 sequenceDiagram
   participant V as <video> (getUserMedia 640×480@30)
   participant L as FrameLoop (requestVideoFrameCallback)
-  participant MP as HandLandmarker (GPU mặc định, lùi CPU)
+  participant MP as HandLandmarker (CPU mặc định)
   participant N as Normalizer lm-v1
   participant C as Classifier (ORT-web)
   participant S as Smoother + HoldFSM
@@ -217,7 +217,7 @@ stateDiagram-v2
 
 | # | Kỹ thuật | Kỳ vọng |
 |---|---|---|
-| 1 | Chuyển sang `tasks-vision` HandLandmarker, delegate GPU, `numHands: 1` | Giảm thời gian xử lý mỗi khung (mức cải thiện **chưa đo**, sẽ so sánh ở P4-01/P4-02) |
+| 1 | Chuyển sang `tasks-vision` HandLandmarker, `numHands: 1`; thử delegate GPU | Đã đo: trên laptop của nhóm GPU **chậm hơn** CPU (MediaPipe p50 76,1 ms so với 28,8 ms), nên giữ CPU |
 | 2 | Input camera 640×480 (không 1080p); `requestVideoFrameCallback` thay `setInterval`; đăng ký khung kế tiếp **trước** khi xử lý khung hiện tại (khung đến giữa lúc xử lý được nhận ngay sau đó, không phải chờ thêm một khung) | Không xử lý khung trùng; không mất khung khi một khung xử lý hơi quá 33 ms (mức cải thiện **chưa đo**) |
 | 3 | Overlay vẽ trên `<canvas>` trực tiếp, không qua React state; React chỉ nhận state đã throttle | Giảm jank main thread |
 | 4 | ORT-web: tái sử dụng session & tensor; WASM SIMD + threads (cần header COOP/COEP) hoặc WebGPU | Classifier < 1 ms |
