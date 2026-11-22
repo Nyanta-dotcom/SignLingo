@@ -199,6 +199,10 @@ export const vi = {
     menu: (name: string) => `Tài khoản ${name}`,
     off: 'Tính năng tài khoản chưa được bật trên bản này. Bạn vẫn học được đầy đủ.',
   },
+  register: {
+    title: 'Đăng ký',
+    subtitle: 'Tạo tài khoản miễn phí để lưu tiến độ học và tham gia bảng xếp hạng.',
+  },
   account: {
     title: 'Tài khoản',
     intro: 'Đăng nhập để giữ tiến trình khi đổi máy. Chỉ tiến trình học (XP, chuỗi ngày, trạng thái bài) được lưu; hình camera và dữ liệu bàn tay không bao giờ rời máy bạn. Không đăng nhập vẫn dùng được đầy đủ.',
@@ -207,7 +211,12 @@ export const vi = {
     showPassword: 'Hiện mật khẩu',
     hidePassword: 'Ẩn mật khẩu',
     signIn: 'Đăng nhập',
-    signUp: 'Đăng ký',
+    signUp: 'Tạo tài khoản',
+    passwordAgain: 'Nhập lại mật khẩu',
+    mismatch: 'Hai mật khẩu không khớp. Hãy nhập lại.',
+    noAccount: 'Chưa có tài khoản?',
+    haveAccount: 'Đã có tài khoản?',
+    signUpFailed: 'Không tạo được tài khoản. Nếu email này đã có tài khoản, hãy đăng nhập.',
     google: 'Tiếp tục với Google',
     or: 'hoặc',
     signedInAs: (email: string) => `Đã đăng nhập: ${email}`,
@@ -225,7 +234,7 @@ export const vi = {
       confirm_email: 'Kiểm tra email để xác nhận tài khoản, rồi đăng nhập.',
       sync_failed: 'Chưa đồng bộ được. Tiến trình vẫn an toàn trên máy này; hãy thử lại sau.',
       app_too_old: 'Tiến trình đã lưu do bản ứng dụng mới hơn tạo ra. Hãy tải lại trang để cập nhật.',
-      auth_failed: 'Không thực hiện được. Nếu chưa có tài khoản, hãy bấm Đăng ký trước.',
+      auth_failed: 'Sai email hoặc mật khẩu. Chưa có tài khoản thì hãy đăng ký trước.',
     },
   },
   leaderboard: {
