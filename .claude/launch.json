@@ -6,6 +6,12 @@
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["--dir", "frontend", "dev", "--port", "5173"],
       "port": 5173
+    },
+    {
+      "name": "frontend-preview",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--dir", "frontend", "preview", "--port", "4173"],
+      "port": 4173
     }
   ]
 }

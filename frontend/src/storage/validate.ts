@@ -1,20 +1,15 @@
-/** JSON Schema validation (ajv) for backup files and the curriculum, using shared/contracts schemas. */
+/**
+ * JSON Schema validation for backup files, the curriculum and the static data, using shared/contracts schemas.
+ * The validators are compiled ahead of time (scripts/gen-validators.mjs): the Content-Security-Policy forbids
+ * `new Function`, so Ajv must not compile schemas in the browser.
+ */
 
-import Ajv2020 from 'ajv/dist/2020';
-import backupSchema from '@contracts/schemas/backup.schema.json';
-import curriculumSchema from '@contracts/schemas/curriculum.schema.json';
-import landmarkCaptureSchema from '@contracts/schemas/landmark_capture.schema.json';
-import experimentSchema from '@contracts/schemas/experiment.schema.json';
-import experimentIndexSchema from '@contracts/schemas/experiment_index.schema.json';
-import modelIndexSchema from '@contracts/schemas/model_index.schema.json';
-import modelManifestSchema from '@contracts/schemas/model_manifest.schema.json';
+import * as generated from './validators.gen.js';
+import type { GeneratedValidator } from './validators.gen.js';
 
 export type Validation = { ok: true } | { ok: false; errors: string[] };
 
-const ajv = new Ajv2020({ allErrors: true, allowUnionTypes: true });
-
-function validator(schema: object) {
-  const check = ajv.compile(schema);
+function validator(check: GeneratedValidator) {
   return (data: unknown): Validation => {
     if (check(data)) return { ok: true };
     return {
@@ -24,10 +19,10 @@ function validator(schema: object) {
   };
 }
 
-export const validateBackup = validator(backupSchema);
-export const validateCurriculum = validator(curriculumSchema);
-export const validateModelIndex = validator(modelIndexSchema);
-export const validateModelManifest = validator(modelManifestSchema);
-export const validateExperimentIndex = validator(experimentIndexSchema);
-export const validateLandmarkCapture = validator(landmarkCaptureSchema);
-export const validateExperiment = validator(experimentSchema);
+export const validateBackup = validator(generated.validateBackup);
+export const validateCurriculum = validator(generated.validateCurriculum);
+export const validateModelIndex = validator(generated.validateModelIndex);
+export const validateModelManifest = validator(generated.validateModelManifest);
+export const validateExperimentIndex = validator(generated.validateExperimentIndex);
+export const validateLandmarkCapture = validator(generated.validateLandmarkCapture);
+export const validateExperiment = validator(generated.validateExperiment);
