@@ -1,11 +1,8 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useRef } from 'react';
 import { LearnTransition } from '@/features/onboarding/LearnTransition';
 import { useLearnTransition } from '@/features/onboarding/learnTransitionStore';
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router';
 import { AppShell } from '@/components/layout/AppShell';
-import { Alphabet } from '@/features/alphabet/Alphabet';
-import { LessonPlayer } from '@/features/lesson/LessonPlayer';
-import { HandSheet } from '@/dev/HandSheet';
 import { AccountMenu } from '@/features/account/AccountMenu';
 import { LoginPage } from '@/features/account/LoginPage';
 import { AboutPage } from '@/features/onboarding/AboutPage';
@@ -13,18 +10,23 @@ import { Banners } from '@/features/onboarding/Banners';
 import { FeaturesPage } from '@/features/onboarding/FeaturesPage';
 import { HowItWorksPage } from '@/features/onboarding/HowItWorksPage';
 import { Landing } from '@/features/onboarding/Landing';
-import { Lab } from '@/features/lab/Lab';
-import { Leaderboard } from '@/features/leaderboard/Leaderboard';
-import { Profile } from '@/features/profile/Profile';
-import { Settings } from '@/features/settings/Settings';
-import { SkillTree } from '@/features/skill-tree/SkillTree';
-import { Collect } from '@/features/collect/Collect';
-import { Practice } from '@/features/practice/Practice';
 import { vi } from '@/i18n/vi';
 import { createSound } from '@/lib/sound';
 import { attachUiSound } from '@/lib/uiSound';
 import { useLearner } from '@/storage/useLearner';
 import { useAccount } from '@/sync/useAccount';
+
+/** Pages after the welcome screen load on demand, so the first visit downloads only what it shows. */
+const Alphabet = lazy(() => import('@/features/alphabet/Alphabet').then((m) => ({ default: m.Alphabet })));
+const LessonPlayer = lazy(() => import('@/features/lesson/LessonPlayer').then((m) => ({ default: m.LessonPlayer })));
+const HandSheet = lazy(() => import('@/dev/HandSheet').then((m) => ({ default: m.HandSheet })));
+const Lab = lazy(() => import('@/features/lab/Lab').then((m) => ({ default: m.Lab })));
+const Leaderboard = lazy(() => import('@/features/leaderboard/Leaderboard').then((m) => ({ default: m.Leaderboard })));
+const Profile = lazy(() => import('@/features/profile/Profile').then((m) => ({ default: m.Profile })));
+const Settings = lazy(() => import('@/features/settings/Settings').then((m) => ({ default: m.Settings })));
+const SkillTree = lazy(() => import('@/features/skill-tree/SkillTree').then((m) => ({ default: m.SkillTree })));
+const Collect = lazy(() => import('@/features/collect/Collect').then((m) => ({ default: m.Collect })));
+const Practice = lazy(() => import('@/features/practice/Practice').then((m) => ({ default: m.Practice })));
 
 function Placeholder({ title }: { title: string }) {
   return (
@@ -101,6 +103,7 @@ export function AppRoutes() {
   return (
     <>
     <LearnTransition />
+    <Suspense fallback={<p role="status" className="p-6 font-bold text-text-muted">{vi.common.loading}</p>}>
     <Routes>
       <Route index element={<Home />} />
       <Route path="welcome" element={<WelcomeRoute />} />
@@ -125,6 +128,7 @@ export function AppRoutes() {
         <Route path="*" element={<Placeholder title={vi.common.notFound} />} />
       </Route>
     </Routes>
+    </Suspense>
     </>
   );
 }

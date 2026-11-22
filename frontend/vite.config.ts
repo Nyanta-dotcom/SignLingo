@@ -23,6 +23,8 @@ export default defineConfig({
   server: { headers: crossOriginIsolation, watch: { ignored: ['**/public/ort/**', '**/public/mediapipe/**'] } },
   preview: { headers: productionHeaders },
   plugins: [react(), tailwindcss()],
+  // Source maps for the production bundle (the code is open source), so errors are debuggable and Lighthouse is satisfied.
+  build: { sourcemap: true },
   resolve: {
     alias: {
       '@contracts': fileURLToPath(new URL('../shared/contracts', import.meta.url)),

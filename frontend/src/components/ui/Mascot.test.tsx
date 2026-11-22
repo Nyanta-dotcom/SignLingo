@@ -6,7 +6,7 @@ describe('Mascot', () => {
   it('renders the chosen pose as a decorative image hidden from screen readers', () => {
     const { container } = render(<Mascot pose="wave" motion="sway" />);
     const img = container.querySelector('img');
-    expect(img).toHaveAttribute('src', '/mascot/wave.png');
+    expect(img).toHaveAttribute('src', '/mascot/wave.webp');
     expect(img).toHaveAttribute('alt', '');
     expect(img).toHaveAttribute('aria-hidden', 'true');
     expect(img?.className).toContain('mascot-sway');

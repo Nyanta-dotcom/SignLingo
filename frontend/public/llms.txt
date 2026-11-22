@@ -1,0 +1,15 @@
+# SignLingo
+
+> Ứng dụng web học bảng chữ cái ngôn ngữ ký hiệu Mỹ (ASL): 26 chữ cái (24 chữ tĩnh, 2 chữ động J và Z) và 11 chữ số 0–10. Người học ra dấu trước webcam; MediaPipe tìm 21 điểm bàn tay và mô hình ONNX chấm điểm ngay trong trình duyệt, không gửi hình ảnh đi. Đồ án môn Nhập môn Trí tuệ nhân tạo, VNUK.
+
+## Trang chính
+
+- [Trang chủ](https://signlingo-vn.vercel.app/welcome): giới thiệu và nút vào học
+- [Tính năng](https://signlingo-vn.vercel.app/features): lộ trình bài học, tim, chuỗi ngày, luyện tự do, AI Lab
+- [Cách hoạt động](https://signlingo-vn.vercel.app/how-it-works): quy trình webcam → MediaPipe → ONNX
+- [Giới thiệu & Liên hệ](https://signlingo-vn.vercel.app/about): nhóm phát triển và liên hệ
+- [Bảng chữ cái](https://signlingo-vn.vercel.app/alphabet): tra cứu dáng tay của 26 chữ cái và 11 chữ số
+
+## Mã nguồn
+
+- [GitHub: Nyanta-dotcom/SignLingo](https://github.com/Nyanta-dotcom/SignLingo)
