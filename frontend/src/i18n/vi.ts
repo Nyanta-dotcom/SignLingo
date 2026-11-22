@@ -62,6 +62,7 @@ export const vi = {
     cardTitle: (l: string) => `Chữ ${l}`,
     cardText: 'Ở bước sau bạn sẽ làm dấu này trước camera.',
     cardImageAlt: (l: string) => `Hình minh họa bàn tay làm chữ ${l}`,
+    referenceCaption: 'Mẫu để đối chiếu',
     cardArtCredit: 'Hình minh họa của SignLingo theo bảng chữ cái ASL (Gallaudet). Chỉ để tham khảo.',
     cardImageCredit: (by: string, license: string) => `Hình: ${by} (${license})`,
     cardLetter: 'Chữ cái cần học',
