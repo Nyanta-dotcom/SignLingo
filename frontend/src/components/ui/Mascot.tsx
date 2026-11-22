@@ -5,7 +5,7 @@ type Motion = 'hop' | 'sway' | 'breathe' | 'none';
 export function Mascot({ pose, motion = 'none', className = '' }: { pose: MascotPose; motion?: Motion; className?: string }) {
   return (
     <img
-      src={`/mascot/${pose}.png`}
+      src={`/mascot/${pose}.webp`}
       alt=""
       aria-hidden="true"
       draggable={false}
