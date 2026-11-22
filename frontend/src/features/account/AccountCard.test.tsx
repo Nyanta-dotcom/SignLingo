@@ -20,7 +20,7 @@ const setup = (over: Partial<AuthApi> = {}, user: AccountUser | null = null) => 
   } satisfies AuthApi;
   const store = createAccountStore({ api, local: { readData: () => ({}), applyData: vi.fn() } });
   void store.getState().start();
-  return { api, store, ...render(<AccountCard store={store} />) };
+  return { api, store, ...render(<AccountCard store={store} google />) };
 };
 
 describe('AccountCard', () => {
@@ -34,6 +34,18 @@ describe('AccountCard', () => {
     expect(await screen.findByRole('button', { name: 'Tiếp tục với Google' })).toBeInTheDocument();
     expect(screen.getByText(/không bao giờ rời máy bạn/)).toBeInTheDocument();
     expect(screen.getByLabelText('Email')).toBeInTheDocument();
+  });
+
+  it('hides the Google button until Google sign-in is switched on', async () => {
+    const api = {
+      getUser: vi.fn(async () => null), onChange: vi.fn(() => () => {}), signInWithGoogle: vi.fn(), signInWithPassword: vi.fn(),
+      signUp: vi.fn(), signOut: vi.fn(), deleteAccount: vi.fn(), progressFor: vi.fn(),
+    } as unknown as AuthApi;
+    const store = createAccountStore({ api, local: { readData: () => ({}), applyData: vi.fn() } });
+    void store.getState().start();
+    render(<AccountCard store={store} google={false} />);
+    expect(await screen.findByLabelText('Email')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Tiếp tục với Google' })).toBeNull();
   });
 
   it('signs in with email and password', async () => {

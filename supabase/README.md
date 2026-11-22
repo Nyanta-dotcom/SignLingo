@@ -12,6 +12,7 @@
 6. Trên Vercel, **Settings → Environment Variables**, thêm cho Production và Preview:
    - `VITE_SUPABASE_URL` = Project URL
    - `VITE_SUPABASE_ANON_KEY` = khóa anon public
+   - `VITE_SUPABASE_GOOGLE` = `true` chỉ sau khi Google đã bật ở bước 3 (không đặt thì nút Google ẩn, chỉ đăng nhập bằng email)
    rồi **Redeploy**. Chạy cục bộ thì tạo `frontend/.env.local` với hai biến này (file bị git bỏ qua; xem `frontend/.env.example`).
 
 **Tuyệt đối không** đưa khóa `service_role` vào repo, Vercel hay trình duyệt. Khóa `anon` công khai an toàn vì Row Level Security chặn truy cập chéo giữa người dùng.

@@ -26,6 +26,9 @@ export type AuthApi = {
 const url = import.meta.env.VITE_SUPABASE_URL as string | undefined;
 const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
 
+/** Google sign-in needs its own setup in Supabase and Google Cloud; the button shows only when the owner says it is ready. */
+export const googleEnabled = import.meta.env.VITE_SUPABASE_GOOGLE === 'true';
+
 /** False until the project owner sets both env vars; the app then hides the account card and stays fully local. */
 export const syncConfigured = Boolean(url && anonKey);
 

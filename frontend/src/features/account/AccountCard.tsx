@@ -3,12 +3,13 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { vi } from '@/i18n/vi';
 import type { AccountStore } from '@/sync/account';
+import { googleEnabled } from '@/sync/supabase';
 import { accountStore } from '@/sync/useAccount';
 
 const INPUT = 'min-h-11 w-full rounded-xl border-2 border-border bg-surface px-3 text-text focus-visible:border-brand-500';
 
 /** Optional account: sign in to keep progress across devices. Renders nothing when sync is not configured. */
-export function AccountCard({ store = accountStore() }: { store?: AccountStore }) {
+export function AccountCard({ store = accountStore(), google = googleEnabled }: { store?: AccountStore; google?: boolean }) {
   const t = vi.account;
   const status = store((s) => s.status);
   const user = store((s) => s.user);
@@ -34,8 +35,12 @@ export function AccountCard({ store = accountStore() }: { store?: AccountStore }
       {status === 'signed_out' && (
         <>
           <p className="text-sm text-text-muted">{t.intro}</p>
-          <Button variant="secondary" disabled={busy} onClick={() => void account.signInWithGoogle()}>{t.google}</Button>
-          <p aria-hidden="true" className="text-center text-xs font-bold uppercase text-text-muted">{t.or}</p>
+          {google && (
+            <>
+              <Button variant="secondary" disabled={busy} onClick={() => void account.signInWithGoogle()}>{t.google}</Button>
+              <p aria-hidden="true" className="text-center text-xs font-bold uppercase text-text-muted">{t.or}</p>
+            </>
+          )}
           <form onSubmit={submit} className="flex flex-col gap-3">
             <label className="flex flex-col gap-1 text-sm font-bold">
               {t.email}
