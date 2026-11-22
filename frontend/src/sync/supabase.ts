@@ -102,7 +102,11 @@ export function createSupabaseAuth(client: SupabaseClient): AuthApi {
           return data ? { display_name: data.display_name as string, show_on_leaderboard: data.show_on_leaderboard as boolean } : null;
         },
         async join(displayName) {
-          fail((await client.from('public_profiles').upsert({ user_id: userId, display_name: displayName, show_on_leaderboard: true })).error);
+          // Not an upsert: its "on conflict" step would also rewrite user_id, which a client may not update (see 0001 grants).
+          const updated = await client.from('public_profiles').update({ display_name: displayName, show_on_leaderboard: true }).eq('user_id', userId).select('user_id');
+          fail(updated.error);
+          if (updated.data?.length) return;
+          fail((await client.from('public_profiles').insert({ user_id: userId, display_name: displayName, show_on_leaderboard: true })).error);
         },
         async leave() {
           fail((await client.from('public_profiles').update({ show_on_leaderboard: false }).eq('user_id', userId)).error);
