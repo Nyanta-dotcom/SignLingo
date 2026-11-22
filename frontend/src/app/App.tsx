@@ -7,6 +7,7 @@ import { HandSheet } from '@/dev/HandSheet';
 import { Banners } from '@/features/onboarding/Banners';
 import { Landing } from '@/features/onboarding/Landing';
 import { Lab } from '@/features/lab/Lab';
+import { Leaderboard } from '@/features/leaderboard/Leaderboard';
 import { Profile } from '@/features/profile/Profile';
 import { Settings } from '@/features/settings/Settings';
 import { SkillTree } from '@/features/skill-tree/SkillTree';
@@ -63,6 +64,7 @@ export function AppRoutes() {
         <Route path="alphabet" element={<Alphabet />} />
         <Route path="alphabet/:letter" element={<Alphabet />} />
         <Route path="dictionary" element={<Navigate to="/alphabet" replace />} />
+        <Route path="leaderboard" element={<Leaderboard />} />
         <Route path="lab" element={<Lab />} />
         <Route path="profile" element={<Profile />} />
         <Route path="settings" element={<Settings />} />

@@ -16,6 +16,7 @@ const setup = (over: Partial<AuthApi> = {}, user: AccountUser | null = null) => 
     signOut: vi.fn(async () => {}),
     deleteAccount: vi.fn(async () => {}),
     progressFor: vi.fn(() => ({ load: vi.fn(async () => null), save: vi.fn(async () => {}) })),
+    leaderboardFor: vi.fn(),
     ...over,
   } satisfies AuthApi;
   const store = createAccountStore({ api, local: { readData: () => ({}), applyData: vi.fn() } });

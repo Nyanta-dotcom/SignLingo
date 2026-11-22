@@ -1,7 +1,7 @@
 import type { ComponentType, ReactNode, SVGProps } from 'react';
 import { Link, NavLink, Outlet } from 'react-router';
 import { vi } from '@/i18n/vi';
-import { AlphabetIcon, BrandMark, HandIcon, HomeIcon, LabIcon, UserIcon } from '@/components/ui/Icons';
+import { AlphabetIcon, BrandMark, HandIcon, HomeIcon, LabIcon, TrophyIcon, UserIcon } from '@/components/ui/Icons';
 import { StatChip } from '@/components/ui/StatChip';
 
 type NavItem = {
@@ -14,6 +14,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
   { to: '/learn', label: vi.nav.learn, Icon: HomeIcon },
   { to: '/practice', label: vi.nav.practice, Icon: HandIcon },
   { to: '/alphabet', label: vi.nav.alphabet, Icon: AlphabetIcon },
+  { to: '/leaderboard', label: vi.nav.leaderboard, Icon: TrophyIcon },
   { to: '/lab', label: vi.nav.lab, Icon: LabIcon },
   { to: '/profile', label: vi.nav.profile, Icon: UserIcon },
 ];
@@ -60,12 +61,12 @@ function BottomNav() {
   return (
     <ul className="flex items-center justify-around gap-1">
       {NAV_ITEMS.map(({ to, label, Icon }) => (
-        <li key={to} className="flex-1">
+        <li key={to} className="min-w-0 flex-1">
           <NavLink
             to={to}
             aria-label={label}
             className={({ isActive }) =>
-              `flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-full px-2 py-1 text-[11px] font-extrabold transition-colors duration-(--motion-fast) ${
+              `flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-full px-0.5 py-1 text-[11px] font-extrabold transition-colors duration-(--motion-fast) ${
                 isActive ? 'text-brand-fg' : 'text-text-muted hover:text-text'
               }`
             }
@@ -79,7 +80,7 @@ function BottomNav() {
                 >
                   <Icon className="size-5" />
                 </span>
-                <span className="max-w-16 truncate">{label}</span>
+                <span className="max-w-full truncate">{label}</span>
               </>
             )}
           </NavLink>
