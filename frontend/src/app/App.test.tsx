@@ -44,10 +44,9 @@ describe('AppRoutes', () => {
     expect(screen.getAllByRole('navigation')).toHaveLength(2);
   });
 
-  it('the settings page switches the theme and remembers it', () => {
+  it('renders settings in light-only mode without a dark theme toggle', () => {
     at('/settings');
-    fireEvent.click(screen.getByRole('radio', { name: 'Tối' }));
-    expect(document.documentElement).toHaveAttribute('data-theme', 'dark');
-    expect(JSON.parse(localStorage.getItem('signlingo:v1:settings') ?? '{}').theme).toBe('dark');
+    expect(screen.getByRole('heading', { level: 1, name: 'Cài đặt' })).toBeInTheDocument();
+    expect(screen.queryByRole('radio', { name: 'Tối' })).toBeNull();
   });
 });

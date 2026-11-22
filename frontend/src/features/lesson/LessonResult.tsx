@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { StarIcon } from '@/components/ui/Icons';
 import { MIN_LESSON_ACCURACY, missedLetters } from '@/game/lessonFlow';
 import { vi } from '@/i18n/vi';
 import { useLearner } from '@/storage/useLearner';
 import type { Result } from './useLessonRun';
 
 const PIECES = Array.from({ length: 24 }, (_, i) => i);
-const COLORS = ['bg-brand-500', 'bg-success-fg', 'bg-warning-fg', 'bg-sky-400'];
+const COLORS = ['bg-brand-500', 'bg-brand-300', 'bg-success-fg', 'bg-xp'];
 
 /** XP counts up unless the person asked for less motion (setting or system). */
 function useCountUp(target: number, still: boolean): number {
@@ -30,7 +31,7 @@ function useCountUp(target: number, still: boolean): number {
   return value;
 }
 
-/** Lesson summary (docs/05 §5.3): XP, accuracy, time, streak and the letters worth another go. */
+/** Lesson summary: XP, accuracy, time, streak and the letters worth another go. */
 export function LessonResult({ result, onFinish, onRetry }: { result: Result | null; onFinish: () => void; onRetry: () => void }) {
   const reduced = useLearner((s) => s.settings.reduced_motion);
   const streakNow = useLearner((s) => s.stats.current_streak);
@@ -44,14 +45,14 @@ export function LessonResult({ result, onFinish, onRetry }: { result: Result | n
 
   if (!passed && result) {
     return (
-      <section aria-labelledby="done-title" className="mx-auto flex max-w-xl flex-col items-center gap-6 py-8 text-center">
-        <h1 id="done-title" className="text-3xl font-extrabold">{t.notPassed}</h1>
-        <p className="text-lg">{t.notPassedText(MIN_LESSON_ACCURACY * 100, result.record.accuracy_pct ?? 0)}</p>
+      <section aria-labelledby="done-title" className="mx-auto flex max-w-xl flex-col items-center gap-6 px-4 py-12 text-center">
+        <h1 id="done-title" className="text-3xl font-black">{t.notPassed}</h1>
+        <p className="text-lg text-text-muted">{t.notPassedText(MIN_LESSON_ACCURACY * 100, result.record.accuracy_pct ?? 0)}</p>
         {missed.length > 0 && (
           <Card className="w-full">
             <h2 className="font-extrabold">{t.missed}</h2>
-            <ul className="mt-2 flex flex-wrap justify-center gap-2">
-              {missed.map((m) => <li key={m.letter} className="rounded-full bg-surface-2 px-3 py-1 font-bold">{t.missedItem(m.letter, m.misses)}</li>)}
+            <ul className="mt-3 flex flex-wrap justify-center gap-2">
+              {missed.map((m) => <li key={m.letter} className="rounded-full bg-brand-50 px-3.5 py-1 text-sm font-extrabold text-brand-fg">{t.missedItem(m.letter, m.misses)}</li>)}
             </ul>
           </Card>
         )}
@@ -64,28 +65,35 @@ export function LessonResult({ result, onFinish, onRetry }: { result: Result | n
   }
 
   return (
-    <section aria-labelledby="done-title" className="relative mx-auto flex max-w-xl flex-col items-center gap-6 py-8 text-center">
+    <section aria-labelledby="done-title" className="relative mx-auto flex max-w-xl flex-col items-center gap-6 px-4 py-12 text-center">
       {!still && (
         <div aria-hidden="true" data-testid="confetti" className="pointer-events-none absolute inset-x-0 top-0 h-40 overflow-hidden">
           {PIECES.map((i) => (
-            <span key={i} className={`confetti-piece absolute top-0 size-2 rounded-sm ${COLORS[i % COLORS.length]}`} style={{ left: `${(i * 37) % 100}%`, animationDelay: `${(i % 8) * 90}ms` }} />
+            <span key={i} className={`confetti-piece absolute top-0 size-2.5 rounded-full ${COLORS[i % COLORS.length]}`} style={{ left: `${(i * 37) % 100}%`, animationDelay: `${(i % 8) * 90}ms` }} />
           ))}
         </div>
       )}
-      <h1 id="done-title" className="text-3xl font-extrabold">{t.done}</h1>
+      <span className="btn-pink inline-flex size-16 items-center justify-center rounded-full text-ink-on-pink">
+        <StarIcon className="size-8" />
+      </span>
+      <h1 id="done-title" className="text-3xl font-black tracking-tight">{t.done}</h1>
       <dl className="grid w-full grid-cols-3 gap-3">
-        <Card><dt className="text-sm text-text-muted">{t.xp}</dt><dd className="text-2xl font-extrabold" aria-label={String(xp)}>{shown}</dd></Card>
-        <Card><dt className="text-sm text-text-muted">{t.accuracy}</dt><dd className="text-2xl font-extrabold">{result?.record.accuracy_pct ?? 0}%</dd></Card>
-        <Card><dt className="text-sm text-text-muted">{t.time}</dt><dd className="text-2xl font-extrabold">{t.seconds(seconds)}</dd></Card>
+        <Card className="p-4"><dt className="text-xs font-extrabold uppercase tracking-wider text-text-muted">{t.xp}</dt><dd className="mt-1 text-2xl font-black text-brand-fg" aria-label={String(xp)}>{shown}</dd></Card>
+        <Card className="p-4"><dt className="text-xs font-extrabold uppercase tracking-wider text-text-muted">{t.accuracy}</dt><dd className="mt-1 text-2xl font-black text-success-fg">{result?.record.accuracy_pct ?? 0}%</dd></Card>
+        <Card className="p-4"><dt className="text-xs font-extrabold uppercase tracking-wider text-text-muted">{t.time}</dt><dd className="mt-1 text-2xl font-black text-text">{t.seconds(seconds)}</dd></Card>
       </dl>
-      {result && streakNow > result.streakFrom && <p className="font-bold" data-testid="streak">{t.streak(result.streakFrom, streakNow)}</p>}
+      {result && streakNow > result.streakFrom && (
+        <p className="rounded-full bg-warning-bg px-4 py-1.5 text-sm font-extrabold text-warning-fg" data-testid="streak">
+          {t.streak(result.streakFrom, streakNow)}
+        </p>
+      )}
       {missed.length > 0 && (
         <Card className="w-full">
           <h2 className="font-extrabold">{t.missed}</h2>
-          <ul className="mt-2 flex flex-wrap justify-center gap-2">
-            {missed.map((m) => <li key={m.letter} className="rounded-full bg-surface-2 px-3 py-1 font-bold">{t.missedItem(m.letter, m.misses)}</li>)}
+          <ul className="mt-3 flex flex-wrap justify-center gap-2">
+            {missed.map((m) => <li key={m.letter} className="rounded-full bg-brand-50 px-3.5 py-1 text-sm font-extrabold text-brand-fg">{t.missedItem(m.letter, m.misses)}</li>)}
           </ul>
-          <div className="mt-3"><Button variant="secondary" onClick={onRetry}>{t.retry}</Button></div>
+          <div className="mt-4"><Button variant="secondary" onClick={onRetry}>{t.retry}</Button></div>
         </Card>
       )}
       <Button size="lg" onClick={onFinish}>{t.finish}</Button>

@@ -15,7 +15,7 @@ import { realEngineFactory, useRecognition, type EngineFactory } from '../practi
 
 const FRAMES_PER_LETTER = 40;
 
-/** /collect (docs/03 §4): records landmark samples for P1-21 and lets the learner download them. Never stores images. */
+/** /collect: records landmark samples and lets the learner download them. Never stores images. */
 export function Collect({ factory = realEngineFactory, labels: given }: { factory?: EngineFactory; labels?: string[] }) {
   const camera = useCamera();
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -102,17 +102,17 @@ export function Collect({ factory = realEngineFactory, labels: given }: { factor
   return (
     <section className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[3fr_2fr]">
       <div className="flex flex-col gap-4">
-        <h1 className="text-3xl font-extrabold">{vi.collect.title}</h1>
+        <h1 className="text-3xl font-black tracking-tight text-text">{vi.collect.title}</h1>
         <p className="text-text-muted">{vi.collect.intro}</p>
-        <p className="font-semibold">{vi.collect.privacy}</p>
-        <p role="note" className="text-warning-fg">{vi.collect.warning}</p>
+        <p className="font-bold text-text">{vi.collect.privacy}</p>
+        <p role="note" className="rounded-2xl bg-warning-bg/60 px-4 py-2.5 text-sm font-bold text-warning-fg">{vi.collect.warning}</p>
         {running || camera.status === 'error' ? (
           <CameraFrame
             state={frameState} stream={camera.stream} progress={engine.progress} message={engine.error ?? camera.error?.message}
             videoRef={videoRef} canvasRef={canvasRef} onGrant={() => void camera.start()} onRetry={() => void camera.start()}
           />
         ) : (
-          <Card className="flex aspect-[4/3] items-center justify-center">
+          <Card className="flex aspect-[4/3] items-center justify-center border-dashed border-brand-300 bg-brand-50/40">
             <Button size="lg" onClick={() => void camera.start()}>{vi.collect.cameraOn}</Button>
           </Card>
         )}
@@ -121,23 +121,25 @@ export function Collect({ factory = realEngineFactory, labels: given }: { factor
 
       <div className="flex flex-col gap-4">
         <Card>
-          <label htmlFor="signer" className="font-extrabold">{vi.collect.signerLabel}</label>
+          <label htmlFor="signer" className="text-base font-black">{vi.collect.signerLabel}</label>
           <input
             id="signer" value={signer} onChange={(e) => setSigner(e.target.value.trim())} placeholder="S01" autoComplete="off"
             aria-invalid={signer !== '' && !signerOk} aria-describedby="signer-help"
-            className="mt-2 min-h-12 w-full rounded-[var(--radius-xl)] border-2 border-border bg-surface px-4 text-lg font-bold"
+            className="mt-2 min-h-12 w-full rounded-2xl border-2 border-border bg-surface px-4 text-lg font-bold transition-colors hover:border-brand-300 focus:border-brand-500"
           />
-          <p id="signer-help" className="mt-1 text-sm text-text-muted">{vi.collect.signerHelp}</p>
-          {signer !== '' && !signerOk && <p role="alert" className="text-sm font-bold text-danger-on-bg">{vi.collect.signerInvalid}</p>}
+          <p id="signer-help" className="mt-1.5 text-sm text-text-muted">{vi.collect.signerHelp}</p>
+          {signer !== '' && !signerOk && <p role="alert" className="mt-1 text-sm font-bold text-danger-on-bg">{vi.collect.signerInvalid}</p>}
         </Card>
 
         <Card>
-          <h2 className="font-extrabold">{vi.collect.letters}</h2>
+          <h2 className="text-base font-black">{vi.collect.letters}</h2>
           <div role="group" aria-label={vi.collect.letters} className="mt-3 grid grid-cols-6 gap-2">
             {labels.map((l) => (
               <button
                 key={l} type="button" aria-pressed={letter === l} onClick={() => setLetter(l)} disabled={busy}
-                className={`min-h-12 rounded-[var(--radius-xl)] border-2 font-extrabold ${letter === l ? 'border-brand-500 bg-brand-600 text-text-on-brand' : 'border-border bg-surface'}`}
+                className={`min-h-12 cursor-pointer rounded-2xl border-2 font-extrabold transition-colors ${
+                  letter === l ? 'btn-pink border-brand-500 text-ink-on-pink shadow-none' : 'border-border bg-surface text-text hover:border-brand-300 hover:bg-brand-50'
+                }`}
               >
                 <span>{l}</span>
                 {samples[l] && <span className="block text-xs" aria-label={vi.collect.recorded(samples[l].frames.length)}>✓ {samples[l].frames.length}</span>}
@@ -162,7 +164,7 @@ export function Collect({ factory = realEngineFactory, labels: given }: { factor
 
         {pending && (
           <Card role="group" aria-label={vi.collect.review(pending.letter)} className="flex flex-col items-center gap-3">
-            <h2 className="font-extrabold">{vi.collect.review(pending.letter)}</h2>
+            <h2 className="font-black">{vi.collect.review(pending.letter)}</h2>
             <Replay frames={pending.frames} label={vi.collect.replay(pending.letter)} />
             <p className="text-sm text-text-muted">{vi.collect.recorded(pending.frames.length)}</p>
             <div className="flex gap-3">

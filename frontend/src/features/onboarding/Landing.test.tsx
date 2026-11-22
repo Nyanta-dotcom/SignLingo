@@ -22,11 +22,11 @@ describe('Landing', () => {
     expect(screen.getAllByRole('listitem')).toHaveLength(3);
   });
 
-  it('starts when the learner presses Start, and offers the AI Lab and a theme switch', () => {
+  it('starts when the learner presses Start and offers the AI Lab without a theme switch', () => {
     const onStart = show();
     fireEvent.click(screen.getByRole('button', { name: 'Bắt đầu' }));
     expect(onStart).toHaveBeenCalledOnce();
     expect(screen.getByRole('link', { name: 'Xem AI Lab' })).toHaveAttribute('href', '/lab');
-    expect(screen.getByRole('radiogroup')).toBeInTheDocument();
+    expect(screen.queryByRole('radiogroup')).toBeNull();
   });
 });

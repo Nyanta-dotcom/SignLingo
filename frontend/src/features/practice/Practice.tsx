@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { HoldRing } from '@/components/ui/HoldRing';
+import { PlayIcon } from '@/components/ui/Icons';
 import { PredictionBars } from '@/components/ui/PredictionBars';
 import { CameraFrame, type CameraFrameState } from '@/components/vision/CameraFrame';
 import { drawSkeleton, tokenColor } from '@/components/vision/overlay';
@@ -20,7 +21,7 @@ const CAMERA_MESSAGES = {
   INSECURE_CONTEXT: vi.camera.insecure,
 } as const;
 
-/** Free Practice (docs/05 §5.4, FT-LRN-07): hold a sign to type it; never costs hearts or XP. */
+/** Free Practice: hold a sign to type it; never costs hearts or XP. */
 export function Practice({ factory = realEngineFactory }: { factory?: EngineFactory }) {
   const deviceId = useLearner((s) => s.settings.camera_device_id);
   const camera = useCamera(deviceId);
@@ -101,8 +102,10 @@ export function Practice({ factory = realEngineFactory }: { factory?: EngineFact
   return (
     <section className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[3fr_2fr]">
       <div className="flex flex-col gap-4">
-        <h1 className="text-3xl font-extrabold">{vi.practice.title}</h1>
-        <p className="text-text-muted">{vi.practice.intro}</p>
+        <div>
+          <h1 className="text-3xl font-black tracking-tight text-text">{vi.practice.title}</h1>
+          <p className="mt-1 text-text-muted">{vi.practice.intro}</p>
+        </div>
         {running || camera.status === 'error' ? (
           <CameraFrame
             state={frameState}
@@ -116,8 +119,11 @@ export function Practice({ factory = realEngineFactory }: { factory?: EngineFact
             onRetry={() => void camera.start()}
           />
         ) : (
-          <Card className="flex aspect-[4/3] items-center justify-center">
-            <Button size="lg" onClick={() => void camera.start()}>{vi.practice.start}</Button>
+          <Card className="flex aspect-[4/3] flex-col items-center justify-center gap-4 border-dashed border-brand-300 bg-brand-50/40">
+            <Button size="lg" onClick={() => void camera.start()}>
+              <PlayIcon className="size-4" />
+              {vi.practice.start}
+            </Button>
           </Card>
         )}
         <div className="flex flex-wrap gap-3">
@@ -128,26 +134,28 @@ export function Practice({ factory = realEngineFactory }: { factory?: EngineFact
         </div>
       </div>
 
-      <div className="flex flex-col items-center gap-6">
-        <HoldRing progress={typed.progress} label={vi.practice.holdRing}>
-          <span aria-label={vi.practice.current} className="text-8xl font-extrabold">{p?.label ?? vi.practice.none}</span>
-        </HoldRing>
-        <div className="w-full">
-          <PredictionBars items={p?.topK ?? []} caption={vi.practice.top3} />
-        </div>
+      <div className="flex flex-col items-center gap-5">
+        <Card className="flex w-full flex-col items-center gap-5">
+          <HoldRing progress={typed.progress} label={vi.practice.holdRing}>
+            <span aria-label={vi.practice.current} className="text-8xl font-black text-text">{p?.label ?? vi.practice.none}</span>
+          </HoldRing>
+          <div className="w-full">
+            <PredictionBars items={p?.topK ?? []} caption={vi.practice.top3} />
+          </div>
+        </Card>
         <Card className="w-full">
-          <h2 className="text-sm font-extrabold uppercase tracking-wide text-text-muted">{vi.practice.typed}</h2>
-          <p aria-live="polite" className="min-h-12 whitespace-pre-wrap break-words text-3xl font-extrabold tracking-widest">
-            {typed.text || <span className="text-base font-semibold text-text-muted">{vi.practice.typedEmpty}</span>}
+          <h2 className="text-xs font-extrabold uppercase tracking-wider text-text-muted">{vi.practice.typed}</h2>
+          <p aria-live="polite" className="mt-2 min-h-12 whitespace-pre-wrap break-words rounded-2xl bg-surface-2 px-4 py-2.5 text-3xl font-black tracking-widest text-text">
+            {typed.text || <span className="text-base font-semibold tracking-normal text-text-muted">{vi.practice.typedEmpty}</span>}
           </p>
-          <div className="mt-3 flex flex-wrap gap-2">
+          <div className="mt-3.5 flex flex-wrap gap-2">
             <Button size="sm" variant="secondary" onClick={() => edit((t) => t.space())}>{vi.practice.space}</Button>
             <Button size="sm" variant="secondary" onClick={() => edit((t) => t.backspace())}>{vi.practice.backspace}</Button>
             <Button size="sm" variant="ghost" onClick={() => edit((t) => t.clear())}>{vi.practice.clear}</Button>
           </div>
         </Card>
         {rec.bundle && (
-          <p className="text-sm text-text-muted">
+          <p className="rounded-full bg-surface-2 px-4 py-1.5 text-xs font-extrabold text-text-muted">
             {vi.practice.aiNote}: {rec.bundle.model.model_id} {rec.bundle.model.version}
           </p>
         )}

@@ -11,7 +11,7 @@ import { parseRuns, type LeakageRun } from './selectors';
 type TabId = 'benchmark' | 'errors' | 'live' | 'leakage';
 const TABS: TabId[] = ['benchmark', 'errors', 'live', 'leakage'];
 
-/** AI Lab (/lab, docs/05 §5.5): evidence for the graders, every number read from /data/experiments. */
+/** AI Lab (/lab): evidence for the graders, every number read from /data/experiments. */
 export function Lab({ load = loadExperimentIndex, loadRun, factory }: {
   load?: () => Promise<ExperimentIndex>; loadRun?: (id: string) => Promise<ExperimentRun>; factory?: EngineFactory;
 }) {
@@ -30,19 +30,23 @@ export function Lab({ load = loadExperimentIndex, loadRun, factory }: {
   const leakage = (index?.leakage_study as LeakageRun[] | undefined) ?? [];
 
   return (
-    <section className="mx-auto flex max-w-6xl flex-col gap-4">
-      <h1 className="text-3xl font-extrabold">{vi.lab.title}</h1>
-      <p className="text-text-muted">{vi.lab.intro}</p>
-      {failed && <p role="alert" className="font-bold text-danger-on-bg">{vi.lab.loadError}</p>}
-      {!index && !failed && <p>{vi.lab.loading}</p>}
+    <section className="mx-auto flex max-w-6xl flex-col gap-5">
+      <div>
+        <h1 className="text-3xl font-black tracking-tight text-text">{vi.lab.title}</h1>
+        <p className="mt-1 text-text-muted">{vi.lab.intro}</p>
+      </div>
+      {failed && <p role="alert" className="rounded-2xl bg-danger-bg p-4 font-bold text-danger-on-bg">{vi.lab.loadError}</p>}
+      {!index && !failed && <p className="text-text-muted">{vi.lab.loading}</p>}
       {index && (
         <>
-          <div role="tablist" aria-label={vi.lab.tablist} className="flex flex-wrap gap-2">
+          <div role="tablist" aria-label={vi.lab.tablist} className="inline-flex w-fit flex-wrap gap-1.5 rounded-full border-2 border-border bg-surface p-1.5 shadow-(--card-shadow)">
             {TABS.map((id) => (
               <button
                 key={id} id={`tab-${id}`} role="tab" type="button" aria-selected={tab === id} aria-controls={`panel-${id}`}
                 onClick={() => setTab(id)}
-                className={`min-h-11 rounded-full border-2 px-4 font-extrabold ${tab === id ? 'border-brand-500 bg-brand-600 text-text-on-brand' : 'border-border bg-surface'}`}
+                className={`min-h-10 cursor-pointer rounded-full px-5 text-sm font-extrabold transition-[background-color,color,box-shadow] duration-(--motion-fast) ${
+                  tab === id ? 'btn-pink text-ink-on-pink shadow-none' : 'text-text-muted hover:bg-brand-50 hover:text-brand-fg'
+                }`}
               >
                 {vi.lab.tabs[id]}
               </button>

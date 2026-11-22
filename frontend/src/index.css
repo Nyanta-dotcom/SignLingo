@@ -2,6 +2,44 @@
 @import '@fontsource-variable/nunito';
 @import './styles/tokens.css';
 
+/* Signature luminous pink pill button (inspired by reference image + Duolingo 3D lip) */
+.btn-pink {
+  background-image: var(--btn-pink-bg);
+  box-shadow: var(--btn-pink-shadow);
+}
+.btn-pink:hover:not(:disabled):not([aria-disabled='true']) {
+  background-image: var(--btn-pink-hover);
+  box-shadow: var(--btn-pink-shadow-hover);
+}
+.btn-pink:active:not(:disabled):not([aria-disabled='true']) {
+  box-shadow: none;
+}
+
+.unit-banner {
+  background-image: var(--unit-banner-bg);
+  box-shadow: var(--unit-banner-shadow);
+}
+
+.node-available {
+  background-image: var(--btn-pink-bg);
+  box-shadow: var(--btn-pink-shadow);
+}
+.node-available:hover {
+  background-image: var(--btn-pink-hover);
+  box-shadow: var(--btn-pink-shadow-hover);
+}
+.node-available:active {
+  box-shadow: none;
+}
+
+.hero-backdrop {
+  background-image: var(--hero-glow);
+}
+
+.progress-fill {
+  background-image: var(--btn-pink-bg);
+}
+
 @keyframes confetti-fall {
   from { transform: translateY(-10px) rotate(0deg); opacity: 1; }
   to { transform: translateY(160px) rotate(360deg); opacity: 0; }
@@ -19,4 +57,13 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .hand-illustration { animation: hand-pop 600ms var(--motion-bounce, ease-out) both; }
+}
+
+@keyframes soft-halo {
+  0%, 100% { box-shadow: 0 0 0 0 var(--brand-200); }
+  50% { box-shadow: 0 0 0 8px var(--brand-100); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .node-halo { animation: soft-halo 2.4s ease-in-out infinite; }
 }

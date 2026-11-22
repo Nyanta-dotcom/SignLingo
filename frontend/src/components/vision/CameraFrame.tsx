@@ -22,12 +22,12 @@ const BORDER: Record<CameraFrameState, string> = {
   loading: 'border-border',
   no_permission: 'border-border',
   no_hand: 'border-warning-fg animate-pulse',
-  tracking: 'border-brand-500',
+  tracking: 'border-brand-400',
   verified: 'border-success-fg',
   error: 'border-danger-fg',
 };
 
-/** Webcam view with overlay canvas and the six states of docs/05 §5.2. Every state also has a text cue. */
+/** Webcam view with overlay canvas and six accessible states. */
 export function CameraFrame({
   state, stream = null, progress = 0, message, mirror = true, announcement = '', videoRef, canvasRef, onGrant, onRetry,
 }: Props) {
@@ -44,7 +44,7 @@ export function CameraFrame({
       role="region"
       aria-label={vi.camera.label}
       data-state={state}
-      className={`relative aspect-[4/3] w-full overflow-hidden rounded-[var(--radius-2xl)] border-4 bg-surface-2 ${BORDER[state]}`}
+      className={`relative aspect-[4/3] w-full overflow-hidden rounded-[var(--radius-2xl)] border-4 bg-surface-2 shadow-(--card-shadow) ${BORDER[state]}`}
     >
       {showVideo && (
         <>
@@ -52,10 +52,10 @@ export function CameraFrame({
           <canvas ref={canvasRef} width={640} height={480} className={`absolute inset-0 h-full w-full ${flip}`} />
         </>
       )}
-      <div className={`absolute inset-0 flex flex-col items-center justify-center gap-3 p-4 text-center ${state === 'loading' ? 'bg-surface/70' : ''}`}>
+      <div className={`absolute inset-0 flex flex-col items-center justify-center gap-3 p-5 text-center ${state === 'loading' ? 'bg-surface/80 backdrop-blur-xs' : ''}`}>
         {state === 'loading' && (
           <>
-            <p className="font-extrabold">{vi.camera.loading}</p>
+            <p className="font-extrabold text-text">{vi.camera.loading}</p>
             <ProgressBar value={Math.round(progress * 100)} label={vi.camera.loading} className="max-w-xs" />
           </>
         )}
@@ -67,13 +67,13 @@ export function CameraFrame({
           </>
         )}
         {state === 'no_hand' && (
-          <p className="rounded-full bg-surface px-4 py-2 font-extrabold text-warning-fg">
+          <p className="rounded-full border-2 border-border bg-surface/95 px-4 py-2 font-extrabold text-warning-fg shadow-(--card-shadow)">
             <span aria-hidden="true">⚠ </span>
             <span>{vi.camera.noHand}</span>
           </p>
         )}
         {state === 'verified' && (
-          <p className="rounded-full bg-success-bg px-4 py-2 font-extrabold text-success-fg">
+          <p className="rounded-full border-2 border-success-fg/30 bg-success-bg px-4 py-2 font-extrabold text-success-fg shadow-(--card-shadow)">
             <span aria-hidden="true">✓ </span>
             <span>{vi.camera.verified}</span>
           </p>

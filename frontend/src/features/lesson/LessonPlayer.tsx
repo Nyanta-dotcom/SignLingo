@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { HoldRing } from '@/components/ui/HoldRing';
+import { HeartIcon } from '@/components/ui/Icons';
 import { PredictionBars } from '@/components/ui/PredictionBars';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { CameraFrame, type CameraFrameState } from '@/components/vision/CameraFrame';
@@ -28,7 +29,7 @@ import { useSpeller } from './useSpeller';
 type Live = { label: string; confidence: number; topK: Array<{ label: string; p: number }>; progress: number; fingers: FingerHint[]; confused: string | null };
 const NO_HAND_AFTER_MS = 2000;
 
-/** /lesson/:code (docs/05 §5.2): cards and hold-to-verify signs, hearts, feedback and a result screen. */
+/** /lesson/:code: cards and hold-to-verify signs, hearts, feedback and a result screen. */
 export function LessonPlayer({ load = loadLearnData, factory = realEngineFactory }: { load?: () => Promise<LearnData>; factory?: EngineFactory }) {
   const { code } = useParams();
   const progress = useLearner((s) => s.progress);
@@ -66,8 +67,10 @@ export function LessonPlayer({ load = loadLearnData, factory = realEngineFactory
 function Notice({ text, action, alert }: { text: string; action?: React.ReactNode; alert?: boolean }) {
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center gap-4 p-4 text-center">
-      <p role={alert ? 'alert' : undefined} className="text-lg font-bold">{text}</p>
-      {action}
+      <Card className="flex flex-col items-center gap-4 p-8">
+        <p role={alert ? 'alert' : undefined} className="text-lg font-bold">{text}</p>
+        <div>{action}</div>
+      </Card>
     </main>
   );
 }
@@ -197,19 +200,27 @@ function Run({ lesson, signs, model, factory, onRetry }: { lesson: Lesson; signs
   const finished = run.phase === 'feedback' ? run.index + 1 : run.index;
 
   return (
-    <div className="mx-auto flex min-h-dvh max-w-5xl flex-col gap-4 p-4">
-      <header className="flex items-center gap-4">
-        <button type="button" aria-label={t.close} onClick={() => setConfirmExit(true)} className="min-h-11 min-w-11 rounded-full text-2xl font-bold text-text-muted hover:bg-surface-2">
+    <div className="mx-auto flex min-h-dvh max-w-5xl flex-col gap-5 p-4 md:p-6">
+      <header className="flex items-center gap-3.5 rounded-full border-2 border-border bg-surface px-3 py-2 shadow-(--card-shadow)">
+        <button
+          type="button"
+          aria-label={t.close}
+          onClick={() => setConfirmExit(true)}
+          className="inline-flex min-h-10 min-w-10 cursor-pointer items-center justify-center rounded-full text-xl font-bold text-text-muted transition-colors hover:bg-brand-50 hover:text-brand-fg"
+        >
           <span aria-hidden="true">✕</span>
         </button>
         <ProgressBar value={finished} max={run.items.length} label={t.progress} className="flex-1" />
-        <span className="font-bold">{t.step(finished, run.items.length)}</span>
-        <span className="font-bold" role="img" aria-label={t.hearts(hearts)}>❤ {hearts}</span>
+        <span className="text-sm font-extrabold tabular-nums text-text-muted">{t.step(finished, run.items.length)}</span>
+        <span className="inline-flex items-center gap-1 rounded-full bg-brand-50 px-3 py-1 text-sm font-extrabold tabular-nums text-heart" role="img" aria-label={t.hearts(hearts)}>
+          <HeartIcon className="size-4" />
+          <span>{hearts}</span>
+        </span>
       </header>
 
       {confirmExit && (
-        <div role="alertdialog" aria-label={t.closeAsk} className="flex flex-col gap-3 rounded-[var(--radius-xl)] border-2 border-danger-fg p-4">
-          <p className="font-bold">{t.closeAsk} {t.closeWarn}</p>
+        <div role="alertdialog" aria-label={t.closeAsk} className="flex flex-col gap-3 rounded-3xl border-2 border-danger-fg bg-surface p-5 shadow-(--card-shadow)">
+          <p className="font-extrabold">{t.closeAsk} {t.closeWarn}</p>
           <div className="flex gap-3">
             <Button variant="danger" onClick={() => navigate('/learn')}>{t.closeYes}</Button>
             <Button variant="secondary" onClick={() => setConfirmExit(false)}>{t.closeNo}</Button>
@@ -221,58 +232,71 @@ function Run({ lesson, signs, model, factory, onRetry }: { lesson: Lesson; signs
         {run.item.type === 'learn_card' && <LearnCard letter={letter} sign={signs.find((x) => x.code === run.item.sign_code)} onNext={run.advance} />}
 
         {isSign && (
-            <div className="flex flex-col items-center gap-4">
-              <h1 className="text-xl font-extrabold">{speller ? t.spell : t.perform}</h1>
-              {speller && (
-                <ol aria-label={t.wordCells(speller.letters.join(''))} className="flex gap-2">
-                  {speller.letters.map((l, i) => {
-                    const state = i < speller.position() ? 'done' : i === speller.position() ? 'current' : 'todo';
-                    return (
-                      <li key={`${l}${i}`} data-state={state} aria-label={`${l}: ${t.cellState[state]}`} className={`flex size-12 items-center justify-center rounded-[var(--radius-md)] border-2 text-xl font-extrabold ${state === 'done' ? 'border-success-fg bg-success-bg text-success-fg' : state === 'current' ? 'border-brand-500' : 'border-border text-text-muted'}`}>
-                        <span aria-hidden="true">{l}</span>
-                      </li>
-                    );
-                  })}
-                </ol>
-              )}
-              <div className="flex flex-wrap items-center justify-center gap-4">
-                <HoldRing progress={performing ? (live?.progress ?? 0) : run.feedback?.kind === 'correct' ? 1 : 0} label={t.holdRing}>
-                  <span role="img" aria-label={t.current(letter)} className="text-8xl font-extrabold">{letter}</span>
-                </HoldRing>
-                <ReferenceHand letter={letter} sign={signs.find((x) => x.gloss === letter)} />
-              </div>
-              {performing && live?.confused && <p role="status" className="rounded-full bg-surface-2 px-4 py-1 font-bold text-warning-fg">{t.nearMiss(live.confused)}</p>}
-              {performing && live && live.fingers.length > 0 && (
-                <ul aria-label={vi.fingers.list} className="flex flex-col gap-1 text-sm">
-                  {live.fingers.slice(0, 2).map((f) => <li key={`${f.finger}${f.joint}`}>{f.hint}</li>)}
-                </ul>
-              )}
-              {performing && live && <div className="w-full max-w-sm"><PredictionBars items={live.topK.slice(0, 3)} caption={vi.practice.top3} /></div>}
+          <Card className="flex flex-col items-center justify-center gap-5">
+            <h1 className="rounded-full bg-brand-50 px-4 py-1 text-sm font-extrabold uppercase tracking-wider text-brand-fg">
+              {speller ? t.spell : t.perform}
+            </h1>
+            {speller && (
+              <ol aria-label={t.wordCells(speller.letters.join(''))} className="flex gap-2">
+                {speller.letters.map((l, i) => {
+                  const state = i < speller.position() ? 'done' : i === speller.position() ? 'current' : 'todo';
+                  return (
+                    <li
+                      key={`${l}${i}`}
+                      data-state={state}
+                      aria-label={`${l}: ${t.cellState[state]}`}
+                      className={`flex size-12 items-center justify-center rounded-2xl border-2 text-xl font-black ${
+                        state === 'done'
+                          ? 'border-success-fg bg-success-bg text-success-fg'
+                          : state === 'current'
+                            ? 'border-brand-500 bg-brand-50 text-brand-fg shadow-[0_3px_0_var(--brand-200)]'
+                            : 'border-border bg-surface text-text-muted'
+                      }`}
+                    >
+                      <span aria-hidden="true">{l}</span>
+                    </li>
+                  );
+                })}
+              </ol>
+            )}
+            <div className="flex flex-wrap items-center justify-center gap-5">
+              <HoldRing progress={performing ? (live?.progress ?? 0) : run.feedback?.kind === 'correct' ? 1 : 0} label={t.holdRing}>
+                <span role="img" aria-label={t.current(letter)} className="text-8xl font-black text-text">{letter}</span>
+              </HoldRing>
+              <ReferenceHand letter={letter} sign={signs.find((x) => x.gloss === letter)} />
             </div>
+            {performing && live?.confused && <p role="status" className="rounded-full bg-warning-bg px-4 py-1.5 text-sm font-extrabold text-warning-fg">{t.nearMiss(live.confused)}</p>}
+            {performing && live && live.fingers.length > 0 && (
+              <ul aria-label={vi.fingers.list} className="flex flex-col gap-1 text-sm font-bold text-text-muted">
+                {live.fingers.slice(0, 2).map((f) => <li key={`${f.finger}${f.joint}`}>{f.hint}</li>)}
+              </ul>
+            )}
+            {performing && live && <div className="w-full max-w-sm"><PredictionBars items={live.topK.slice(0, 3)} caption={vi.practice.top3} /></div>}
+          </Card>
         )}
         {/* The camera stays mounted while it runs, also on cards: the engine holds this very <video>, so a fresh
             element on the next sign would leave it watching a detached one and no hand would ever be seen. */}
         {(isSign || running) && (
-            <div className={isSign ? 'flex flex-col gap-3' : 'sr-only'} aria-hidden={!isSign || undefined} inert={!isSign}>
-              {running || camera.status === 'error' ? (
-                <CameraFrame
-                  state={frameState} stream={camera.stream} progress={rec.progress} message={rec.error ?? camera.error?.message}
-                  videoRef={videoRef} canvasRef={canvasRef} onGrant={() => void camera.start()} onRetry={() => void camera.start()}
-                />
-              ) : (
-                <Card className="flex aspect-[4/3] flex-col items-center justify-center gap-3 p-6 text-center">
-                  <p className="font-extrabold">{t.cameraStart}</p>
-                  <p className="text-sm text-text-muted">{t.cameraWhy}</p>
-                  <Button size="lg" onClick={() => void camera.start()}>{t.cameraStartBtn}</Button>
-                </Card>
-              )}
-              {isSign && (
-                <div className="flex flex-wrap gap-3">
-                  <Button variant="ghost" onClick={() => setHideSkeleton((h) => !h)}>{hideSkeleton ? t.showSkeleton : t.hideSkeleton}</Button>
-                  <Button variant="secondary" disabled={!performing} onClick={skip}>{t.skip}</Button>
-                </div>
-              )}
-            </div>
+          <div className={isSign ? 'flex flex-col gap-3' : 'sr-only'} aria-hidden={!isSign || undefined} inert={!isSign}>
+            {running || camera.status === 'error' ? (
+              <CameraFrame
+                state={frameState} stream={camera.stream} progress={rec.progress} message={rec.error ?? camera.error?.message}
+                videoRef={videoRef} canvasRef={canvasRef} onGrant={() => void camera.start()} onRetry={() => void camera.start()}
+              />
+            ) : (
+              <Card className="flex aspect-[4/3] flex-col items-center justify-center gap-3 p-6 text-center">
+                <p className="text-lg font-extrabold">{t.cameraStart}</p>
+                <p className="max-w-sm text-sm text-text-muted">{t.cameraWhy}</p>
+                <Button size="lg" onClick={() => void camera.start()}>{t.cameraStartBtn}</Button>
+              </Card>
+            )}
+            {isSign && (
+              <div className="flex flex-wrap gap-3">
+                <Button variant="ghost" onClick={() => setHideSkeleton((h) => !h)}>{hideSkeleton ? t.showSkeleton : t.hideSkeleton}</Button>
+                <Button variant="secondary" disabled={!performing} onClick={skip}>{t.skip}</Button>
+              </div>
+            )}
+          </div>
         )}
       </main>
 

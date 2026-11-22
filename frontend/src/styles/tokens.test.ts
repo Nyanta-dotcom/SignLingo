@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { applyTheme, resolveTheme } from './theme';
 
 const css = readFileSync(resolve(process.cwd(), 'src/styles/tokens.css'), 'utf8');
 const block = (selector: string) => {
@@ -9,7 +10,6 @@ const block = (selector: string) => {
   return Object.fromEntries([...m[1].matchAll(/--([a-z0-9-]+):\s*([^;]+);/g)].map((x) => [x[1], x[2].trim()]));
 };
 const light = block(':root');
-const dark = { ...light, ...block(":root[data-theme='dark']") };
 
 function luminance(hex: string) {
   const c = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
@@ -20,37 +20,43 @@ const contrast = (a: string, b: string) => {
   return (hi + 0.05) / (lo + 0.05);
 };
 
-describe('tokens match docs/05 §2', () => {
-  it('has the brand palette', () => {
+describe('white & rose-pink light-only design tokens', () => {
+  it('defines the rose-pink brand palette and light surfaces', () => {
     expect(light).toMatchObject({
-      'brand-50': '#eef5ff', 'brand-600': '#1d6fe8', 'brand-700': '#1557c0', 'brand-900': '#0f3570',
-      'sky-400': '#38bdf8', 'sky-500': '#0ea5e9',
+      'brand-50': '#fff4f8',
+      'brand-300': '#ff97b5',
+      'brand-400': '#ff80a7',
+      'brand-500': '#f96d9a',
+      'brand-600': '#d42d6c',
+      'brand-700': '#b01c54',
+      bg: '#fffbfd',
+      surface: '#ffffff',
+      text: '#1e141d',
     });
   });
-  it('has light and dark surfaces', () => {
-    expect(light).toMatchObject({ bg: '#f5f9ff', surface: '#ffffff', text: '#0f172a', border: '#d6e0ee' });
-    expect(dark).toMatchObject({ bg: '#0b1220', surface: '#111a2e', text: '#e6edf8', border: '#263354' });
+
+  it('does not include dark-mode overrides', () => {
+    expect(css).not.toContain("data-theme='dark'");
+    expect(resolveTheme('dark', true)).toBe('light');
+    expect(applyTheme('dark')).toBe('light');
+    expect(document.documentElement).toHaveAttribute('data-theme', 'light');
   });
-  it('has semantic colours for both themes', () => {
-    expect(light['success-fg']).toBe('#15803d');
-    expect(dark['success-fg']).toBe('#4ade80');
-    expect(dark['danger-bg']).toBe('#2a1215');
-  });
-  it('keeps text readable (AA 4.5:1) on the main surfaces in both themes', () => {
-    for (const t of [light, dark]) {
-      expect(contrast(t.text, t.bg)).toBeGreaterThanOrEqual(4.5);
-      expect(contrast(t['text-muted'], t.surface)).toBeGreaterThanOrEqual(4.5);
-    }
+
+  it('keeps text readable (AA 4.5:1) on all main surfaces and pink controls', () => {
+    expect(contrast(light.text, light.bg)).toBeGreaterThanOrEqual(4.5);
+    expect(contrast(light.text, light.surface)).toBeGreaterThanOrEqual(4.5);
+    expect(contrast(light['text-muted'], light.surface)).toBeGreaterThanOrEqual(4.5);
+    expect(contrast(light['text-muted'], light['surface-2'])).toBeGreaterThanOrEqual(4.5);
+    expect(contrast(light['ink-on-pink'], light['brand-300'])).toBeGreaterThanOrEqual(4.5);
+    expect(contrast(light['ink-on-pink'], light['brand-400'])).toBeGreaterThanOrEqual(4.5);
+    expect(contrast(light['ink-on-pink'], light['brand-500'])).toBeGreaterThanOrEqual(4.5);
     expect(contrast(light['text-on-brand'], light['brand-600'])).toBeGreaterThanOrEqual(4.5);
-    expect(contrast(dark['success-fg'], dark['success-bg'])).toBeGreaterThanOrEqual(4.5);
-    expect(contrast(dark['danger-on-bg'], dark['danger-bg'])).toBeGreaterThanOrEqual(4.5);
-    expect(contrast(light['danger-fg'], light['surface'])).toBeGreaterThanOrEqual(4.5);
+    expect(contrast(light['success-fg'], light['success-bg'])).toBeGreaterThanOrEqual(4.5);
+    expect(contrast(light['danger-fg'], light.surface)).toBeGreaterThanOrEqual(4.5);
     expect(contrast(light['danger-on-bg'], light['danger-bg'])).toBeGreaterThanOrEqual(4.5);
-    for (const t of [light, dark]) {
-      for (const surface of ['bg', 'surface', 'surface-2']) {
-        expect(contrast(t['brand-fg'], t[surface]), `brand-fg on ${surface}`).toBeGreaterThanOrEqual(4.5);
-      }
+    for (const surface of ['bg', 'surface', 'surface-2', 'brand-50', 'brand-100']) {
+      expect(contrast(light['brand-fg'], light[surface]), `brand-fg on ${surface}`).toBeGreaterThanOrEqual(4.5);
     }
-    expect(contrast(light['brand-fg'], '#eef5ff')).toBeGreaterThanOrEqual(4.5);
+    expect(contrast(light['focus-ring'], light.surface)).toBeGreaterThanOrEqual(3);
   });
 });

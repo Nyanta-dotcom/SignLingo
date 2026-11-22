@@ -1,19 +1,33 @@
+import type { ComponentType, SVGProps } from 'react';
 import { vi } from '@/i18n/vi';
+import { BoltIcon, FlameIcon, HeartIcon } from './Icons';
 
-const KINDS = {
-  streak: { icon: '🔥', color: 'text-streak', label: vi.stats.streak },
-  xp: { icon: '⚡', color: 'text-xp', label: vi.stats.xp },
-  hearts: { icon: '❤', color: 'text-heart', label: vi.stats.hearts },
-} as const;
+type KindMeta = {
+  Icon: ComponentType<SVGProps<SVGSVGElement>>;
+  color: string;
+  bg: string;
+  label: string;
+};
 
-/** Streak / XP / hearts chip for the top bar. The icon is decorative; the label carries the meaning (docs/05 D2). */
+const KINDS: Record<'streak' | 'xp' | 'hearts', KindMeta> = {
+  streak: { Icon: FlameIcon, color: 'text-streak', bg: 'bg-warning-bg/60', label: vi.stats.streak },
+  xp: { Icon: BoltIcon, color: 'text-xp', bg: 'bg-warning-bg/50', label: vi.stats.xp },
+  hearts: { Icon: HeartIcon, color: 'text-heart', bg: 'bg-brand-50', label: vi.stats.hearts },
+};
+
+/** Streak / XP / hearts pill chip for the top bar. The icon is decorative; the label carries the meaning. */
 export function StatChip({ kind, value }: { kind: keyof typeof KINDS; value: number }) {
-  const k = KINDS[kind];
+  const { Icon, color, bg, label } = KINDS[kind];
   return (
-    <span title={k.label} className="inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 font-extrabold tabular-nums">
-      <span aria-hidden="true" className={k.color}>{k.icon}</span>
+    <span
+      title={label}
+      className="inline-flex min-h-10 items-center gap-1.5 rounded-full border-2 border-border bg-surface px-3 py-1 text-sm font-extrabold tabular-nums text-text shadow-[0_2px_0_var(--border)]"
+    >
+      <span className={`inline-flex size-6 items-center justify-center rounded-full ${bg} ${color}`}>
+        <Icon className="size-4" />
+      </span>
       <span>{value}</span>
-      <span className="sr-only">{k.label}</span>
+      <span className="sr-only">{label}</span>
     </span>
   );
 }
