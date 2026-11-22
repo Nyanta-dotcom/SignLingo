@@ -43,7 +43,7 @@ function SignDetail({ signs, symbol }: { signs: Sign[]; symbol: string }) {
           </span>
         )}
       </div>
-      <div className="flex flex-col items-center gap-6 sm:flex-row sm:gap-10">
+      <div key={symbol} className="sign-pop flex flex-col items-center gap-6 sm:flex-row sm:gap-10">
         <p aria-hidden="true" className="unit-banner flex size-40 items-center justify-center rounded-[var(--radius-2xl)] text-8xl font-black text-ink-on-pink">
           {symbol}
         </p>
@@ -87,7 +87,7 @@ function SignGrid({ items }: { items: Sign[] }) {
             <span aria-hidden="true" className="flex size-10 items-center justify-center rounded-full bg-brand-50 text-xl font-black text-brand-fg transition-colors group-hover:bg-brand-200/70 group-hover:text-ink-on-pink">
               {s.gloss}
             </span>
-            <Hand sign={s} className="size-20" />
+            <Hand sign={s} className="size-20 transition-transform duration-(--motion-bounce) group-hover:-rotate-3 group-hover:scale-110" />
           </Link>
         </li>
       ))}
@@ -101,6 +101,7 @@ export function Alphabet({ load = loadLearnData }: { load?: () => Promise<LearnD
   const { letter } = useParams();
   const [signs, setSigns] = useState<Sign[] | null>(null);
   const [failed, setFailed] = useState(false);
+  const [filter, setFilter] = useState<'all' | 'letters' | 'numbers'>('all');
 
   useEffect(() => {
     let live = true;
@@ -122,23 +123,58 @@ export function Alphabet({ load = loadLearnData }: { load?: () => Promise<LearnD
 
   const letters = (signs ?? []).filter((s) => s.code.startsWith('LETTER_'));
   const numbers = (signs ?? []).filter((s) => s.code.startsWith('NUMBER_'));
+  const showLetters = filter === 'all' || filter === 'letters';
+  const showNumbers = filter === 'all' || filter === 'numbers';
 
   return (
     <section className="mx-auto flex max-w-5xl flex-col gap-8">
-      <div>
-        <h1 className="text-3xl font-black tracking-tight text-text">{t.title}</h1>
-        <p className="mt-1 text-text-muted">{t.intro}</p>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-black tracking-tight text-text">{t.title}</h1>
+          <p className="mt-1 text-text-muted">{t.intro}</p>
+        </div>
+        {signs && signs.length > 0 && (
+          <div role="group" aria-label="Lọc danh mục ký hiệu" className="inline-flex flex-wrap gap-1.5 rounded-full border-2 border-border bg-surface p-1.5 shadow-(--card-shadow)">
+            {([
+              ['all', `Tất cả (${signs.length})`],
+              ['letters', `${t.lettersTab} (${letters.length})`],
+              ['numbers', `${t.numbersTab} (${numbers.length})`],
+            ] as const).map(([id, label]) => (
+              <button
+                key={id}
+                type="button"
+                aria-pressed={filter === id}
+                onClick={() => setFilter(id)}
+                className={`min-h-9 cursor-pointer rounded-full px-4 text-xs font-extrabold transition-[background-color,color] duration-(--motion-fast) ${
+                  filter === id ? 'btn-pink text-ink-on-pink shadow-none' : 'text-text-muted hover:bg-brand-50 hover:text-brand-fg'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
       {status}
-      {letters.length > 0 && (
+      {showLetters && letters.length > 0 && (
         <div className="flex flex-col gap-3">
-          <h2 className="text-lg font-black text-brand-fg">{t.lettersTab}</h2>
+          <div className="flex items-center justify-between gap-2">
+            <h2 className="text-lg font-black text-brand-fg">{t.lettersTab}</h2>
+            <span className="rounded-full bg-brand-50 px-3 py-0.5 text-xs font-extrabold text-brand-fg">
+              {letters.length} chữ cái
+            </span>
+          </div>
           <SignGrid items={letters} />
         </div>
       )}
-      {numbers.length > 0 && (
+      {showNumbers && numbers.length > 0 && (
         <div className="flex flex-col gap-3">
-          <h2 className="text-lg font-black text-brand-fg">{t.numbersTab}</h2>
+          <div className="flex items-center justify-between gap-2">
+            <h2 className="text-lg font-black text-brand-fg">{t.numbersTab}</h2>
+            <span className="rounded-full bg-brand-50 px-3 py-0.5 text-xs font-extrabold text-brand-fg">
+              {numbers.length} chữ số
+            </span>
+          </div>
           <SignGrid items={numbers} />
         </div>
       )}

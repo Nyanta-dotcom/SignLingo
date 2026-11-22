@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { Navigate, Route, Routes, useNavigate } from 'react-router';
+import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { Alphabet } from '@/features/alphabet/Alphabet';
 import { LessonPlayer } from '@/features/lesson/LessonPlayer';
@@ -71,8 +71,21 @@ function useGlobalUiSound() {
   useEffect(() => attachUiSound((kind) => sound.play(kind)), [sound]);
 }
 
+/** Resets window scroll to the top whenever the user navigates to a different route. */
+function useScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    try {
+      window.scrollTo(0, 0);
+    } catch {
+      /* jsdom does not implement window.scrollTo */
+    }
+  }, [pathname]);
+}
+
 export function AppRoutes() {
   useGlobalUiSound();
+  useScrollToTop();
   return (
     <Routes>
       <Route index element={<Home />} />
