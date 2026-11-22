@@ -5,6 +5,7 @@ import { AppRoutes } from '@/app/App';
 import { loadActiveManifest } from '@/app/staticData';
 import { vi } from '@/i18n/vi';
 import { initLearner } from '@/storage/useLearner';
+import { initAccount } from '@/sync/useAccount';
 import './index.css';
 
 const root = createRoot(document.getElementById('root')!);
@@ -13,7 +14,7 @@ const root = createRoot(document.getElementById('root')!);
 async function start() {
   try {
     const manifest = await loadActiveManifest('static_letters');
-    initLearner({ heartThreshold: manifest.recommended.threshold, appVersion: '0.1.0' });
+    initAccount(initLearner({ heartThreshold: manifest.recommended.threshold, appVersion: '0.1.0' }));
     root.render(
       <StrictMode>
         <BrowserRouter>
