@@ -166,6 +166,7 @@ export const vi = {
   },
   settings: {
     title: 'Cài đặt',
+    about: 'Giới thiệu & Liên hệ',
     appearance: 'Giao diện',
     sound: 'Âm thanh',
     soundOn: 'Bật âm báo đúng, sai và hoàn thành bài',

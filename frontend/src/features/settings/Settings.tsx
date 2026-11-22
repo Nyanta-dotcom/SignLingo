@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { vi } from '@/i18n/vi';
@@ -132,6 +133,8 @@ export function Settings() {
         )}
         {notice && <p role="status" className={`font-bold ${notice.bad ? 'text-danger-on-bg' : 'text-success-fg'}`}>{notice.text}</p>}
       </Card>
+
+      <Link to="/about" className="self-center font-bold text-brand-fg underline underline-offset-2 hover:text-brand-500">{t.about}</Link>
     </section>
   );
 }

@@ -4,6 +4,7 @@ import { AppShell } from '@/components/layout/AppShell';
 import { Alphabet } from '@/features/alphabet/Alphabet';
 import { LessonPlayer } from '@/features/lesson/LessonPlayer';
 import { HandSheet } from '@/dev/HandSheet';
+import { AboutPage } from '@/features/onboarding/AboutPage';
 import { Banners } from '@/features/onboarding/Banners';
 import { FeaturesPage } from '@/features/onboarding/FeaturesPage';
 import { HowItWorksPage } from '@/features/onboarding/HowItWorksPage';
@@ -59,6 +60,10 @@ function FeaturesRoute() {
   return <FeaturesPage onStart={useStartApp()} />;
 }
 
+function AboutRoute() {
+  return <AboutPage onStart={useStartApp()} />;
+}
+
 function HowItWorksRoute() {
   return <HowItWorksPage onStart={useStartApp()} />;
 }
@@ -93,6 +98,7 @@ export function AppRoutes() {
       <Route path="welcome" element={<WelcomeRoute />} />
       <Route path="features" element={<FeaturesRoute />} />
       <Route path="how-it-works" element={<HowItWorksRoute />} />
+      <Route path="about" element={<AboutRoute />} />
       {import.meta.env.DEV && <Route path="dev/hands" element={<HandSheet />} />}
       <Route path="lesson/:code" element={<LessonPlayer />} />
       <Route element={<ConnectedShell />}>
