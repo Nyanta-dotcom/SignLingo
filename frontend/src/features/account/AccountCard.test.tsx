@@ -36,6 +36,16 @@ describe('AccountCard', () => {
     expect(screen.getByLabelText('Email')).toBeInTheDocument();
   });
 
+  it('lets the learner show and hide the password they typed', async () => {
+    setup();
+    const field = await screen.findByLabelText(/Mật khẩu/);
+    expect(field).toHaveAttribute('type', 'password');
+    fireEvent.click(screen.getByRole('button', { name: 'Hiện mật khẩu' }));
+    expect(field).toHaveAttribute('type', 'text');
+    fireEvent.click(screen.getByRole('button', { name: 'Ẩn mật khẩu' }));
+    expect(field).toHaveAttribute('type', 'password');
+  });
+
   it('hides the Google button until Google sign-in is switched on', async () => {
     const api = {
       getUser: vi.fn(async () => null), onChange: vi.fn(() => () => {}), signInWithGoogle: vi.fn(), signInWithPassword: vi.fn(),
