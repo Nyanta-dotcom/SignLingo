@@ -13,7 +13,7 @@
 | A2 | **2 khối độc lập: `ml/` (Python, offline) · `frontend/` (SPA)** | Chỉ giao tiếp qua *hợp đồng* trong `shared/contracts/` (JSON Schema manifest, experiment, curriculum, fixture landmark). Không import chéo mã nguồn |
 | A3 | **Mô hình là artifact có phiên bản** | Mỗi lần export sinh `model.onnx` + `manifest.json` (sha256, labels, preprocess_version). Frontend chỉ đọc manifest |
 | A4 | **Tái lập (Reproducibility) là yêu cầu chức năng** | seed 42, config YAML, 1 lệnh chạy, log thí nghiệm JSON được commit |
-| A5 | **Không tự viết server; local-first (2026-11-18, sửa 2026-11-22)** | App là file tĩnh trên Vercel. Tiến độ, XP, streak, hearts tính bằng module TS thuần và lưu trong trình duyệt. **Tùy chọn:** đăng nhập để đồng bộ tiến độ và tham gia bảng xếp hạng qua dịch vụ có sẵn Supabase (Auth + Postgres + RLS), xem [ADR_backend_sync](drafts/ADR_backend_sync_DRAFT.md). Không cấu hình Supabase thì app chạy đầy đủ như trước |
+| A5 | **Backend là Supabase, không tự viết server; local-first (2026-11-18, sửa 2026-11-22)** | App là file tĩnh trên Vercel. Tiến độ, XP, streak, hearts tính bằng module TS thuần và lưu trong trình duyệt. **Backend:** Supabase (dịch vụ có sẵn: Auth + Postgres + RLS) lo đăng nhập tùy chọn, đồng bộ tiến độ và bảng xếp hạng, xem [ADR_backend_sync](drafts/ADR_backend_sync_DRAFT.md). Không cấu hình Supabase thì app chạy đầy đủ như trước |
 | A6 | **Tiền xử lý một nguồn, hai hiện thực có kiểm chứng** | Landmark normalization viết ở Python & TS, khóa bằng golden fixture (AC-ML-09) |
 | A7 | **Không gọi mạng ra ngoài origin, trừ Supabase khi đã cấu hình** | MediaPipe wasm/`.task`, model, dữ liệu AI Lab đều tự host; không CDN bên thứ ba lúc chạy. Ngoại lệ duy nhất: `https://*.supabase.co` cho đăng nhập và đồng bộ (CSP `connect-src`) |
 
@@ -79,7 +79,7 @@ flowchart LR
 | Frontend | **React 19 + TypeScript 6 + Vite** | Phổ biến, hệ sinh thái skill/AI agent tốt; TS ghim 6.x vì typescript-eslint chưa hỗ trợ TS 7 | Next.js (không cần SSR; SPA đủ) |
 | Styling | **Tailwind CSS 4** + CSS variables (design tokens) + `@radix-ui/react-slot` + font Nunito tự host | Tông hồng, **chỉ chế độ sáng** (cài đặt giao diện vẫn lưu nhưng luôn áp dụng sáng) | MUI (khó đạt look Duolingo) |
 | State | **Zustand** (session học, camera, UI) + `src/storage/` (persist có version) | Đơn giản, test được | Redux; TanStack Query (không còn server state) |
-| Lưu trữ người học | **localStorage** (< 1 MB, có `schema_version` + migrate) qua adapter; Nhập JSON (bản cũ) vẫn được | Local-first, chạy không cần mạng | Tự viết backend + DB |
+| Lưu trữ người học | **localStorage** (< 1 MB, có `schema_version` + migrate) qua adapter; Nhập JSON (bản cũ) vẫn được | Local-first, chạy không cần mạng | Tự viết backend + DB (nay dùng Supabase) |
 | Tài khoản & đồng bộ (tùy chọn) | **Supabase** (`@supabase/supabase-js`): Auth email + mật khẩu (Google chỉ hiện khi bật `VITE_SUPABASE_GOOGLE`), Postgres với Row Level Security, trigger tính điểm bảng xếp hạng | Dịch vụ có sẵn, không tự viết server; khóa `anon` công khai an toàn nhờ RLS | Firebase (NoSQL), serverless tự viết (xem ADR) |
 | Animation/âm thanh | CSS animation (token `--motion-*`) · âm thanh tổng hợp bằng Web Audio (`lib/sound.ts`), không file âm thanh | Nhẹ, không thêm thư viện | Framer Motion, Howler.js |
 | Biểu đồ AI Lab | SVG/HTML tự vẽ (cột, Confusion Matrix 24×24) | Nhẹ, không thêm thư viện | Recharts, Plotly |

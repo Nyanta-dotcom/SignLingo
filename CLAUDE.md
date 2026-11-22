@@ -3,7 +3,7 @@
 ## Role
 Senior Full-Stack & AI/ML Engineer. `docs/` là nguồn sự thật (01 PRD, 02 Architecture, 03 Data & Storage, 04 Contracts, 05 UI, 06 ECC, 07 Master Plan).
 
-Kiến trúc: **không tự viết backend**. SPA tĩnh deploy Vercel + pipeline Python `ml/`. Hình camera và landmark không rời trình duyệt. Ngoại lệ đã duyệt (ADR_backend_sync): tài khoản tùy chọn qua Supabase để đồng bộ tiến độ và bảng xếp hạng (`supabase/`, `frontend/src/sync/`).
+Kiến trúc: **backend là Supabase** (dịch vụ có sẵn, không tự viết server). SPA tĩnh deploy Vercel + pipeline Python `ml/`. Hình camera và landmark không rời trình duyệt. Supabase (ADR_backend_sync) lo tài khoản tùy chọn, đồng bộ tiến độ và bảng xếp hạng (`supabase/`, `frontend/src/sync/`).
 
 ## Workflow bắt buộc (mỗi task trong docs/07_MASTER_PLAN.md)
 1. Đọc task (ID, Guide, Files, Test) + đúng nhóm tài liệu context của khối đó (docs/06 §1).
@@ -16,7 +16,7 @@ Kiến trúc: **không tự viết backend**. SPA tĩnh deploy Vercel + pipeline
 ## Hard rules
 - KHÔNG tự thêm dữ liệu nội dung (bài học, từ vựng, ảnh, tài khoản, số liệu). Hỏi người dùng.
 - KHÔNG hardcode metrics trong frontend; mọi số liệu đến từ JSON do ml/ sinh (`frontend/public/data/`).
-- KHÔNG thêm backend, server, DB hay gọi API bên ngoài khi chưa có ADR được duyệt.
+- KHÔNG tự viết backend/server và KHÔNG thêm DB hay API bên ngoài nào khác ngoài Supabase khi chưa có ADR được duyệt.
 - KHÔNG sửa file ngoài thư mục khối của task. Thay đổi `shared/contracts/` = task riêng.
 - KHÔNG đổi tech stack/thư viện chính khi chưa có ADR được duyệt (docs/02 §3).
 - random_seed = 42 ở mọi chỗ có ngẫu nhiên.

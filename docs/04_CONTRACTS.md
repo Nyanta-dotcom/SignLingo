@@ -1,7 +1,7 @@
 # 04 — Contracts: SignLingo AI
 
 > **Trạng thái:** v0.3 · **Ngày:** 2026-11-22 · **v0.3 (đồng bộ với code):** thêm K6 (tài khoản, đồng bộ, bảng xếp hạng qua Supabase, tùy chọn); bỏ file Xuất tiến độ.
-> **Thay thế** `04_API_DOCS.md` (v0.1). Không tự viết REST API. Tài liệu này đặc tả **các hợp đồng giao tiếp**: giữa `ml/` và frontend (file tĩnh), giữa React UI với engine nhận diện chạy trong trình duyệt, và (tùy chọn) giữa frontend với Supabase.
+> **Thay thế** `04_API_DOCS.md` (v0.1). Không tự viết REST API; phần máy chủ là Supabase. Tài liệu này đặc tả **các hợp đồng giao tiếp**: giữa `ml/` và frontend (file tĩnh), giữa React UI với engine nhận diện chạy trong trình duyệt, và (tùy chọn) giữa frontend với Supabase.
 > Mọi JSON Schema đặt trong `shared/contracts/schemas/` và được kiểm bằng test ở cả `ml/` lẫn `frontend/`.
 
 ---
