@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import { loadActiveManifest } from '@/app/staticData';
 import { AccountCard } from '@/features/account/AccountCard';
+import { JoinCard } from '@/features/leaderboard/JoinCard';
 import { Card } from '@/components/ui/Card';
 import { BoltIcon, FlameIcon, SettingsIcon, StarIcon } from '@/components/ui/Icons';
 import { dateKey } from '@/game/streak';
@@ -79,6 +80,7 @@ export function Profile({ labels: given, now = () => new Date() }: { labels?: st
       </dl>
 
       <AccountCard />
+      <JoinCard />
 
       <Card>
         <div className="flex flex-wrap items-center justify-between gap-2">

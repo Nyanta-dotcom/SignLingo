@@ -19,7 +19,7 @@ const renderAt = (path: string) =>
 describe('AppShell', () => {
   it('shows the five tabs in the sidebar and in the bottom navigation', () => {
     renderAt('/learn');
-    expect(NAV_ITEMS).toHaveLength(5);
+    expect(NAV_ITEMS).toHaveLength(6);
     for (const nav of screen.getAllByRole('navigation')) {
       for (const item of NAV_ITEMS) expect(within(nav).getByRole('link', { name: item.label })).toHaveAttribute('href', item.to);
     }

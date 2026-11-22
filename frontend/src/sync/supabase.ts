@@ -10,6 +10,19 @@ import type { RemoteProgress, SavedProgress } from './syncProgress';
 
 export type AccountUser = { id: string; email: string };
 
+export type LeaderboardKind = 'week' | 'total' | 'streak' | 'accuracy' | 'letter';
+/** One line of the ranking. `score` is XP, days or a percentage; `detail` is the number of attempts for the accuracy boards. */
+export type LeaderboardRow = { rank: number; name: string; score: number; detail: number | null; me: boolean };
+export type LeaderboardEntry = { display_name: string; show_on_leaderboard: boolean };
+
+/** The signed-in person's own leaderboard entry, and the ranking. Nobody appears unless they chose to join. */
+export type LeaderboardApi = {
+  loadMine(): Promise<LeaderboardEntry | null>;
+  join(displayName: string): Promise<void>;
+  leave(): Promise<void>;
+  top(kind: LeaderboardKind, letter?: string): Promise<LeaderboardRow[]>;
+};
+
 export type AuthApi = {
   getUser(): Promise<AccountUser | null>;
   /** Calls back on sign-in, sign-out and token refresh; returns the unsubscribe function. */
@@ -21,6 +34,7 @@ export type AuthApi = {
   signOut(): Promise<void>;
   deleteAccount(): Promise<void>;
   progressFor(userId: string): RemoteProgress;
+  leaderboardFor(userId: string): LeaderboardApi;
 };
 
 const url = import.meta.env.VITE_SUPABASE_URL as string | undefined;
@@ -77,6 +91,28 @@ export function createSupabaseAuth(client: SupabaseClient): AuthApi {
           fail((await client.from('user_backups').upsert({
             user_id: userId, schema_version: saved.schema_version, data: saved.data, updated_at: new Date().toISOString(),
           })).error);
+        },
+      };
+    },
+    leaderboardFor(userId) {
+      return {
+        async loadMine() {
+          const { data, error } = await client.from('public_profiles').select('display_name, show_on_leaderboard').eq('user_id', userId).maybeSingle();
+          fail(error);
+          return data ? { display_name: data.display_name as string, show_on_leaderboard: data.show_on_leaderboard as boolean } : null;
+        },
+        async join(displayName) {
+          fail((await client.from('public_profiles').upsert({ user_id: userId, display_name: displayName, show_on_leaderboard: true })).error);
+        },
+        async leave() {
+          fail((await client.from('public_profiles').update({ show_on_leaderboard: false }).eq('user_id', userId)).error);
+        },
+        async top(kind, letter) {
+          const { data, error } = await client.rpc('get_leaderboard', { p_kind: kind, p_letter: letter ?? null, p_limit: 50 });
+          fail(error);
+          return ((data ?? []) as Array<{ rank_no: number; shown_name: string; score: number; detail: number | null; is_me: boolean }>).map((r) => ({
+            rank: Number(r.rank_no), name: r.shown_name, score: Number(r.score), detail: r.detail === null ? null : Number(r.detail), me: r.is_me,
+          }));
         },
       };
     },
