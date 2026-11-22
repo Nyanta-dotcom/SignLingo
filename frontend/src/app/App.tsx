@@ -5,6 +5,8 @@ import { Alphabet } from '@/features/alphabet/Alphabet';
 import { LessonPlayer } from '@/features/lesson/LessonPlayer';
 import { HandSheet } from '@/dev/HandSheet';
 import { Banners } from '@/features/onboarding/Banners';
+import { FeaturesPage } from '@/features/onboarding/FeaturesPage';
+import { HowItWorksPage } from '@/features/onboarding/HowItWorksPage';
 import { Landing } from '@/features/onboarding/Landing';
 import { Lab } from '@/features/lab/Lab';
 import { Profile } from '@/features/profile/Profile';
@@ -31,13 +33,33 @@ function ConnectedShell() {
   return <AppShell stats={{ streak: stats.current_streak, xp: stats.total_xp, hearts: stats.hearts }} banner={<Banners />} />;
 }
 
-/** First visit shows the welcome page; every later visit goes straight to the learning path. */
-function Home() {
-  const onboarded = useLearner((s) => s.onboarded);
+/** Pre-app 3-page marketing routes. First visit to `/` shows Home; returning visits go straight to `/learn`. */
+function useStartApp() {
   const complete = useLearner((s) => s.completeOnboarding);
   const navigate = useNavigate();
+  return () => {
+    complete();
+    navigate('/learn');
+  };
+}
+
+function Home() {
+  const onboarded = useLearner((s) => s.onboarded);
+  const start = useStartApp();
   if (onboarded) return <Navigate to="/learn" replace />;
-  return <Landing onStart={() => { complete(); navigate('/learn'); }} />;
+  return <Landing onStart={start} />;
+}
+
+function WelcomeRoute() {
+  return <Landing onStart={useStartApp()} />;
+}
+
+function FeaturesRoute() {
+  return <FeaturesPage onStart={useStartApp()} />;
+}
+
+function HowItWorksRoute() {
+  return <HowItWorksPage onStart={useStartApp()} />;
 }
 
 /** Plays subtle Duolingo-style pop/tick sounds on interactive clicks while sound is enabled. */
@@ -54,6 +76,9 @@ export function AppRoutes() {
   return (
     <Routes>
       <Route index element={<Home />} />
+      <Route path="welcome" element={<WelcomeRoute />} />
+      <Route path="features" element={<FeaturesRoute />} />
+      <Route path="how-it-works" element={<HowItWorksRoute />} />
       {import.meta.env.DEV && <Route path="dev/hands" element={<HandSheet />} />}
       <Route path="lesson/:code" element={<LessonPlayer />} />
       <Route element={<ConnectedShell />}>
