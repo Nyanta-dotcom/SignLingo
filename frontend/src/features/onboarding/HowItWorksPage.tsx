@@ -9,7 +9,7 @@ const STEPS = [
   {
     num: '01',
     title: 'Mở camera & chọn bài học',
-    desc: 'Bấm Bắt đầu, chọn bài học trên lộ trình và cấp quyền webcam ngay trong trình duyệt. Bạn có thể đăng nhập trong Hồ sơ để lưu tiến độ xuyên suốt các thiết bị.',
+    desc: 'Bấm Bắt đầu, chọn bài học trên lộ trình và cấp quyền webcam ngay trong trình duyệt. Bạn có thể bấm Đăng nhập ở thanh trên để lưu tiến độ xuyên suốt các thiết bị.',
   },
   {
     num: '02',
@@ -30,7 +30,7 @@ const FAQS = [
   },
   {
     q: 'Tiến độ học và chuỗi ngày (streak) được lưu ở đâu?',
-    a: 'Khi bạn đăng nhập tài khoản (Email hoặc Google) ở trang Hồ sơ, toàn bộ tiến độ bài học, XP, chuỗi ngày và độ thành thạo sẽ được lưu an toàn trên cơ sở dữ liệu (Supabase) và tự động đồng bộ giữa các thiết bị. Nếu chưa đăng nhập, tiến độ vẫn được giữ trên trình duyệt hiện tại.',
+    a: 'Khi bạn đăng nhập tài khoản bằng email và mật khẩu (nút Đăng nhập ở thanh trên), toàn bộ tiến độ bài học, XP, chuỗi ngày và độ thành thạo sẽ được lưu an toàn trên cơ sở dữ liệu (Supabase) và tự động đồng bộ giữa các thiết bị. Nếu chưa đăng nhập, tiến độ vẫn được giữ trên trình duyệt hiện tại.',
   },
   {
     q: 'Các ký hiệu động (J, Z và số 10) được nhận diện như thế nào?',
