@@ -7,7 +7,7 @@ import { HeartIcon } from '@/components/ui/Icons';
 import { PredictionBars } from '@/components/ui/PredictionBars';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { CameraFrame, type CameraFrameState } from '@/components/vision/CameraFrame';
-import { drawSkeleton, tokenColor } from '@/components/vision/overlay';
+import { drawSkeleton, drawTrail, tokenColor } from '@/components/vision/overlay';
 import type { Lesson, Sign } from '@/content/types';
 import { msToNextHeart } from '@/game/hearts';
 import { lessonStatus } from '@/game/unlock';
@@ -16,6 +16,7 @@ import { useCamera } from '@/hooks/useCamera';
 import { vi } from '@/i18n/vi';
 import { createSound } from '@/lib/sound';
 import { useLearner } from '@/storage/useLearner';
+import type { TrailPoint } from '@/vision/dynamicGesture';
 import type { FingerHint, HandFrame } from '@/vision/types';
 import { loadLearnData, type LearnData } from '../skill-tree/SkillTree';
 import { realEngineFactory, useRecognition, type EngineFactory } from '../practice/useRecognition';
@@ -94,13 +95,18 @@ function Run({ lesson, signs, model, factory, onRetry }: { lesson: Lesson; signs
   const [live, setLive] = useState<Live | null>(null);
   const [hideSkeleton, setHideSkeleton] = useState(false);
   const [confirmExit, setConfirmExit] = useState(false);
-  const isSign = run.phase !== 'done' && run.phase !== 'no_hearts' && (run.item.type === 'perform_sign' || run.item.type === 'spell_word');
+  const isDynamic = run.phase !== 'done' && run.phase !== 'no_hearts' && run.item.type === 'perform_dynamic';
+  const isSign = run.phase !== 'done' && run.phase !== 'no_hearts' && (run.item.type === 'perform_sign' || run.item.type === 'spell_word' || run.item.type === 'perform_dynamic');
   const performing = isSign && run.phase === 'item';
 
-  const onFrame = useCallback((frame: HandFrame | null) => {
+  const onFrame = useCallback((frame: HandFrame | null, trail?: readonly TrailPoint[]) => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
-    if (canvas && ctx) drawSkeleton(ctx, hidden.current ? null : (frame?.landmarks ?? null), { width: canvas.width, height: canvas.height, color: colors.current.ok, badColor: colors.current.bad });
+    if (!canvas || !ctx) return;
+    drawSkeleton(ctx, hidden.current ? null : (frame?.landmarks ?? null), { width: canvas.width, height: canvas.height, color: colors.current.ok, badColor: colors.current.bad });
+    if (trail && trail.length > 1) {
+      drawTrail(ctx, trail, { width: canvas.width, height: canvas.height, color: colors.current.ok });
+    }
   }, []);
 
   const rec = useRecognition({
@@ -234,8 +240,11 @@ function Run({ lesson, signs, model, factory, onRetry }: { lesson: Lesson; signs
         {isSign && (
           <Card className="flex flex-col items-center justify-center gap-5">
             <h1 className="rounded-full bg-brand-50 px-4 py-1 text-sm font-extrabold uppercase tracking-wider text-brand-fg">
-              {speller ? t.spell : t.perform}
+              {speller ? t.spell : isDynamic ? t.performDynamic : t.perform}
             </h1>
+            {isDynamic && t.dynamicHint[letter] && (
+              <p className="max-w-sm text-center text-sm font-bold text-text-muted">{t.dynamicHint[letter]}</p>
+            )}
             {speller && (
               <ol aria-label={t.wordCells(speller.letters.join(''))} className="flex gap-2">
                 {speller.letters.map((l, i) => {

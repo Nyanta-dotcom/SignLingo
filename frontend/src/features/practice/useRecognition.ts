@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type RefObject } from 'react';
 import { loadActiveManifest } from '@/app/staticData';
 import { createClassifier } from '@/vision/classifier';
+import type { TrailPoint } from '@/vision/dynamicGesture';
 import { createRecognitionEngine, type RecognitionEvent } from '@/vision/engine';
 import { createHandTracker } from '@/vision/landmarker';
 import type { PerfRecord } from '@/storage/types';
@@ -23,7 +24,7 @@ export type PerfSnapshot = {
   processingFps: number; frameMsP50: number; frameMsP95: number; mpMsP50: number; clsMsP50: number;
   backend: string; delegate: string; worker: boolean;
 };
-export type EngineFactory = (o: { onFrame: (f: HandFrame | null) => void; topK?: number }) => Promise<EngineBundle>;
+export type EngineFactory = (o: { onFrame: (f: HandFrame | null, trail?: readonly TrailPoint[]) => void; topK?: number }) => Promise<EngineBundle>;
 
 /** Builds the real engine from the published manifest (ONNX classifier + MediaPipe tracker). */
 export const realEngineFactory: EngineFactory = async ({ onFrame, topK }) => {
@@ -53,7 +54,7 @@ export function useRecognition({
   stream: MediaStream | null;
   factory?: EngineFactory;
   onEvent?: (e: RecognitionEvent, bundle: EngineBundle) => void;
-  onFrame?: (f: HandFrame | null) => void;
+  onFrame?: (f: HandFrame | null, trail?: readonly TrailPoint[]) => void;
   topK?: number;
 }) {
   const [phase, setPhase] = useState<Phase>('idle');
@@ -72,7 +73,7 @@ export function useRecognition({
     setPhase('loading');
     setError(null);
     (async () => {
-      const b = await factory({ onFrame: (f) => handlers.current.onFrame?.(f), topK });
+      const b = await factory({ onFrame: (f, trail) => handlers.current.onFrame?.(f, trail), topK });
       if (cancelled) return;
       setBundle(b);
       const off = b.engine.subscribe((e) => {

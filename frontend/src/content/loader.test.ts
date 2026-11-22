@@ -9,10 +9,13 @@ const LABELS: string[] = manifest.labels;
 const copy = () => structuredClone(curriculum) as unknown as Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
 
 describe('curriculum.json', () => {
-  it('is valid and every sign matches the class order of the published model (model_class_index)', () => {
+  it('is valid, matches the 24 static classes of the published model, and includes dynamic J and Z', () => {
     const c = loadCurriculum(curriculum, LABELS);
-    expect(c.signs).toHaveLength(LABELS.length);
-    c.signs.forEach((s) => expect(LABELS[s.model_class_index]).toBe(s.gloss));
+    const statics = c.signs.filter((s) => s.kind === 'static');
+    const dynamics = c.signs.filter((s) => s.kind === 'dynamic');
+    expect(statics).toHaveLength(LABELS.length);
+    statics.forEach((s) => expect(LABELS[s.model_class_index]).toBe(s.gloss));
+    expect(dynamics.map((s) => s.gloss).sort()).toEqual(['J', 'Z']);
   });
 
   it('lets a learner reach every lesson: each one requires only earlier lessons', () => {
@@ -33,16 +36,16 @@ describe('loadCurriculum rejects inconsistent content', () => {
   it('a file that breaks the schema', () => bad((c) => { delete c.units; }, /schema/));
   it('a sign whose class index is not the model\'s class for that letter', () => bad((c) => { c.signs[0].model_class_index = 5; }, /says class 5/));
   it('a duplicated sign', () => bad((c) => { c.signs.push({ ...c.signs[0] }); }, /duplicate sign/));
-  it('an item that uses an unknown sign', () => bad((c) => { c.units[0].lessons[0].items[0].sign_code = 'LETTER_J'; }, /unknown sign LETTER_J/));
+  it('an item that uses an unknown sign', () => bad((c) => { c.units[0].lessons[0].items[0].sign_code = 'LETTER_UNKNOWN'; }, /unknown sign LETTER_UNKNOWN/));
   it('a lesson that requires a later or missing lesson', () => {
     bad((c) => { c.units[0].lessons[0].requires = ['U1L2']; }, /does not come before/);
     bad((c) => { c.units[0].lessons[1].requires = ['NOPE']; }, /requires NOPE/);
   });
   it('a duplicated lesson code', () => bad((c) => { c.units[0].lessons[1].code = 'U1L1'; c.units[0].lessons[1].requires = []; }, /duplicate lesson/));
-  it('a word with letters the model cannot read (J, Z)', () => bad((c) => {
+  it('a word with letters the static model cannot read (J, Z)', () => bad((c) => {
     c.units[0].lessons[0].items.push({ order: 99, type: 'spell_word', word: 'JAZ' });
   }, /cannot read: JZ/));
-  it('accepts a word made only of supported letters', () => {
+  it('accepts a word made only of supported static letters', () => {
     const c = copy();
     c.units[0].lessons[0].items.push({ order: 99, type: 'spell_word', word: 'cab' });
     expect(() => loadCurriculum(c, LABELS)).not.toThrow();
@@ -70,7 +73,8 @@ describe('pictures of the hands (curriculum media)', () => {
   const signs = loadCurriculum(curriculum, LABELS).signs;
   const file = (src: string) => resolve(process.cwd(), 'public', src.replace(/^\//, ''));
 
-  it('gives every letter a picture, with its author and license', () => {
+  it('gives every letter (A–Z) a picture, with its author and license', () => {
+    expect(signs).toHaveLength(26);
     for (const s of signs) {
       const image = s.media?.find((m) => m.type === 'image');
       expect(image, s.code).toBeDefined();
@@ -100,4 +104,3 @@ describe('pictures of the hands (curriculum media)', () => {
     expect(text).toMatch(/Public domain/);
   });
 });
-

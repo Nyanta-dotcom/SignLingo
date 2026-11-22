@@ -1,9 +1,10 @@
 /**
  * RecognitionEngine (docs/04 K3): one frame loop that runs the tracker, normalizer, classifier,
- * smoother and hold FSM and tells React about it through throttled events (<= 30 Hz). The frame
- * loop itself never touches React state. Framework-free so it can move into a Web Worker later.
+ * smoother, hold FSM (for static letters) and trajectory verifier (for dynamic J/Z) and tells React
+ * about it through throttled events (<= 30 Hz). Framework-free so it can move into a Web Worker later.
  */
 
+import { createDynamicVerifier, isDynamicLetter, type TrailPoint } from './dynamicGesture';
 import { fingerFeedback } from './fingerFeedback';
 import { createHoldVerifier } from './holdFsm';
 import { normalizeLandmarks } from './normalizer';
@@ -37,7 +38,7 @@ export type EngineDeps = {
   templates: Record<string, ClassTemplate>;
   confusable: Record<string, string[]>;
   /** Called with every detected frame (or null), unthrottled, for drawing straight onto a canvas. */
-  onFrame?: (frame: HandFrame | null) => void;
+  onFrame?: (frame: HandFrame | null, trail?: readonly TrailPoint[]) => void;
   scheduleFrame?: (cb: (nowMs: number) => Promise<void>, video: HTMLVideoElement) => () => void;
   wait?: (ms: number) => Promise<void>;
   now?: () => number;
@@ -72,12 +73,14 @@ export function createRecognitionEngine(deps: EngineDeps) {
   const perf = createPerfMonitor();
   const smoother = createSmoother(manifest.labels, manifest.recommended.smoothing_window, deps.topK);
   const hold = createHoldVerifier();
+  const dynamic = createDynamicVerifier();
 
   let video: HTMLVideoElement | null = null;
   let cancel: (() => void) | null = null;
   let running = false;
   let busy = false;
   let target: string | null = null;
+  let dynamicTimeLimitMs = Infinity;
   let attemptStart: number | null = null;
   let noHandSince: number | null = null;
   let lastEmit = -Infinity;
@@ -98,6 +101,48 @@ export function createRecognitionEngine(deps: EngineDeps) {
     try {
       const frame = tracker.detect(video, nowMs);
       const mpMs = now() - t0;
+
+      if (isDynamicLetter(target)) {
+        const dyn = dynamic.update(frame, nowMs);
+        deps.onFrame?.(frame, dyn.trail);
+        if (!frame) {
+          noHandSince ??= nowMs;
+          throttled(nowMs, { type: 'no_hand', sinceMs: nowMs - noHandSince });
+          if (attemptStart !== null && nowMs - attemptStart >= dynamicTimeLimitMs) {
+            emit({ type: 'timed_out', target, lastLabel: last.label, lastConfidence: last.confidence });
+            target = null;
+          }
+          return;
+        }
+        noHandSince = null;
+        attemptStart ??= nowMs;
+        last = { label: dyn.poseMatch ? target : null, confidence: dyn.poseMatch ? 0.9 : 0 };
+
+        if (dyn.verified) {
+          emit({ type: 'verified', label: target, timeToVerifyMs: nowMs - attemptStart });
+          target = null;
+          return;
+        }
+        if (nowMs - attemptStart >= dynamicTimeLimitMs) {
+          emit({ type: 'timed_out', target, lastLabel: last.label, lastConfidence: last.confidence });
+          target = null;
+          return;
+        }
+        throttled(nowMs, {
+          type: 'prediction',
+          label: dyn.poseMatch ? target : '',
+          confidence: dyn.poseMatch ? dyn.progress : 0,
+          topK: [{ label: target, p: dyn.poseMatch ? Math.max(0.2, dyn.progress) : 0 }],
+          hold: { state: dyn.progress > 0 ? 'holding' : 'searching', progress: dyn.progress },
+          fingers: [],
+          confusedWith: null,
+        });
+        const sample = { nowMs, frameMs: now() - t0, mpMs, clsMs: 0 };
+        perf.record(sample);
+        bench?.record(sample);
+        return;
+      }
+
       deps.onFrame?.(frame);
       if (!frame) {
         noHandSince ??= nowMs;
@@ -176,7 +221,10 @@ export function createRecognitionEngine(deps: EngineDeps) {
       target = next;
       attemptStart = null;
       smoother.reset();
-      if (next) {
+      if (isDynamicLetter(next)) {
+        dynamic.reset(next);
+        dynamicTimeLimitMs = cfg.timeLimitMs ?? Infinity;
+      } else if (next) {
         hold.reset(next, {
           holdMs: manifest.recommended.hold_ms, threshold: manifest.recommended.threshold,
           graceMs: 150, timeLimitMs: Infinity, ...cfg,

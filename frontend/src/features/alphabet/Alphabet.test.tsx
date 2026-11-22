@@ -24,15 +24,15 @@ const at = (path: string, loader: () => Promise<LearnData> = load) =>
   );
 
 describe('Alphabet', () => {
-  it('lists the 24 letters of the app in order, each with its hand', async () => {
+  it('lists all 26 ASL letters in order (24 static + dynamic J and Z)', async () => {
     at('/alphabet');
     expect(screen.getByRole('heading', { level: 1, name: 'Bảng chữ cái' })).toBeInTheDocument();
     const links = await screen.findAllByRole('link', { name: /^Xem thao tác chữ / });
-    expect(links.map((l) => l.getAttribute('href')?.slice(-1)).join('')).toBe('ABCDEFGHIKLMNOPQRSTUVWXY');
+    expect(links.map((l) => l.getAttribute('href')?.slice(-1)).join('')).toBe('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
     expect(screen.getByText(/J và Z/)).toBeInTheDocument();
   });
 
-  it('opens the standard handshape of a letter, with its source and the neighbours', async () => {
+  it('opens the standard handshape of a static letter, with its source and the neighbours', async () => {
     at('/alphabet');
     fireEvent.click(await screen.findByRole('link', { name: 'Xem thao tác chữ B' }));
     expect(screen.getByRole('heading', { level: 1, name: 'Chữ B' })).toBeInTheDocument();
@@ -44,6 +44,14 @@ describe('Alphabet', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'Chữ B' })).toBeInTheDocument();
   });
 
+  it('opens dynamic letters J and Z with motion instructions and matching wpclipart SVG art', async () => {
+    at('/alphabet/J');
+    expect(await screen.findByRole('heading', { level: 1, name: 'Chữ J' })).toBeInTheDocument();
+    expect(screen.getByText(/ngón út/)).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: /chữ J/ })).toHaveAttribute('src', '/media/letters/J.svg');
+    expect(screen.getByText(/Public domain/)).toBeInTheDocument();
+  });
+
   it('has no previous link on the first letter and no next link on the last', async () => {
     at('/alphabet/A');
     await screen.findByRole('heading', { level: 1, name: 'Chữ A' });
@@ -52,13 +60,13 @@ describe('Alphabet', () => {
   });
 
   it('accepts a lower-case letter', async () => {
-    at('/alphabet/y');
-    expect(await screen.findByRole('heading', { level: 1, name: 'Chữ Y' })).toBeInTheDocument();
+    at('/alphabet/z');
+    expect(await screen.findByRole('heading', { level: 1, name: 'Chữ Z' })).toBeInTheDocument();
   });
 
-  it('explains a letter the app does not teach', async () => {
-    at('/alphabet/J');
-    expect(await screen.findByRole('alert')).toHaveTextContent('Không có chữ J');
+  it('explains a character the app does not teach', async () => {
+    at('/alphabet/9');
+    expect(await screen.findByRole('alert')).toHaveTextContent('Không có chữ 9');
   });
 
   it('says so when the alphabet cannot be loaded', async () => {

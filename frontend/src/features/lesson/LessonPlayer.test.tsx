@@ -291,4 +291,18 @@ describe('LessonPlayer', () => {
       expect(screen.getByRole('status')).toHaveTextContent('Chưa đúng. Hãy thử lại chữ CAB');
     });
   });
+
+  it('plays a dynamic letter item (perform_dynamic) for J and Z', async () => {
+    const d = dataFor(lesson('L1', [item(1, 'perform_dynamic', 'J'), item(2, 'perform_dynamic', 'Z')]));
+    const s = open(d, 'L1');
+    await startCamera(s);
+    expect(screen.getByRole('heading', { level: 1, name: 'Hãy vẽ chữ động' })).toBeInTheDocument();
+    expect(screen.getByText(/ngón út/)).toBeInTheDocument();
+    await waitFor(() => expect(s.engine.setTarget).toHaveBeenCalledWith('J', expect.any(Object)));
+    await s.emit(verified('J'));
+    expect(screen.getByRole('status')).toHaveTextContent('Chính xác!');
+    fireEvent.click(screen.getByRole('button', { name: 'Tiếp tục' }));
+    await waitFor(() => expect(s.engine.setTarget).toHaveBeenCalledWith('Z', expect.any(Object)));
+    expect(screen.getByText(/ngón trỏ/)).toBeInTheDocument();
+  });
 });

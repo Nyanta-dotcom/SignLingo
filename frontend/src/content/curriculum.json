@@ -137,6 +137,21 @@
       ]
     },
     {
+      "code": "LETTER_J",
+      "gloss": "J",
+      "kind": "dynamic",
+      "model_task": "dynamic_letters",
+      "model_class_index": 0,
+      "media": [
+        {
+          "type": "image",
+          "src": "/media/letters/J.svg",
+          "license": "Public domain",
+          "attribution": "wpclipart.com (Wikimedia Commons)"
+        }
+      ]
+    },
+    {
       "code": "LETTER_K",
       "gloss": "K",
       "kind": "static",
@@ -356,6 +371,21 @@
         {
           "type": "image",
           "src": "/media/letters/Y.svg",
+          "license": "Public domain",
+          "attribution": "wpclipart.com (Wikimedia Commons)"
+        }
+      ]
+    },
+    {
+      "code": "LETTER_Z",
+      "gloss": "Z",
+      "kind": "dynamic",
+      "model_task": "dynamic_letters",
+      "model_class_index": 1,
+      "media": [
+        {
+          "type": "image",
+          "src": "/media/letters/Z.svg",
           "license": "Public domain",
           "attribution": "wpclipart.com (Wikimedia Commons)"
         }
@@ -731,6 +761,43 @@
               "order": 10,
               "type": "perform_sign",
               "sign_code": "LETTER_X"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "U2",
+      "level": 2,
+      "title": "Chữ cái động: J & Z",
+      "order": 2,
+      "lessons": [
+        {
+          "code": "U2L1",
+          "title": "Bài 8: Chữ động J & Z",
+          "order": 8,
+          "xp_reward": 15,
+          "requires": [],
+          "items": [
+            {
+              "order": 1,
+              "type": "learn_card",
+              "sign_code": "LETTER_J"
+            },
+            {
+              "order": 2,
+              "type": "perform_dynamic",
+              "sign_code": "LETTER_J"
+            },
+            {
+              "order": 3,
+              "type": "learn_card",
+              "sign_code": "LETTER_Z"
+            },
+            {
+              "order": 4,
+              "type": "perform_dynamic",
+              "sign_code": "LETTER_Z"
             }
           ]
         }

@@ -35,11 +35,12 @@ const finish = (code: string) => {
 };
 
 describe('SkillTree', () => {
-  it('shows every lesson of the curriculum in order, only the first one open at the start', async () => {
+  it('shows every lesson of the curriculum in order, opening lessons without prerequisites', async () => {
     await show();
     expect(screen.getAllByRole('listitem')).toHaveLength(lessons.length);
-    expect(node(0)).toHaveAttribute('data-status', 'available');
-    lessons.slice(1).forEach((_, i) => expect(node(i + 1)).toHaveAttribute('data-status', 'locked'));
+    lessons.forEach((l, i) => {
+      expect(node(i)).toHaveAttribute('data-status', l.requires.length === 0 ? 'available' : 'locked');
+    });
     expect(screen.getByRole('button', { name: `${lessons[0].title}: sẵn sàng` })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: `${lessons[1].title}: chưa mở` })).toBeInTheDocument();
   });

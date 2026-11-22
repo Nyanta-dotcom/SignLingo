@@ -25,6 +25,10 @@ export function createLetterTyper({ holdMs, threshold, graceMs }: TyperCfg) {
 
   return {
     text: () => text,
+    append(letter: string) {
+      text += letter;
+      drop();
+    },
     space() {
       text += ' ';
     },

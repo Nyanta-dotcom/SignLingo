@@ -1,5 +1,6 @@
-/** Skeleton drawing straight on a <canvas>: the frame loop never goes through React state (docs/02 §5.4). */
+/** Skeleton & fingertip trail drawing straight on a <canvas>: the frame loop never goes through React state. */
 
+import type { TrailPoint } from '@/vision/dynamicGesture';
 import type { Landmark } from '@/vision/types';
 
 export const HAND_CONNECTIONS: ReadonlyArray<readonly [number, number]> = [
@@ -15,6 +16,9 @@ type Ctx = Pick<CanvasRenderingContext2D, 'clearRect' | 'beginPath' | 'moveTo' |
   lineWidth: number;
   strokeStyle: string | CanvasGradient | CanvasPattern;
   fillStyle: string | CanvasGradient | CanvasPattern;
+  lineCap?: CanvasLineCap;
+  lineJoin?: CanvasLineJoin;
+  globalAlpha?: number;
 };
 
 export function drawSkeleton(
@@ -40,7 +44,38 @@ export function drawSkeleton(
   });
 }
 
-/** Reads a theme colour token (docs/05 §2.3) so the canvas follows light/dark without hex in code. */
+/** Draws a glowing tapered fingertip trail on top of the skeleton canvas for dynamic J/Z gestures. */
+export function drawTrail(
+  ctx: Ctx,
+  points: readonly TrailPoint[],
+  { width, height, color }: { width: number; height: number; color: string },
+): void {
+  if (points.length < 2) return;
+  const prevAlpha = ctx.globalAlpha ?? 1;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.strokeStyle = color;
+
+  for (let i = 1; i < points.length; i += 1) {
+    const ratio = i / (points.length - 1);
+    ctx.globalAlpha = 0.2 + 0.8 * ratio;
+    ctx.lineWidth = 4 + 8 * ratio;
+    ctx.beginPath();
+    ctx.moveTo(points[i - 1].x * width, points[i - 1].y * height);
+    ctx.lineTo(points[i].x * width, points[i].y * height);
+    ctx.stroke();
+  }
+
+  const tip = points[points.length - 1];
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.arc(tip.x * width, tip.y * height, 9, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.globalAlpha = prevAlpha;
+}
+
+/** Reads a theme colour token so the canvas never hardcodes hex in component code. */
 export function tokenColor(name: string, root: HTMLElement = document.documentElement): string {
   return getComputedStyle(root).getPropertyValue(`--${name}`).trim();
 }

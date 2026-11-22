@@ -12,7 +12,8 @@ export type Layer =
   | { kind: 'ring'; cx: number; cy: number; rx: number; ry: number; w: number }
   | { kind: 'arc'; d: string; w: number };
 /** `rotate` turns the whole hand (degrees); `scale` shrinks a turned hand so its fingers stay inside the box. */
-export type Art = { rotate?: number; scale?: number; layers: readonly Layer[] };
+export type MotionArrow = { path: string; head: string };
+export type Art = { rotate?: number; scale?: number; layers: readonly Layer[]; motion?: MotionArrow };
 
 const FINGER_W = 20;
 const BASE_Y = 132;
@@ -49,6 +50,13 @@ export const HAND_ART: Record<string, Art> = {
   G: { scale: 0.78, rotate: -90, layers: [{ kind: 'palm' }, curl('pinky'), curl('ring'), curl('middle'), up('index'), limb([[148, 186], [152, 140], [150, 96]], 21)] },
   H: { scale: 0.78, rotate: -90, layers: [{ kind: 'palm' }, curl('pinky'), curl('ring'), up('middle'), up('index'), limb([[132, 200], [118, 176], [104, 170]], 19)] },
   I: { layers: [{ kind: 'palm' }, curl('ring'), curl('middle'), curl('index'), up('pinky'), thumbAcross(168)] },
+  J: {
+    layers: [{ kind: 'palm' }, curl('ring'), curl('middle'), curl('index'), up('pinky'), thumbAcross(168)],
+    motion: {
+      path: 'M 48 68 L 48 112 Q 48 140 24 138 Q 10 136 12 114',
+      head: 'M 6 121 L 12 111 L 19 121',
+    },
+  },
   K: { layers: [{ kind: 'palm' }, curl('pinky'), curl('ring'), lean('middle', -14), lean('index', 16), limb([[130, 196], [112, 160], [106, 128]], 20)] },
   L: { layers: [{ kind: 'palm' }, curl('pinky'), curl('ring'), curl('middle'), up('index'), thumbOut()] },
   M: { layers: [{ kind: 'palm' }, curl('pinky', 24), limb([[88, 120], [88, 166]]), limb([[108, 120], [108, 168]]), limb([[128, 120], [128, 166]]), limb([[78, 176], [82, 160]], 16)] },
@@ -64,6 +72,13 @@ export const HAND_ART: Record<string, Art> = {
   W: { layers: [{ kind: 'palm' }, curl('pinky'), lean('ring', -14), up('middle'), lean('index', 14), limb([[148, 192], [108, 180], [74, 160]], 20)] },
   X: { layers: [{ kind: 'palm' }, curl('pinky'), curl('ring'), curl('middle'), hook('index'), thumbAcross(176)] },
   Y: { layers: [{ kind: 'palm' }, curl('ring'), curl('middle'), curl('index'), limb([[68, 132], [58, 92], [50, 62]]), thumbOut()] },
+  Z: {
+    layers: [{ kind: 'palm' }, curl('pinky'), curl('ring', 30), curl('middle', 34), up('index'), limb([[146, 196], [128, 166], [112, 150]], 21)],
+    motion: {
+      path: 'M 104 26 L 176 26 L 112 78 L 180 78',
+      head: 'M 171 71 L 182 78 L 171 85',
+    },
+  },
 };
 
 export const HAND_LETTERS = Object.keys(HAND_ART);

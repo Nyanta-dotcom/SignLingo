@@ -3,6 +3,7 @@ import { CUFF, HAND_ART, type Layer } from './handArt';
 
 const LINE = 'var(--skin-line)';
 const SKIN = 'var(--skin)';
+const MOTION = 'var(--brand-600)';
 const OUTLINE = 6;
 
 const path = (pts: ReadonlyArray<readonly [number, number]>) => pts.map((p, i) => `${i === 0 ? 'M' : 'L'}${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(' ');
@@ -13,7 +14,7 @@ function Outlined({ d, w, fill = 'none', cuffColour = false }: { d: string; w: n
   return (
     <>
       <path d={d} {...common} stroke={LINE} strokeWidth={w + OUTLINE} />
-      <path d={d} {...common} stroke={cuffColour ? 'var(--brand-600)' : SKIN} strokeWidth={w} />
+      <path d={d} {...common} stroke={cuffColour ? 'var(--brand-500)' : SKIN} strokeWidth={w} />
     </>
   );
 }
@@ -25,7 +26,7 @@ function Piece({ layer }: { layer: Layer }) {
   return <Outlined d={path(layer.pts)} w={layer.w ?? 20} />;
 }
 
-/** Cartoon drawing of the hand for a letter (original art, see handArt.ts). Renders nothing for an unknown letter. */
+/** Cartoon drawing of the hand for a letter (original art, see handArt.ts), with animated pink motion arrows for J and Z. */
 export function HandIllustration({ letter, className = '' }: { letter: string; className?: string }) {
   const art = HAND_ART[letter];
   if (!art) return null;
@@ -40,6 +41,12 @@ export function HandIllustration({ letter, className = '' }: { letter: string; c
           l.kind === 'ring' && <ellipse key={`r${i}`} cx={l.cx} cy={l.cy} rx={l.rx} ry={l.ry} fill="none" stroke={SKIN} strokeWidth={l.w} />
         ))}
       </g>
+      {art.motion && (
+        <g fill="none" stroke={MOTION} strokeLinecap="round" strokeLinejoin="round">
+          <path d={art.motion.path} strokeWidth="6" strokeDasharray="10 8" className="motion-arrow" />
+          <path d={art.motion.head} strokeWidth="6" />
+        </g>
+      )}
     </svg>
   );
 }

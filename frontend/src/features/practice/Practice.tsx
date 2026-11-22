@@ -5,10 +5,11 @@ import { HoldRing } from '@/components/ui/HoldRing';
 import { PlayIcon } from '@/components/ui/Icons';
 import { PredictionBars } from '@/components/ui/PredictionBars';
 import { CameraFrame, type CameraFrameState } from '@/components/vision/CameraFrame';
-import { drawSkeleton, tokenColor } from '@/components/vision/overlay';
+import { drawSkeleton, drawTrail, tokenColor } from '@/components/vision/overlay';
 import { useCamera } from '@/hooks/useCamera';
 import { vi } from '@/i18n/vi';
 import { useLearner } from '@/storage/useLearner';
+import { createPassiveDynamicDetector } from '@/vision/dynamicGesture';
 import { createLetterTyper, type LetterTyper } from '@/vision/letterTyper';
 import type { HandFrame } from '@/vision/types';
 import { realEngineFactory, useRecognition, type EngineFactory } from './useRecognition';
@@ -21,7 +22,7 @@ const CAMERA_MESSAGES = {
   INSECURE_CONTEXT: vi.camera.insecure,
 } as const;
 
-/** Free Practice: hold a sign to type it; never costs hearts or XP. */
+/** Free Practice: hold a static sign (1s) or trace dynamic J / Z to type it; never costs hearts or XP. */
 export function Practice({ factory = realEngineFactory }: { factory?: EngineFactory }) {
   const deviceId = useLearner((s) => s.settings.camera_device_id);
   const camera = useCamera(deviceId);
@@ -30,18 +31,35 @@ export function Practice({ factory = realEngineFactory }: { factory?: EngineFact
   const hidden = useRef(false);
   const [hideSkeleton, setHideSkeleton] = useState(false);
   const typer = useRef<LetterTyper | null>(null);
+  const dynamic = useRef(createPassiveDynamicDetector());
   const [typed, setTyped] = useState({ text: '', progress: 0, candidate: null as string | null });
+  const [dynamicFlash, setDynamicFlash] = useState<string | null>(null);
   const [announcement, setAnnouncement] = useState('');
   const lastAnnounce = useRef({ at: -Infinity, label: '' });
   const colors = useRef({ ok: '', bad: '' });
 
   const onFrame = useCallback((frame: HandFrame | null) => {
+    const nowMs = performance.now();
+    const dyn = dynamic.current.update(frame, nowMs);
+
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
-    if (!canvas || !ctx) return;
-    drawSkeleton(ctx, hidden.current ? null : (frame?.landmarks ?? null), {
-      width: canvas.width, height: canvas.height, color: colors.current.ok, badColor: colors.current.bad,
-    });
+    if (canvas && ctx) {
+      drawSkeleton(ctx, hidden.current ? null : (frame?.landmarks ?? null), {
+        width: canvas.width, height: canvas.height, color: colors.current.ok, badColor: colors.current.bad,
+      });
+      if (dyn.trail.length > 1) {
+        drawTrail(ctx, dyn.trail, { width: canvas.width, height: canvas.height, color: colors.current.ok });
+      }
+    }
+
+    if (dyn.detected) {
+      typer.current ??= createLetterTyper({ holdMs: 1000, threshold: 0.6, graceMs: 150 });
+      typer.current.append(dyn.detected);
+      setTyped({ text: typer.current.text(), progress: 1, candidate: dyn.detected });
+      setDynamicFlash(dyn.detected);
+      setAnnouncement(vi.practice.recognised(dyn.detected, 100));
+    }
   }, []);
 
   const rec = useRecognition({
@@ -57,9 +75,11 @@ export function Practice({ factory = realEngineFactory }: { factory?: EngineFact
       if (e.type === 'no_hand') {
         const r = typer.current.update({ label: null, confidence: 0, nowMs });
         setTyped({ text: r.text, progress: 0, candidate: null });
+        setDynamicFlash(null);
       } else if (e.type === 'prediction') {
         const r = typer.current.update({ label: e.label, confidence: e.confidence, nowMs });
         setTyped({ text: r.text, progress: r.progress, candidate: r.candidate });
+        if (r.progress > 0.2) setDynamicFlash(null);
         const last = lastAnnounce.current;
         if (e.label !== last.label && nowMs - last.at >= ANNOUNCE_EVERY_MS) {
           lastAnnounce.current = { at: nowMs, label: e.label };
@@ -79,6 +99,8 @@ export function Practice({ factory = realEngineFactory }: { factory?: EngineFact
   const stopAll = () => {
     camera.stop();
     typer.current = null;
+    dynamic.current.reset();
+    setDynamicFlash(null);
     setTyped({ text: '', progress: 0, candidate: null });
   };
   const edit = (fn: (t: LetterTyper) => void) => {
@@ -137,7 +159,9 @@ export function Practice({ factory = realEngineFactory }: { factory?: EngineFact
       <div className="flex flex-col items-center gap-5">
         <Card className="flex w-full flex-col items-center gap-5">
           <HoldRing progress={typed.progress} label={vi.practice.holdRing}>
-            <span aria-label={vi.practice.current} className="text-8xl font-black text-text">{p?.label ?? vi.practice.none}</span>
+            <span aria-label={vi.practice.current} className="text-8xl font-black text-text">
+              {dynamicFlash ?? p?.label ?? vi.practice.none}
+            </span>
           </HoldRing>
           <div className="w-full">
             <PredictionBars items={p?.topK ?? []} caption={vi.practice.top3} />

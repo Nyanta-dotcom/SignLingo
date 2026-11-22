@@ -23,6 +23,7 @@ function LetterDetail({ signs, letter }: { signs: Sign[]; letter: string }) {
   if (i < 0) return <p role="alert" className="font-bold">{t.unknown(letter)}</p>;
   const sign = signs[i];
   const image = imageOf(sign);
+  const isDynamic = sign.kind === 'dynamic';
   const prev = signs[i - 1];
   const next = signs[i + 1];
   return (
@@ -30,9 +31,16 @@ function LetterDetail({ signs, letter }: { signs: Sign[]; letter: string }) {
       <Link to="/alphabet" className="self-start rounded-full bg-brand-50 px-4 py-1.5 text-sm font-extrabold text-brand-fg transition-colors hover:bg-brand-100">
         ← {t.back}
       </Link>
-      <h1 className="rounded-full border border-brand-200 bg-brand-50 px-5 py-1.5 text-sm font-extrabold uppercase tracking-widest text-brand-fg">
-        {vi.lesson.cardTitle(letter)}
-      </h1>
+      <div className="flex flex-wrap items-center justify-center gap-2">
+        <h1 className="rounded-full border border-brand-200 bg-brand-50 px-5 py-1.5 text-sm font-extrabold uppercase tracking-widest text-brand-fg">
+          {vi.lesson.cardTitle(letter)}
+        </h1>
+        {isDynamic && (
+          <span className="btn-pink rounded-full px-3.5 py-1 text-xs font-extrabold uppercase tracking-wider text-ink-on-pink shadow-none">
+            {t.dynamicBadge}
+          </span>
+        )}
+      </div>
       <div className="flex flex-col items-center gap-6 sm:flex-row sm:gap-10">
         <p aria-hidden="true" className="unit-banner flex size-40 items-center justify-center rounded-[var(--radius-2xl)] text-8xl font-black text-ink-on-pink">
           {letter}
@@ -44,7 +52,7 @@ function LetterDetail({ signs, letter }: { signs: Sign[]; letter: string }) {
           <figcaption className="max-w-72 text-xs text-text-muted">{image ? vi.lesson.cardImageCredit(image.attribution, image.license) : vi.lesson.cardArtCredit}</figcaption>
         </figure>
       </div>
-      <p className="max-w-md text-text-muted">{t.howTo}</p>
+      <p className="max-w-md text-text-muted">{isDynamic ? t.howToDynamic(letter) : t.howTo}</p>
       <div className="flex flex-wrap justify-center gap-3">
         {prev && <Button variant="secondary" asChild><Link to={`/alphabet/${prev.gloss}`} aria-label={t.prev(prev.gloss)}>← {prev.gloss}</Link></Button>}
         <Button asChild><Link to="/practice">{t.practice}</Link></Button>
@@ -54,7 +62,7 @@ function LetterDetail({ signs, letter }: { signs: Sign[]; letter: string }) {
   );
 }
 
-/** The alphabet: every letter the app teaches, each opening the standard handshape for that letter. */
+/** The alphabet: all 26 letters (24 static + dynamic J, Z), each opening its standard handshape & guidance. */
 export function Alphabet({ load = loadLearnData }: { load?: () => Promise<LearnData> }) {
   const t = vi.alphabet;
   const { letter } = useParams();
@@ -64,7 +72,7 @@ export function Alphabet({ load = loadLearnData }: { load?: () => Promise<LearnD
   useEffect(() => {
     let live = true;
     load()
-      .then((d) => live && setSigns([...d.curriculum.signs].filter((s) => s.kind === 'static').sort((a, b) => a.gloss.localeCompare(b.gloss))))
+      .then((d) => live && setSigns([...d.curriculum.signs].sort((a, b) => a.gloss.localeCompare(b.gloss))))
       .catch(() => live && setFailed(true));
     return () => { live = false; };
   }, [load]);
@@ -87,8 +95,13 @@ export function Alphabet({ load = loadLearnData }: { load?: () => Promise<LearnD
             <Link
               to={`/alphabet/${s.gloss}`}
               aria-label={t.open(s.gloss)}
-              className="group flex flex-col items-center gap-2 rounded-3xl border-2 border-border bg-surface p-3.5 shadow-(--card-shadow) transition-[transform,border-color,background-color,box-shadow] duration-(--motion-fast) hover:-translate-y-0.5 hover:border-brand-300 hover:bg-brand-50/50 hover:shadow-(--card-shadow-hover)"
+              className="group relative flex flex-col items-center gap-2 rounded-3xl border-2 border-border bg-surface p-3.5 shadow-(--card-shadow) transition-[transform,border-color,background-color,box-shadow] duration-(--motion-fast) hover:-translate-y-0.5 hover:border-brand-300 hover:bg-brand-50/50 hover:shadow-(--card-shadow-hover)"
             >
+              {s.kind === 'dynamic' && (
+                <span className="btn-pink absolute right-2 top-2 rounded-full px-2 py-0.5 text-[10px] font-extrabold uppercase text-ink-on-pink shadow-none">
+                  {t.dynamicBadge}
+                </span>
+              )}
               <span aria-hidden="true" className="flex size-10 items-center justify-center rounded-full bg-brand-50 text-xl font-black text-brand-fg transition-colors group-hover:bg-brand-200/70 group-hover:text-ink-on-pink">
                 {s.gloss}
               </span>

@@ -1,13 +1,13 @@
-import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { HAND_ART, HAND_LETTERS } from './handArt';
 
-const manifest = JSON.parse(readFileSync(resolve(process.cwd(), 'public/models/landmark-mlp-ens5-1.0.0.manifest.json'), 'utf-8'));
+const FULL_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
 describe('hand art', () => {
-  it('has a drawing for exactly the letters the model can read (no J or Z)', () => {
-    expect([...HAND_LETTERS].sort()).toEqual([...manifest.labels].sort());
+  it('has a drawing for all 26 ASL letters including dynamic J and Z with motion arrows', () => {
+    expect([...HAND_LETTERS].sort()).toEqual(FULL_ALPHABET);
+    expect(HAND_ART.J.motion).toBeDefined();
+    expect(HAND_ART.Z.motion).toBeDefined();
   });
 
   it('draws every hand with at least one shape, all inside the 200 x 260 box before turning', () => {

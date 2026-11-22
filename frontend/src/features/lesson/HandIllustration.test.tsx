@@ -13,14 +13,17 @@ describe('HandIllustration', () => {
     }
   });
 
-  it('draws nothing for a letter without art (J, Z)', () => {
-    const { container } = render(<HandIllustration letter="J" />);
+  it('draws nothing for an unknown letter', () => {
+    const { container } = render(<HandIllustration letter="?" />);
     expect(container).toBeEmptyDOMElement();
   });
 
   it('uses the colour tokens, never fixed colours', () => {
-    const { container } = render(<HandIllustration letter="A" />);
-    const colours = [...container.querySelectorAll('[stroke],[fill]')].flatMap((e) => [e.getAttribute('stroke'), e.getAttribute('fill')]).filter((c) => c && c !== 'none');
-    expect(colours.every((c) => c?.startsWith('var(--'))).toBe(true);
+    for (const letter of ['A', 'J', 'Z']) {
+      const { container, unmount } = render(<HandIllustration letter={letter} />);
+      const colours = [...container.querySelectorAll('[stroke],[fill]')].flatMap((e) => [e.getAttribute('stroke'), e.getAttribute('fill')]).filter((c) => c && c !== 'none');
+      expect(colours.every((c) => c?.startsWith('var(--')), letter).toBe(true);
+      unmount();
+    }
   });
 });
