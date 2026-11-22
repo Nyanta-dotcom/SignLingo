@@ -196,6 +196,8 @@ export const vi = {
     intro: 'Đăng nhập để giữ tiến trình khi đổi máy. Chỉ tiến trình học (XP, chuỗi ngày, trạng thái bài) được lưu; hình camera và dữ liệu bàn tay không bao giờ rời máy bạn. Không đăng nhập vẫn dùng được đầy đủ.',
     email: 'Email',
     password: 'Mật khẩu (ít nhất 8 ký tự)',
+    showPassword: 'Hiện mật khẩu',
+    hidePassword: 'Ẩn mật khẩu',
     signIn: 'Đăng nhập',
     signUp: 'Đăng ký',
     google: 'Tiếp tục với Google',
