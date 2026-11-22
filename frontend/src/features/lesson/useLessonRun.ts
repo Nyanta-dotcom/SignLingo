@@ -21,6 +21,7 @@ export function useLessonRun(lesson: Lesson, model: { model_id: string; version:
   const streak = useLearner((s) => s.stats.current_streak);
   const items = [...lesson.items].sort((a, b) => a.order - b.order);
   const [index, setIndex] = useState(0);
+  const [retries, setRetries] = useState(0);
   const [phase, setPhase] = useState<Phase>('item');
   const [feedback, setFeedback] = useState<Feedback | null>(null);
   const [result, setResult] = useState<Result | null>(null);
@@ -41,7 +42,7 @@ export function useLessonRun(lesson: Lesson, model: { model_id: string; version:
       id: startSession({ mode: 'lesson', lesson_code: lesson.code, model }).id, open: true, streakFrom: streak, heartsLost: 0,
     };
     const run = session.current;
-    const attempt = toAttempt(item, outcome, 0, opts.expected);
+    const attempt = toAttempt(item, outcome, retries, opts.expected);
     const record = recordAttempt(run.id, attempt);
     const heartLost = record.hearts_lost > run.heartsLost;
     run.heartsLost = record.hearts_lost;
@@ -56,9 +57,17 @@ export function useLessonRun(lesson: Lesson, model: { model_id: string; version:
     setPhase('feedback');
   }
 
+  /** Lets the learner immediately retry the current item after a wrong attempt. */
+  function retry() {
+    setFeedback(null);
+    setRetries((n) => n + 1);
+    setPhase('item');
+  }
+
   /** Leaves the feedback (or a learn card) and moves to the next item, or finishes the lesson. */
   function advance() {
     setFeedback(null);
+    setRetries(0);
     if (index + 1 < items.length) {
       setIndex(index + 1);
       setPhase('item');
@@ -75,5 +84,5 @@ export function useLessonRun(lesson: Lesson, model: { model_id: string; version:
     setPhase('done');
   }
 
-  return { items, index, item: items[index], phase, feedback, result, answer, advance };
+  return { items, index, retries, item: items[index], phase, feedback, result, answer, retry, advance };
 }

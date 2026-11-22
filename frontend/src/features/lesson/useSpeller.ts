@@ -2,12 +2,13 @@ import { useRef, useState } from 'react';
 import type { Item } from '@/content/types';
 import { createSpeller, type Speller } from '@/game/spellWord';
 
-/** One speller per `spell_word` item (a fresh one for each item); `refresh` re-renders after it changed. */
-export function useSpeller(item: Item): { speller: Speller | null; refresh: () => void } {
+/** One speller per `spell_word` item (reset whenever the item or retry count changes). */
+export function useSpeller(item: Item, resetKey = 0): { speller: Speller | null; refresh: () => void } {
   const [, setTick] = useState(0);
-  const current = useRef<{ order: number; speller: Speller } | null>(null);
+  const current = useRef<{ key: string; speller: Speller } | null>(null);
   if (item.type === 'spell_word' && item.word) {
-    if (current.current?.order !== item.order) current.current = { order: item.order, speller: createSpeller(item.word) };
+    const key = `${item.order}:${resetKey}`;
+    if (current.current?.key !== key) current.current = { key, speller: createSpeller(item.word) };
   } else {
     current.current = null;
   }

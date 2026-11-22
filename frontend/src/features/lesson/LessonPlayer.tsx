@@ -79,7 +79,7 @@ function Notice({ text, action, alert }: { text: string; action?: React.ReactNod
 function Run({ lesson, signs, model, factory, onRetry }: { lesson: Lesson; signs: Sign[]; model: LearnData['model']; factory: EngineFactory; onRetry: () => void }) {
   const navigate = useNavigate();
   const run = useLessonRun(lesson, model);
-  const { speller, refresh } = useSpeller(run.item);
+  const { speller, refresh } = useSpeller(run.item, run.retries);
   const hearts = useLearner((s) => s.stats.hearts);
   const soundOn = useLearner((s) => s.settings.sound_on);
   const deviceId = useLearner((s) => s.settings.camera_device_id);
@@ -238,7 +238,7 @@ function Run({ lesson, signs, model, factory, onRetry }: { lesson: Lesson; signs
         {run.item.type === 'learn_card' && <LearnCard letter={letter} sign={signs.find((x) => x.code === run.item.sign_code)} onNext={run.advance} />}
 
         {isSign && (
-          <Card className="flex flex-col items-center justify-center gap-5">
+          <Card className="flex flex-col items-center justify-start gap-5">
             <h1 className="rounded-full bg-brand-50 px-4 py-1 text-sm font-extrabold uppercase tracking-wider text-brand-fg">
               {speller ? t.spell : isDynamic ? t.performDynamic : t.perform}
             </h1>
@@ -274,13 +274,24 @@ function Run({ lesson, signs, model, factory, onRetry }: { lesson: Lesson; signs
               </HoldRing>
               <ReferenceHand letter={letter} sign={signs.find((x) => x.gloss === letter)} />
             </div>
-            {performing && live?.confused && <p role="status" className="rounded-full bg-warning-bg px-4 py-1.5 text-sm font-extrabold text-warning-fg">{t.nearMiss(live.confused)}</p>}
-            {performing && live && live.fingers.length > 0 && (
-              <ul aria-label={vi.fingers.list} className="flex flex-col gap-1 text-sm font-bold text-text-muted">
-                {live.fingers.slice(0, 2).map((f) => <li key={`${f.finger}${f.joint}`}>{f.hint}</li>)}
-              </ul>
-            )}
-            {performing && live && <div className="w-full max-w-sm"><PredictionBars items={live.topK.slice(0, 3)} caption={vi.practice.top3} /></div>}
+
+            <div className="min-h-[6.75rem] w-full max-w-sm">
+              {performing && live && <PredictionBars items={live.topK.slice(0, 3)} caption={vi.practice.top3} />}
+            </div>
+
+            {/* Dedicated fixed-height coaching tray below the bars so live hints never shift the layout. */}
+            <div className="flex min-h-[5.25rem] w-full max-w-sm flex-col items-center justify-center gap-1.5 rounded-2xl border border-border bg-surface-2/70 px-4 py-2.5 text-center">
+              {performing && live?.confused && (
+                <p role="status" className="rounded-full bg-warning-bg px-3.5 py-0.5 text-xs font-extrabold text-warning-fg">
+                  {t.nearMiss(live.confused)}
+                </p>
+              )}
+              {performing && live && live.fingers.length > 0 && (
+                <ul aria-label={vi.fingers.list} className="flex flex-wrap justify-center gap-x-3 gap-y-1 text-sm font-bold text-text">
+                  {live.fingers.slice(0, 2).map((f) => <li key={`${f.finger}${f.joint}`}>{f.hint}</li>)}
+                </ul>
+              )}
+            </div>
           </Card>
         )}
         {/* The camera stays mounted while it runs, also on cards: the engine holds this very <video>, so a fresh
@@ -309,7 +320,13 @@ function Run({ lesson, signs, model, factory, onRetry }: { lesson: Lesson; signs
         )}
       </main>
 
-      {run.phase === 'feedback' && run.feedback && <FeedbackBanner feedback={run.feedback} onContinue={run.advance} />}
+      {run.phase === 'feedback' && run.feedback && (
+        <FeedbackBanner
+          feedback={run.feedback}
+          onContinue={run.advance}
+          onRetry={run.feedback.kind === 'wrong' ? run.retry : undefined}
+        />
+      )}
     </div>
   );
 }

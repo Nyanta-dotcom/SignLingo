@@ -305,4 +305,22 @@ describe('LessonPlayer', () => {
     await waitFor(() => expect(s.engine.setTarget).toHaveBeenCalledWith('Z', expect.any(Object)));
     expect(screen.getByText(/ngón trỏ/)).toBeInTheDocument();
   });
+
+  it('lets the learner retry the same letter immediately after a wrong attempt', async () => {
+    const d = dataFor(lesson('L1', [item(1, 'perform_sign', 'A'), item(2, 'perform_sign', 'B')]));
+    const s = open(d, 'L1');
+    await startCamera(s);
+    await waitFor(() => expect(s.engine.setTarget).toHaveBeenCalledWith('A', expect.any(Object)));
+
+    await s.emit(timedOut('A', 0.9));
+    expect(screen.getByRole('status')).toHaveTextContent('Chưa đúng');
+    fireEvent.click(screen.getByRole('button', { name: 'Thử lại' }));
+
+    // Stays on A and re-arms the recognition engine
+    await waitFor(() => expect(s.engine.setTarget).toHaveBeenLastCalledWith('A', expect.any(Object)));
+    await s.emit(verified('A'));
+    expect(screen.getByRole('status')).toHaveTextContent('Chính xác!');
+    fireEvent.click(screen.getByRole('button', { name: 'Tiếp tục' }));
+    await waitFor(() => expect(s.engine.setTarget).toHaveBeenLastCalledWith('B', expect.any(Object)));
+  });
 });
