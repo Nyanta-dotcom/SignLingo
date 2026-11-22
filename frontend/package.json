@@ -7,11 +7,13 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "preview": "vite preview",
     "lint": "eslint .",
     "typecheck": "tsc -b --noEmit",
     "test": "vitest",
     "fetch-mediapipe": "node scripts/fetch-mediapipe.mjs",
-    "prebuild": "node scripts/fetch-mediapipe.mjs",
+    "gen-validators": "node scripts/gen-validators.mjs",
+    "prebuild": "node scripts/fetch-mediapipe.mjs && node scripts/gen-validators.mjs",
     "predev": "node scripts/fetch-mediapipe.mjs"
   },
   "dependencies": {
