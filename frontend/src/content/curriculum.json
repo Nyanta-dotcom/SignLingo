@@ -291,35 +291,75 @@
       "gloss": "U",
       "kind": "static",
       "model_task": "static_letters",
-      "model_class_index": 19
+      "model_class_index": 19,
+      "media": [
+        {
+          "type": "image",
+          "src": "/media/letters/U.svg",
+          "license": "Public domain",
+          "attribution": "wpclipart.com (Wikimedia Commons)"
+        }
+      ]
     },
     {
       "code": "LETTER_V",
       "gloss": "V",
       "kind": "static",
       "model_task": "static_letters",
-      "model_class_index": 20
+      "model_class_index": 20,
+      "media": [
+        {
+          "type": "image",
+          "src": "/media/letters/V.svg",
+          "license": "Public domain",
+          "attribution": "wpclipart.com (Wikimedia Commons)"
+        }
+      ]
     },
     {
       "code": "LETTER_W",
       "gloss": "W",
       "kind": "static",
       "model_task": "static_letters",
-      "model_class_index": 21
+      "model_class_index": 21,
+      "media": [
+        {
+          "type": "image",
+          "src": "/media/letters/W.svg",
+          "license": "Public domain",
+          "attribution": "wpclipart.com (Wikimedia Commons)"
+        }
+      ]
     },
     {
       "code": "LETTER_X",
       "gloss": "X",
       "kind": "static",
       "model_task": "static_letters",
-      "model_class_index": 22
+      "model_class_index": 22,
+      "media": [
+        {
+          "type": "image",
+          "src": "/media/letters/X.svg",
+          "license": "Public domain",
+          "attribution": "wpclipart.com (Wikimedia Commons)"
+        }
+      ]
     },
     {
       "code": "LETTER_Y",
       "gloss": "Y",
       "kind": "static",
       "model_task": "static_letters",
-      "model_class_index": 23
+      "model_class_index": 23,
+      "media": [
+        {
+          "type": "image",
+          "src": "/media/letters/Y.svg",
+          "license": "Public domain",
+          "attribution": "wpclipart.com (Wikimedia Commons)"
+        }
+      ]
     }
   ],
   "units": [
