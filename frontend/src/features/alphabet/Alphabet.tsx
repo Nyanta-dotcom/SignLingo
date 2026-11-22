@@ -72,7 +72,7 @@ export function Alphabet({ load = loadLearnData }: { load?: () => Promise<LearnD
   useEffect(() => {
     let live = true;
     load()
-      .then((d) => live && setSigns([...d.curriculum.signs].sort((a, b) => a.gloss.localeCompare(b.gloss))))
+      .then((d) => live && setSigns([...d.curriculum.signs].filter((s) => s.code.startsWith('LETTER_')).sort((a, b) => a.gloss.localeCompare(b.gloss))))
       .catch(() => live && setFailed(true));
     return () => { live = false; };
   }, [load]);

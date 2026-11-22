@@ -78,7 +78,7 @@ export const vi = {
     nextHeart: (min: number) => `Tim tiếp theo hồi sau khoảng ${min} phút.`,
     toPath: 'Về lộ trình',
     toPractice: 'Luyện tự do',
-    cardTitle: (l: string) => `Chữ ${l}`,
+    cardTitle: (l: string) => (/^\d+$/.test(l) ? `Số ${l}` : `Chữ ${l}`),
     cardText: 'Ở bước sau bạn sẽ làm dấu này trước camera.',
     cardImageAlt: (l: string) => `Hình minh họa bàn tay làm chữ ${l}`,
     referenceCaption: 'Mẫu để đối chiếu',
@@ -91,6 +91,7 @@ export const vi = {
     dynamicHint: {
       J: 'Giơ ngón út, kéo xuống rồi hất cong tạo nét móc chữ J.',
       Z: 'Giơ ngón trỏ, vẽ đường ziczac ngang → chéo xuống → ngang.',
+      '10': 'Giơ ngón cái lên và lắc nhẹ cổ tay qua lại để tạo số 10.',
     } as Record<string, string>,
     spell: 'Hãy đánh vần từ',
     wordCells: (w: string) => `Các chữ của từ ${w}`,

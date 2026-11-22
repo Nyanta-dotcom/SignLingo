@@ -8,6 +8,7 @@ import { createDynamicVerifier, isDynamicLetter, type TrailPoint } from './dynam
 import { fingerFeedback } from './fingerFeedback';
 import { createHoldVerifier } from './holdFsm';
 import { normalizeLandmarks } from './normalizer';
+import { createNumberVerifier, isNumberSign } from './numberGesture';
 import { createPerfMonitor } from './perf';
 import { createSmoother } from './smoother';
 import type { ClassTemplate, FingerHint, HandFrame, HoldCfg, HoldState } from './types';
@@ -74,6 +75,7 @@ export function createRecognitionEngine(deps: EngineDeps) {
   const smoother = createSmoother(manifest.labels, manifest.recommended.smoothing_window, deps.topK);
   const hold = createHoldVerifier();
   const dynamic = createDynamicVerifier();
+  const numberVerifier = createNumberVerifier();
 
   let video: HTMLVideoElement | null = null;
   let cancel: (() => void) | null = null;
@@ -101,6 +103,48 @@ export function createRecognitionEngine(deps: EngineDeps) {
     try {
       const frame = tracker.detect(video, nowMs);
       const mpMs = now() - t0;
+
+      if (isNumberSign(target)) {
+        const num = numberVerifier.update(frame, nowMs);
+        deps.onFrame?.(frame, num.trail);
+        if (!frame) {
+          noHandSince ??= nowMs;
+          throttled(nowMs, { type: 'no_hand', sinceMs: nowMs - noHandSince });
+          if (attemptStart !== null && nowMs - attemptStart >= dynamicTimeLimitMs) {
+            emit({ type: 'timed_out', target, lastLabel: last.label, lastConfidence: last.confidence });
+            target = null;
+          }
+          return;
+        }
+        noHandSince = null;
+        attemptStart ??= nowMs;
+        const matched = num.detected === target;
+        last = { label: num.detected, confidence: matched ? 0.95 : num.detected ? 0.6 : 0 };
+
+        if (num.verified) {
+          emit({ type: 'verified', label: target, timeToVerifyMs: nowMs - attemptStart });
+          target = null;
+          return;
+        }
+        if (nowMs - attemptStart >= dynamicTimeLimitMs) {
+          emit({ type: 'timed_out', target, lastLabel: last.label, lastConfidence: last.confidence });
+          target = null;
+          return;
+        }
+        throttled(nowMs, {
+          type: 'prediction',
+          label: num.detected ?? '',
+          confidence: matched ? Math.max(0.65, num.progress) : num.detected ? 0.55 : 0,
+          topK: num.detected ? [{ label: num.detected, p: matched ? 0.95 : 0.7 }] : [],
+          hold: { state: num.progress > 0 ? 'holding' : 'searching', progress: num.progress },
+          fingers: [],
+          confusedWith: null,
+        });
+        const sample = { nowMs, frameMs: now() - t0, mpMs, clsMs: 0 };
+        perf.record(sample);
+        bench?.record(sample);
+        return;
+      }
 
       if (isDynamicLetter(target)) {
         const dyn = dynamic.update(frame, nowMs);
@@ -221,7 +265,10 @@ export function createRecognitionEngine(deps: EngineDeps) {
       target = next;
       attemptStart = null;
       smoother.reset();
-      if (isDynamicLetter(next)) {
+      if (isNumberSign(next)) {
+        numberVerifier.reset(next, { holdMs: cfg.holdMs ?? manifest.recommended.hold_ms });
+        dynamicTimeLimitMs = cfg.timeLimitMs ?? Infinity;
+      } else if (isDynamicLetter(next)) {
         dynamic.reset(next);
         dynamicTimeLimitMs = cfg.timeLimitMs ?? Infinity;
       } else if (next) {

@@ -390,6 +390,76 @@
           "attribution": "wpclipart.com (Wikimedia Commons)"
         }
       ]
+    },
+    {
+      "code": "NUMBER_1",
+      "gloss": "1",
+      "kind": "static",
+      "model_task": "numbers",
+      "model_class_index": 0
+    },
+    {
+      "code": "NUMBER_2",
+      "gloss": "2",
+      "kind": "static",
+      "model_task": "numbers",
+      "model_class_index": 1
+    },
+    {
+      "code": "NUMBER_3",
+      "gloss": "3",
+      "kind": "static",
+      "model_task": "numbers",
+      "model_class_index": 2
+    },
+    {
+      "code": "NUMBER_4",
+      "gloss": "4",
+      "kind": "static",
+      "model_task": "numbers",
+      "model_class_index": 3
+    },
+    {
+      "code": "NUMBER_5",
+      "gloss": "5",
+      "kind": "static",
+      "model_task": "numbers",
+      "model_class_index": 4
+    },
+    {
+      "code": "NUMBER_6",
+      "gloss": "6",
+      "kind": "static",
+      "model_task": "numbers",
+      "model_class_index": 5
+    },
+    {
+      "code": "NUMBER_7",
+      "gloss": "7",
+      "kind": "static",
+      "model_task": "numbers",
+      "model_class_index": 6
+    },
+    {
+      "code": "NUMBER_8",
+      "gloss": "8",
+      "kind": "static",
+      "model_task": "numbers",
+      "model_class_index": 7
+    },
+    {
+      "code": "NUMBER_9",
+      "gloss": "9",
+      "kind": "static",
+      "model_task": "numbers",
+      "model_class_index": 8
+    },
+    {
+      "code": "NUMBER_10",
+      "gloss": "10",
+      "kind": "dynamic",
+      "model_task": "numbers",
+      "model_class_index": 9
     }
   ],
   "units": [
@@ -798,6 +868,134 @@
               "order": 4,
               "type": "perform_dynamic",
               "sign_code": "LETTER_Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "U3",
+      "level": 3,
+      "title": "Chữ số cơ bản: 1 – 10",
+      "order": 3,
+      "lessons": [
+        {
+          "code": "U3L1",
+          "title": "Bài 9: Số đếm 1 – 5",
+          "order": 9,
+          "xp_reward": 15,
+          "requires": [],
+          "items": [
+            {
+              "order": 1,
+              "type": "learn_card",
+              "sign_code": "NUMBER_1"
+            },
+            {
+              "order": 2,
+              "type": "perform_sign",
+              "sign_code": "NUMBER_1"
+            },
+            {
+              "order": 3,
+              "type": "learn_card",
+              "sign_code": "NUMBER_2"
+            },
+            {
+              "order": 4,
+              "type": "perform_sign",
+              "sign_code": "NUMBER_2"
+            },
+            {
+              "order": 5,
+              "type": "learn_card",
+              "sign_code": "NUMBER_3"
+            },
+            {
+              "order": 6,
+              "type": "perform_sign",
+              "sign_code": "NUMBER_3"
+            },
+            {
+              "order": 7,
+              "type": "learn_card",
+              "sign_code": "NUMBER_4"
+            },
+            {
+              "order": 8,
+              "type": "perform_sign",
+              "sign_code": "NUMBER_4"
+            },
+            {
+              "order": 9,
+              "type": "learn_card",
+              "sign_code": "NUMBER_5"
+            },
+            {
+              "order": 10,
+              "type": "perform_sign",
+              "sign_code": "NUMBER_5"
+            }
+          ]
+        },
+        {
+          "code": "U3L2",
+          "title": "Bài 10: Số đếm 6 – 10",
+          "order": 10,
+          "xp_reward": 15,
+          "requires": [
+            "U3L1"
+          ],
+          "items": [
+            {
+              "order": 1,
+              "type": "learn_card",
+              "sign_code": "NUMBER_6"
+            },
+            {
+              "order": 2,
+              "type": "perform_sign",
+              "sign_code": "NUMBER_6"
+            },
+            {
+              "order": 3,
+              "type": "learn_card",
+              "sign_code": "NUMBER_7"
+            },
+            {
+              "order": 4,
+              "type": "perform_sign",
+              "sign_code": "NUMBER_7"
+            },
+            {
+              "order": 5,
+              "type": "learn_card",
+              "sign_code": "NUMBER_8"
+            },
+            {
+              "order": 6,
+              "type": "perform_sign",
+              "sign_code": "NUMBER_8"
+            },
+            {
+              "order": 7,
+              "type": "learn_card",
+              "sign_code": "NUMBER_9"
+            },
+            {
+              "order": 8,
+              "type": "perform_sign",
+              "sign_code": "NUMBER_9"
+            },
+            {
+              "order": 9,
+              "type": "learn_card",
+              "sign_code": "NUMBER_10"
+            },
+            {
+              "order": 10,
+              "type": "perform_dynamic",
+              "sign_code": "NUMBER_10"
             }
           ]
         }
