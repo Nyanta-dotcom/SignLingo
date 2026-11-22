@@ -1,6 +1,6 @@
 # 02 — Solution Architecture: SignLingo AI
 
-> **Trạng thái:** v0.3 · **Ngày:** 2026-11-22 · **v0.2:** bỏ backend; SPA tĩnh trên Vercel; dữ liệu người học trong trình duyệt · **v0.3 (đồng bộ với code):** thêm tài khoản và đồng bộ tiến độ tùy chọn qua Supabase, bảng xếp hạng tự nguyện, nhận diện số 0–10 và chữ động J, Z bằng luật hình học; bỏ Xuất JSON; giao diện chỉ chế độ sáng
+> **Trạng thái:** v0.4 · **Ngày:** 2026-11-23 · **v0.2:** bỏ backend; SPA tĩnh trên Vercel; dữ liệu người học trong trình duyệt · **v0.3 (đồng bộ với code):** thêm tài khoản và đồng bộ tiến độ tùy chọn qua Supabase, bảng xếp hạng tự nguyện, nhận diện số 0–10 và chữ động J, Z bằng luật hình học; bỏ Xuất JSON; giao diện chỉ chế độ sáng · **v0.4 (2026-11-23, đồng bộ với code):** MediaPipe giữ CPU (GPU đo chậm hơn), xếp lịch khung trước khi xử lý; trang tải theo nhu cầu; rewrite loại trừ `.well-known/`, cache ảnh 30 ngày, favicon, file SEO.
 > Truy vết: mã `FT-*` / `AC-*` tham chiếu [01_PRD](01_PRD.md).
 
 ---
@@ -315,8 +315,8 @@ SignLingo/
 |---|---|
 | Project | 1 project Vercel, **Root Directory = `frontend/`**, Framework preset Vite, build `pnpm build`, output `dist/` |
 | Nhánh | `main` → Production; mỗi PR → Preview URL (dùng để review UI/E2E) |
-| SPA routing | `vercel.json` rewrite `/(.*)` → `/index.html` (trừ file tĩnh) |
-| Headers | COOP/COEP/CSP/Permissions-Policy (§7); cache `immutable` cho `/models/*.onnx`, `/models/*.manifest.json`, `/mediapipe/*`; `max-age=300` cho `index.json` |
+| SPA routing | `vercel.json` rewrite mọi đường dẫn → `/index.html`, **trừ** `models/`, `data/`, `mediapipe/`, `media/`, `mascot/`, `sounds/`, `assets/`, `.well-known/`, `robots.txt`, `sitemap.xml`, `llms.txt` (file thiếu trong các thư mục này trả 404 thay vì HTML; `/.well-known/ai-catalog.json` không có nên mục Agentic Browsing của Lighthouse là "Not applicable"). Các trang sau trang chào tải theo nhu cầu (`React.lazy`) |
+| Headers | COOP/COEP/CSP/Permissions-Policy (§7); cache `immutable` cho `/models/*.onnx`, `/models/*.manifest.json`, `/mediapipe/*`; `max-age=300` cho `index.json`; `max-age=2592000, stale-while-revalidate=86400` (30 ngày) cho `/media/*` và `/mascot/*`. Bản build có source map (`vite.config.ts`). Biểu tượng tab: `public/favicon.svg`; SEO: `robots.txt`, `sitemap.xml`, `llms.txt` |
 | Dung lượng | Model landmark vài trăm KB, CNN ~1 MB, MediaPipe (wasm + `.task`) khoảng vài chục MB → nằm trong giới hạn file tĩnh; kiểm lại giới hạn hiện hành của gói Hobby khi tạo project |
 | Nhóm | Gói Hobby do **một người** làm chủ project. Với repo private, deploy từ commit của thành viên khác có thể bị chặn → để repo public (rubric cũng chấm GitHub) hoặc chủ project merge PR |
 | Dev cục bộ | `pnpm dev` (Vite cũng đặt COOP/COEP để khớp production) · `pnpm preview` trước khi deploy |

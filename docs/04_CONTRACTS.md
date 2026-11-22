@@ -1,6 +1,6 @@
 # 04 — Contracts: SignLingo AI
 
-> **Trạng thái:** v0.3 · **Ngày:** 2026-11-22 · **v0.3 (đồng bộ với code):** thêm K6 (tài khoản, đồng bộ, bảng xếp hạng qua Supabase, tùy chọn); bỏ file Xuất tiến độ.
+> **Trạng thái:** v0.4 · **Ngày:** 2026-11-23 · **v0.3 (đồng bộ với code):** thêm K6 (tài khoản, đồng bộ, bảng xếp hạng qua Supabase, tùy chọn); bỏ file Xuất tiến độ. · **v0.4 (2026-11-23, đồng bộ với code):** cache 30 ngày cho `/media/*` và `/mascot/*`.
 > **Thay thế** `04_API_DOCS.md` (v0.1). Không tự viết REST API; phần máy chủ là Supabase. Tài liệu này đặc tả **các hợp đồng giao tiếp**: giữa `ml/` và frontend (file tĩnh), giữa React UI với engine nhận diện chạy trong trình duyệt, và (tùy chọn) giữa frontend với Supabase.
 > Mọi JSON Schema đặt trong `shared/contracts/schemas/` và được kiểm bằng test ở cả `ml/` lẫn `frontend/`.
 
@@ -29,7 +29,8 @@ Ngoài các file cùng origin, app **không gọi mạng** (AC-PRIV-01), trừ K
 | `/data/experiments/index.json` | `ml` publish | `experiment_index.schema.json` | `max-age=300` |
 | `/data/experiments/<run_id>.json` | `ml` evaluate | `experiment.schema.json` | `max-age=300` |
 | `/mediapipe/hand_landmarker.task`, `/mediapipe/wasm/*` | script `fetch-mediapipe` (1 lần, ghim version) | — | `immutable` |
-| `/media/*` | Nhóm cung cấp | — | `max-age=86400` |
+| `/media/*` | Nhóm cung cấp | — | `max-age=2592000, stale-while-revalidate=86400` |
+| `/mascot/*.webp` | Ảnh linh vật mèo Lingo | — | `max-age=2592000, stale-while-revalidate=86400` |
 | `src/content/curriculum.json` (đóng gói trong bundle) | Nhóm | `curriculum.schema.json` | theo bundle hash |
 
 ## 3. K2 — Model Artifact

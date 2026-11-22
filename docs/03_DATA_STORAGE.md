@@ -1,6 +1,6 @@
 # 03 — Data & Storage: SignLingo AI
 
-> **Trạng thái:** v0.3 · **Ngày:** 2026-11-22 · **v0.3 (đồng bộ với code):** thêm §6 tài khoản, đồng bộ và bảng xếp hạng qua Supabase (tùy chọn); bỏ Xuất JSON; thêm ký hiệu số và chữ động.
+> **Trạng thái:** v0.4 · **Ngày:** 2026-11-23 · **v0.3 (đồng bộ với code):** thêm §6 tài khoản, đồng bộ và bảng xếp hạng qua Supabase (tùy chọn); bỏ Xuất JSON; thêm ký hiệu số và chữ động. · **v0.4 (2026-11-23, đồng bộ với code):** `/` luôn hiện trang chào (`onboarded` chỉ đổi chữ nút).
 > **Thay thế** `03_DATABASE_SCHEMA.md` (v0.1). Backend là Supabase (không tự viết server). Dữ liệu chia thành 4 loại: (1) **nội dung tĩnh** đóng gói cùng app, (2) **dữ liệu người học** lưu trong trình duyệt, (3) **bản sao tiến độ trên Supabase** khi người học tự đăng nhập (tùy chọn, §6), (4) **dữ liệu ML** sinh offline bởi `ml/`.
 > Truy vết: [01_PRD](01_PRD.md) §5 · [04_CONTRACTS](04_CONTRACTS.md)
 
@@ -88,7 +88,7 @@ erDiagram
 | `signlingo:v1:sign_stats` | `Record<sign_code, SignStat>` | `{ attempts, correct, avg_time_to_verify_ms }` — cho mục "Chữ cần ôn" |
 | `signlingo:v1:benchmarks` | `PerfRecord[]` | Kết quả "Ghi 60 s benchmark" (§3.4) |
 | `signlingo:v1:meta` | `{ schema_version: 1, app_version, model_version_seen }` | |
-| `signlingo:v1:onboarded` | `boolean` | Đã qua trang chào lần đầu (lần sau `/` chuyển thẳng vào `/learn`) |
+| `signlingo:v1:onboarded` | `boolean` | Đã qua trang chào lần đầu. `/` luôn hiện trang chào; khi `true` nút chính đổi thành "Tiếp tục học" |
 | `sb-<project>-auth-token` | (do Supabase quản lý) | Phiên đăng nhập, chỉ có khi đã đăng nhập |
 
 ### 3.3 `SessionRecord`
