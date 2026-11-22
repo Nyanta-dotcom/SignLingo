@@ -10,7 +10,7 @@ import { useLeaderboardApi } from '@/sync/useLeaderboardApi';
 
 const INPUT = 'min-h-11 w-full rounded-xl border-2 border-border bg-surface px-3 text-text focus-visible:border-brand-500';
 
-type Notice = { text: string; bad: boolean } | null;
+type Notice = { text: string; bad: boolean; detail?: string } | null;
 
 /** Opt-in to the leaderboard. Shown only when signed in; nothing is shared until the person presses Join. */
 export function JoinCard({ api: given, beforeJoin = () => accountStore().getState().syncNow() }: { api?: LeaderboardApi | null; beforeJoin?: () => Promise<void> }) {
@@ -38,7 +38,7 @@ export function JoinCard({ api: given, beforeJoin = () => accountStore().getStat
   const run = async (work: () => Promise<void>, done: () => Notice) => {
     setBusy(true);
     setNotice(null);
-    try { await work(); setNotice(done()); } catch { setNotice({ text: t.failed, bad: true }); } finally { setBusy(false); }
+    try { await work(); setNotice(done()); } catch (e) { setNotice({ text: t.failed, bad: true, detail: e instanceof Error ? e.message : undefined }); } finally { setBusy(false); }
   };
 
   const join = (e: FormEvent) => {
@@ -67,6 +67,7 @@ export function JoinCard({ api: given, beforeJoin = () => accountStore().getStat
       </form>
       {joinedAs && !notice && <p role="status" className="text-sm font-bold text-success-fg">{t.joined(joinedAs)}</p>}
       {notice && <p role="status" className={`text-sm font-bold ${notice.bad ? 'text-danger-on-bg' : 'text-success-fg'}`}>{notice.text}</p>}
+      {notice?.detail && <p className="text-xs text-text-muted">{vi.account.detail(notice.detail)}</p>}
     </Card>
   );
 }
