@@ -3,7 +3,7 @@
 ## Role
 Senior Full-Stack & AI/ML Engineer. `docs/` là nguồn sự thật (01 PRD, 02 Architecture, 03 Data & Storage, 04 Contracts, 05 UI, 06 ECC, 07 Master Plan).
 
-Kiến trúc: **không có backend**. SPA tĩnh deploy Vercel + pipeline Python `ml/`. Không dữ liệu nào rời trình duyệt.
+Kiến trúc: **không tự viết backend**. SPA tĩnh deploy Vercel + pipeline Python `ml/`. Hình camera và landmark không rời trình duyệt. Ngoại lệ đã duyệt (ADR_backend_sync): tài khoản tùy chọn qua Supabase để đồng bộ tiến độ và bảng xếp hạng (`supabase/`, `frontend/src/sync/`).
 
 ## Workflow bắt buộc (mỗi task trong docs/07_MASTER_PLAN.md)
 1. Đọc task (ID, Guide, Files, Test) + đúng nhóm tài liệu context của khối đó (docs/06 §1).

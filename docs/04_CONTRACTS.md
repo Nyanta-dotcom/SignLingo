@@ -1,7 +1,7 @@
 # 04 — Contracts: SignLingo AI
 
-> **Trạng thái:** Draft v0.2 — chờ review · **Ngày:** 2026-11-18
-> **Thay thế** `04_API_DOCS.md` (v0.1). Không còn REST API vì không có backend. Tài liệu này đặc tả **các hợp đồng giao tiếp** còn lại: giữa `ml/` và frontend (file tĩnh), và giữa React UI với engine nhận diện chạy trong trình duyệt.
+> **Trạng thái:** v0.3 · **Ngày:** 2026-11-22 · **v0.3 (đồng bộ với code):** thêm K6 (tài khoản, đồng bộ, bảng xếp hạng qua Supabase, tùy chọn); bỏ file Xuất tiến độ.
+> **Thay thế** `04_API_DOCS.md` (v0.1). Không tự viết REST API. Tài liệu này đặc tả **các hợp đồng giao tiếp**: giữa `ml/` và frontend (file tĩnh), giữa React UI với engine nhận diện chạy trong trình duyệt, và (tùy chọn) giữa frontend với Supabase.
 > Mọi JSON Schema đặt trong `shared/contracts/schemas/` và được kiểm bằng test ở cả `ml/` lẫn `frontend/`.
 
 ---
@@ -14,9 +14,10 @@
 | **K2 – Model Artifact** | ML pipeline → Frontend | `public/models/index.json` + `*.manifest.json` + `*.onnx` | Mô hình & tham số tiền xử lý |
 | **K3 – Inference Engine API** | React UI ↔ `src/vision/` | TypeScript interface trong cùng tiến trình (Web Worker ở Phase 4) | Nhận diện thời gian thực |
 | **K4 – Local Storage** | React UI ↔ `src/storage/` | TypeScript interface | Xem [03_DATA_STORAGE](03_DATA_STORAGE.md) §3 |
-| **K5 – File Exchange** | Trình duyệt ↔ người dùng / `ml/` | File tải về / tải lên | Sao lưu tiến độ, mẫu landmark |
+| **K5 – File Exchange** | Trình duyệt ↔ người dùng / `ml/` | File tải về / tải lên | Mẫu landmark, benchmark; nhập tiến độ từ file cũ |
+| **K6 – Account & Sync (tùy chọn)** | `src/sync/` ↔ Supabase | `@supabase/supabase-js` qua HTTPS | Đăng nhập, đồng bộ tiến độ, bảng xếp hạng (§8) |
 
-Ngoài các file cùng origin, app **không gọi mạng** (AC-PRIV-01). MediaPipe wasm và `hand_landmarker.task` được tự host trong `public/mediapipe/`.
+Ngoài các file cùng origin, app **không gọi mạng** (AC-PRIV-01), trừ K6 tới `https://*.supabase.co` khi đã cấu hình và người học tự đăng nhập. Hình camera và landmark không bao giờ đi qua K6. MediaPipe wasm và `hand_landmarker.task` được tự host trong `public/mediapipe/`.
 
 ## 2. Danh mục file tĩnh
 
@@ -174,7 +175,9 @@ export type RecognitionEvent =
   | { type: 'error'; code: 'CAMERA_DENIED' | 'CAMERA_NOT_FOUND' | 'MODEL_LOAD_FAILED' | 'WEBGL_UNAVAILABLE' | 'INSECURE_CONTEXT'; message: string };
 ```
 
-Khi chuyển sang Web Worker (Phase 4), `RecognitionEngine` giữ nguyên interface; bên trong dùng `postMessage({ type: 'frame', bitmap }, [bitmap])`.
+Khi chuyển sang Web Worker (Phase 4), `RecognitionEngine` giữ nguyên interface; bên trong dùng `postMessage({ type: 'frame', bitmap }, [bitmap])`. Hiện engine chạy trên luồng chính, hand tracker mặc định delegate `CPU`.
+
+Số 0–10 và chữ J, Z không qua `Classifier` mà qua hai bộ nhận diện luật (02 §5.5): `vision/numberGesture.ts` (trả `{ detected, progress, verified, trail }`) và `vision/dynamicGesture.ts` (trả `{ target, poseMatch, progress, verified, trail }`, `trail` để vẽ vệt quỹ đạo).
 
 ## 6. K4 — Storage & Game API (TypeScript)
 
@@ -190,7 +193,8 @@ export interface LearnerStore {
   completeSession(sessionId: string, perf: SessionRecord['perf'], now: Date): CompleteResult; // idempotent
   abandonSession(sessionId: string): void;
   saveBenchmark(r: PerfRecord): void; listBenchmarks(): PerfRecord[];
-  exportBackup(): Blob; importBackup(file: File): Promise<{ ok: true } | { ok: false; reason: string }>;
+  // backup (src/storage/backup.ts): exportBackup() → BackupFile (chỉ dùng nội bộ, không còn nút Xuất), importBackup(raw),
+  // readData()/applyData(data) cho đồng bộ (K6)
   clearAll(): void;
 }
 
@@ -213,11 +217,51 @@ export type CompleteResult = {
 
 | File | Hướng | Schema |
 |---|---|---|
-| `signlingo-backup-YYYYMMDD.json` | Xuất/Nhập tiến độ | `backup.schema.json` (03 §3.6) |
+| File sao lưu từ bản cũ | Chỉ Nhập (nút Xuất đã bỏ 2026-11-22) | `backup.schema.json` (03 §3.6) |
 | `landmarks_<sign>_<signer>_<ts>.json` | Tải về từ `/collect` → `ml/data/raw/webcam/` | `landmark_capture.schema.json` (03 §4) |
 | `perf_<ts>.json` | Tải về từ AI Lab → `ml/reports/perf/` | `PerfRecord` (03 §3.4) |
 
-## 8. Mã lỗi phía client
+## 8. K6 — Account, Sync & Leaderboard (Supabase, tùy chọn)
+
+Chỉ `frontend/src/sync/supabase.ts` import `@supabase/supabase-js`. Khi thiếu `VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY`, `getAuthApi()` trả `null`, account store ở trạng thái `disabled` và giao diện tài khoản tự ẩn.
+
+```ts
+// frontend/src/sync/supabase.ts
+export type AccountUser = { id: string; email: string };
+export type AuthApi = {
+  getUser(): Promise<AccountUser | null>;
+  onChange(cb: (user: AccountUser | null) => void): () => void;
+  signInWithGoogle(): Promise<void>;            // nút chỉ hiện khi VITE_SUPABASE_GOOGLE=true
+  signInWithPassword(email: string, password: string): Promise<void>;
+  signUp(email: string, password: string): Promise<{ needsConfirmation: boolean }>;
+  signOut(): Promise<void>;
+  deleteAccount(): Promise<void>;               // rpc delete_my_account()
+  progressFor(userId: string): RemoteProgress;  // đọc/ghi một dòng user_backups
+  leaderboardFor(userId: string): LeaderboardApi;
+};
+export type LeaderboardKind = 'week' | 'total' | 'streak' | 'accuracy' | 'letter';
+export type LeaderboardRow = { rank: number; name: string; score: number; detail: number | null; me: boolean };
+export type LeaderboardApi = {
+  loadMine(): Promise<{ display_name: string; show_on_leaderboard: boolean } | null>;
+  join(displayName: string): Promise<void>;     // update rồi insert (không upsert: client không được ghi user_id)
+  leave(): Promise<void>;
+  top(kind: LeaderboardKind, letter?: string): Promise<LeaderboardRow[]>; // rpc get_leaderboard
+};
+
+// frontend/src/sync/account.ts — Zustand store, trạng thái:
+// status: 'disabled' | 'loading' | 'signed_out' | 'signed_in'; sync: 'idle' | 'syncing' | 'done' | 'error'; lastSyncAt; message; detail
+```
+
+| Bảng / hàm Supabase | Dùng bởi |
+|---|---|
+| `user_backups` (select/insert/update theo `auth.uid()`) | `progressFor().load/save` |
+| `public_profiles` (cột ghi được: `display_name`, `show_on_leaderboard`) | `LeaderboardApi.loadMine/join/leave` |
+| `get_leaderboard(p_kind, p_letter, p_limit)` → `(rank_no, shown_name, score, detail, is_me)` | `LeaderboardApi.top` |
+| `delete_my_account()` | `AuthApi.deleteAccount` |
+
+Dữ liệu gửi đi là phần `data` đã lọc bằng `pickSynced` (`profile, stats, progress, daily, sign_stats`), gộp bằng `mergeProgress` (03 §6.2).
+
+## 9. Mã lỗi phía client
 
 | code | Khi nào | UI |
 |---|---|---|
@@ -228,8 +272,10 @@ export type CompleteResult = {
 | `WEBGL_UNAVAILABLE` | Không có GPU delegate | Tự chuyển CPU, hiện cảnh báo hiệu năng |
 | `STORAGE_UNAVAILABLE` | localStorage bị chặn | Banner "Tiến độ sẽ không được lưu" |
 | `BACKUP_INVALID` | File nhập sai schema | Thông báo lý do, không ghi đè |
+| `auth_failed` (account store) | Supabase từ chối đăng nhập/đăng ký | Thông báo + lý do gốc của dịch vụ; gợi ý Đăng ký khi chưa có tài khoản |
+| Lỗi ghi bảng xếp hạng | Supabase từ chối `join` | "Chưa lưu được" + lý do gốc của dịch vụ |
 
-## 9. Truy vết Feature → Hợp đồng
+## 10. Truy vết Feature → Hợp đồng
 
 | Feature | Hợp đồng |
 |---|---|
@@ -238,5 +284,6 @@ export type CompleteResult = {
 | FT-LRN-02..07 | K3 + K4 (`startSession`, `recordAttempt`, `completeSession`) |
 | FT-LRN-04 | K2 `class_templates`, `confusable` + `fingerFeedback` |
 | FT-GAM-01..04 | K4 `src/game/*` |
-| FT-ACC-02..04 | K4 settings, export/import |
+| FT-ACC-02..04 | K4 settings, import, clear |
 | FT-SYS-02 | K5 landmark capture |
+| Tài khoản, đồng bộ, bảng xếp hạng | K6 |

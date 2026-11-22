@@ -1,7 +1,7 @@
 # 05 — UI Design Spec: SignLingo AI
 
-> **Trạng thái:** Draft v0.2 — chờ review · **v0.2:** bỏ đăng nhập; tiến độ lưu trên máy, có Xuất/Nhập · Dùng làm đầu vào Prototype trên **V0 / Claude Design** (xem §8 Prompt mẫu).
-> Phong cách: *học tập gamification kiểu Duolingo* (cảm hứng về cơ chế & cảm giác vui, **không sao chép thương hiệu, linh vật, minh họa hay màu xanh lá đặc trưng của Duolingo**). Màu chủ đạo: **Xanh dương Cobalt / Sky**.
+> **Trạng thái:** v0.3 · **Ngày:** 2026-11-22 · **v0.2:** bỏ đăng nhập; tiến độ lưu trên máy · **v0.3 (đồng bộ với code):** giao diện tông **hồng**, chỉ chế độ sáng; thêm trang giới thiệu, `/login`, `/about`, `/alphabet`, `/leaderboard`, menu tài khoản; bỏ Xuất JSON và banner nhắc sao lưu. Nguồn sự thật cho giá trị màu là `frontend/src/styles/tokens.css`.
+> Phong cách: *học tập gamification kiểu Duolingo* (cảm hứng về cơ chế & cảm giác vui, **không sao chép thương hiệu, linh vật, minh họa hay màu xanh lá đặc trưng của Duolingo**). Màu chủ đạo: **Hồng** (đổi từ xanh Cobalt ở bản thiết kế lại giao diện, 2026-11-22).
 
 ---
 
@@ -17,65 +17,54 @@
 
 ## 2. Design Tokens
 
-Định nghĩa dưới dạng CSS variables trong `frontend/src/styles/tokens.css`, ánh xạ vào Tailwind (`theme.extend.colors.brand = 'rgb(var(--brand-600) / <alpha-value>)'`…).
+Định nghĩa dưới dạng CSS variables trong `frontend/src/styles/tokens.css`, ánh xạ vào Tailwind 4 qua `@theme` (`--color-brand-500: var(--brand-500)`…). Component **không** viết mã hex rời (lint rule C5). Bảng dưới chép từ `tokens.css` tại 2026-11-22; khi lệch, `tokens.css` đúng.
 
-### 2.1 Bảng màu thương hiệu (Brand – Cobalt/Sky)
+### 2.1 Bảng màu thương hiệu (Brand – Hồng)
 
 | Token | Hex | Dùng cho |
 |---|---|---|
-| `brand-50` | `#EEF5FF` | Nền nhấn nhẹ, hover hàng |
-| `brand-100` | `#D9E8FF` | Nền node đã hoàn thành (light) |
-| `brand-200` | `#B5D2FF` | Viền focus phụ |
-| `brand-300` | `#7CB4FF` | Link/nhấn trên nền tối |
-| `brand-400` | `#4C9AFF` | Icon, vòng tiến độ (dark) |
-| `brand-500` | `#2F86FF` | Accent, progress bar fill |
-| **`brand-600`** | **`#1D6FE8`** | **Nút chính, màu thương hiệu** (chữ trắng: 4,7:1 ✅ AA) |
-| `brand-700` | `#1557C0` | Viền đáy nút 3D (shadow), hover |
-| `brand-800` | `#12459A` | Pressed |
-| `brand-900` | `#0F3570` | Tiêu đề trên nền brand-50 |
-| `sky-400` | `#38BDF8` | Highlight phụ, gradient đầu |
-| `sky-500` | `#0EA5E9` | Badge "Mới", skeleton tay |
+| `brand-50` | `#FFF4F8` | Nền nhấn nhẹ, hover hàng |
+| `brand-100` | `#FFE3ED` | Nền icon, node đã hoàn thành |
+| `brand-200` | `#FFC7DB` | Viền phụ |
+| `brand-300` | `#FF97B5` | Viền nhấn, đầu gradient nút hồng |
+| `brand-400` | `#FF80A7` | Vòng tròn chữ cái avatar, gradient |
+| `brand-500` | `#F96D9A` | Accent, progress fill, skeleton tay |
+| `brand-600` | `#D42D6C` | Focus ring |
+| `brand-700` | `#B01C54` | Hover đậm |
+| `brand-fg` | `#B01C54` | Chữ/liên kết hồng trên nền sáng (≥ 5,5:1 AA) |
+| `ink-on-pink` | `#2B0A18` | Chữ trên nút/viên hồng sáng (≥ 6,6:1) |
+| `btn-pink-bg` | gradient `#FF97B5 → #FF80A7 → #F96D9A` | Nút chính (`.btn-pink`), viền đáy `#D44C7C` |
+| `unit-banner-bg` | gradient `#FF93B3 → #F96394` | Banner mỗi Unit |
 
 ### 2.2 Màu ngữ nghĩa
 
-| Token | Light | Dark | Ghi chú |
-|---|---|---|---|
-| `success-fg` | `#15803D` | `#4ADE80` | Văn bản "Chính xác!" |
-| `success-bg` | `#DCFCE7` | `#0F2A1B` | Banner đúng |
-| `danger-fg` | `#DC2626` | `#F87171` | Sai, mất tim, ngón lệch |
-| `danger-bg` | `#FEE2E2` | `#2A1215` | Banner sai |
-| `danger-on-bg` | `#B91C1C` | `#F87171` | Chữ trên `danger-bg` (đo thật: `#DC2626` trên `#FEE2E2` chỉ đạt 3,95:1 < 4,5:1) |
-| `brand-fg` | `#1557C0` | `#7CB4FF` | Chữ/liên kết màu xanh trên nền (đo thật bằng axe: `brand-600` chỉ đạt 4,42:1 trên `brand-50` và 4,0:1 trên nền tối). `brand-600` chỉ dùng làm nền nút |
-| `warning-fg` | `#B45309` | `#FBBF24` | "Gần đúng", độ tin cậy thấp |
-| `streak` | `#F59E0B` | `#FBBF24` | Icon ngọn lửa (chỉ icon, không làm nền chữ) |
-| `xp` | `#EAB308` | `#FACC15` | Icon/chip XP |
-| `heart` | `#EF4444` | `#F87171` | Icon tim |
-
-### 2.3 Màu bề mặt & chữ (theme)
-
-| Token | Light | Dark |
+| Token | Giá trị | Ghi chú |
 |---|---|---|
-| `bg` (nền trang) | `#F5F9FF` | `#0B1220` |
-| `surface` (thẻ) | `#FFFFFF` | `#111A2E` |
-| `surface-2` (thẻ lồng, input) | `#EEF3FB` | `#18233B` |
-| `border` | `#D6E0EE` | `#263354` |
-| `text` | `#0F172A` | `#E6EDF8` |
-| `text-muted` | `#475569` | `#9AA8C1` |
-| `text-on-brand` | `#FFFFFF` | `#FFFFFF` |
-| `focus-ring` | `#2F86FF` | `#7CB4FF` |
-| `overlay-skeleton` | `#0EA5E9` | `#38BDF8` |
-| `overlay-joint-ok` | `#22C55E` | `#4ADE80` |
-| `overlay-joint-bad` | `#EF4444` | `#F87171` |
+| `success-fg` / `success-bg` | `#15803D` / `#DCFCE7` | "Chính xác!" |
+| `danger-fg` / `danger-bg` | `#DC2626` / `#FEE2E2` | Sai, mất tim, ngón lệch |
+| `danger-on-bg` | `#B91C1C` | Chữ trên `danger-bg` |
+| `warning-fg` / `warning-bg` | `#B45309` / `#FEF3C7` | Độ tin cậy thấp, banner storage bị chặn |
+| `streak` · `xp` · `heart` | `#F59E0B` · `#EAB308` · `#F43F5E` | Chỉ icon, không làm nền chữ |
 
-**Chuyển theme:** thuộc tính `data-theme="light|dark"` trên `<html>`; mặc định theo `prefers-color-scheme`; lưu lựa chọn ở `localStorage` + `user_settings.theme`. Transition `background-color, color, border-color 200ms ease` (tắt khi reduced-motion). Script inline trong `index.html` đặt theme trước khi render để tránh nháy.
+### 2.3 Màu bề mặt & chữ (chỉ chế độ sáng)
+
+| Token | Giá trị |
+|---|---|
+| `bg` | `#FFFBFD` |
+| `surface` / `surface-2` | `#FFFFFF` / `#FFF0F5` |
+| `border` / `border-strong` | `#F2DCE5` / `#E8BFD0` |
+| `text` / `text-muted` | `#1E141D` / `#614E5C` |
+| `focus-ring` | `#D42D6C` |
+| `overlay-skeleton` · `overlay-joint-ok` · `overlay-joint-bad` | `#F96D9A` · `#22C55E` · `#EF4444` |
+
+**Theme:** app **chỉ chạy chế độ sáng** (`styles/theme.ts` luôn đặt `data-theme="light"`). Trường `settings.theme` vẫn được lưu để tương thích dữ liệu cũ nhưng không còn nút chọn. Nền trang có lớp trang trí `AmbientBackdrop` (chấm, quầng hồng, bàn tay mờ).
 
 ### 2.4 Typography
 
 | Token | Giá trị |
 |---|---|
-| Font | **Nunito** (Google Fonts, hỗ trợ tiếng Việt) – weight 600/700/800; fallback `system-ui` |
+| Font | **Nunito Variable** tự host qua `@fontsource-variable/nunito` (hỗ trợ tiếng Việt, không gọi Google Fonts lúc chạy); fallback `system-ui` |
 | Số liệu | `font-variant-numeric: tabular-nums` cho XP, FPS, metrics |
-| Mono (AI Lab) | `JetBrains Mono` 500 |
 | Scale | `display 40/48 800` · `h1 32/40 800` · `h2 24/32 800` · `h3 20/28 700` · `body 16/24 600` · `small 14/20 600` · `caption 12/16 700 uppercase tracking .04em` |
 | Chữ cái mục tiêu (màn học) | 96–128 px, 800 |
 
@@ -84,10 +73,10 @@
 | Nhóm | Token |
 |---|---|
 | Spacing (4px grid) | `1=4 · 2=8 · 3=12 · 4=16 · 5=20 · 6=24 · 8=32 · 10=40 · 12=48 · 16=64` |
-| Radius | `sm 8` · `md 12` · `lg 16` · `xl 20` (thẻ) · `2xl 28` (khung camera) · `full` (node, chip) |
-| Nút 3D | `box-shadow: 0 4px 0 var(--brand-700)`; active: `translateY(4px)` + shadow 0 |
-| Shadow thẻ | Light `0 2px 0 #D6E0EE` · Dark `0 2px 0 #263354` (phẳng, kiểu game) |
-| Motion | `fast 120ms` · `base 200ms` · `bounce 300ms cubic-bezier(.34,1.56,.64,1)`; confetti ≤ 1,2 s |
+| Radius | `sm 10` · `md 14` · `lg 18` · `xl 22` (thẻ) · `2xl 28` (khung camera) · `full` (node, chip, nút) |
+| Nút 3D | `--btn-pink-shadow: 0 4px 0 #D44C7C, …`; active: `translateY(4px)` + bỏ shadow |
+| Shadow thẻ | `--card-shadow: 0 3px 0 var(--border), …` (phẳng, kiểu game) |
+| Motion | `fast 140ms` · `base 220ms` · `bounce 320ms cubic-bezier(.34,1.56,.64,1)`; tất cả về 0 khi `prefers-reduced-motion` |
 | Breakpoints | `sm 640` · `md 768` · `lg 1024` · `xl 1280` |
 | Touch target | ≥ 44×44 px |
 
@@ -106,29 +95,37 @@
 | `PredictionBars` | top-3 (học) · top-24 (AI Lab) | Thanh ngang, label + % |
 | `FingerHint` | danh sách ngón lệch + icon bàn tay SVG tô ngón | |
 | `FeedbackBanner` | correct · incorrect · near (confused_with) | Trượt từ đáy, có nút TIẾP TỤC |
-| `Modal`, `Toast`, `Tooltip`, `Tabs`, `Switch`, `Select` | | Radix primitives |
-| `ThemeToggle` | system/light/dark | |
+| `AccountCard` | disabled (ẩn) · loading · signed_out (form email/mật khẩu, nút mắt hiện/ẩn mật khẩu) · signed_in (đồng bộ, đăng xuất, xóa tài khoản) | `features/account` |
+| `AccountMenu` | signed_out (link Đăng nhập) · signed_in (chữ cái đầu + tên, menu: email, Hồ sơ, Đăng xuất; Esc/bấm ngoài để đóng) | Thanh trên app và đầu trang giới thiệu |
+| `JoinCard` | chưa tham gia (ô tên hiển thị) · đã tham gia (rời bảng) · lỗi (lý do gốc) | Trên trang Hồ sơ |
+| `StatChip`, `AmbientBackdrop`, `BrandMark` | | `components/ui` |
 | `ConfusionMatrix` | heatmap 24×24, hover hiện `true→pred %`, click ô mở gallery | Màu tuần tự brand-50 → brand-900 |
 | `MetricTable` | sort theo cột, đánh dấu mô hình tốt nhất | |
 | `FpsMeter` | số + sparkline 60 s, ngưỡng 30 vạch đứt | |
 
+Không dùng Radix ngoài `@radix-ui/react-slot` (cho `Button asChild`); hộp thoại xác nhận là `role="alertdialog"` tự viết, câu hỏi thường gặp dùng `<details>`.
+
 ## 4. Kiến trúc thông tin & Điều hướng
 
 ```
-/                 → Landing lần đầu (giới thiệu + nút BẮT ĐẦU) · lần sau chuyển thẳng /learn
+/                 → Lần đầu: Trang chủ giới thiệu · lần sau chuyển thẳng /learn
+/welcome          → Trang chủ (giới thiệu, xem thử thao tác chữ)        [menu giới thiệu]
+/features         → Tính năng                                          [menu giới thiệu]
+/how-it-works     → Cách hoạt động & quyền riêng tư, câu hỏi thường gặp [menu giới thiệu]
+/about            → Giới thiệu & Liên hệ (nhóm, MSSV, phụ trách, email trưởng nhóm, GitHub) [menu giới thiệu]
+/login            → Đăng nhập / Đăng ký (đăng nhập xong chuyển /learn; ẩn khi chưa cấu hình Supabase)
 /learn            → Dashboard lộ trình (Skill Tree)            [Tab: Học]
-/lesson/:id       → Lesson Player (toàn màn, không nav)
-/lesson/:id/done  → Màn kết quả
+/lesson/:code     → Lesson Player (toàn màn, không nav; màn kết quả nằm trong cùng route)
 /practice         → Luyện tự do                                [Tab: Luyện]
-/dictionary       → Từ điển ký hiệu                            [Tab: Từ điển]
-/lab              → AI Lab (Benchmark · Confusion · Live · Leakage)   [Tab: AI Lab]
-/profile          → Hồ sơ & thống kê                           [Tab: Hồ sơ]
-/settings         → Cài đặt
+/alphabet[/:letter] → Bảng chữ cái, hình mẫu từng chữ          [Tab: Bảng chữ cái]  (/dictionary chuyển về đây)
+/leaderboard      → Bảng xếp hạng (cần đăng nhập)              [Tab: Hạng]
+/lab              → AI Lab (Benchmark · Phân tích lỗi · Live Monitor · Data Leakage)   [Tab: AI Lab]
+/profile          → Hồ sơ, thống kê, thẻ Tài khoản, thẻ Tham gia bảng xếp hạng   [Tab: Hồ sơ]
+/settings         → Cài đặt (link Giới thiệu & Liên hệ ở cuối)
 /collect          → Thu mẫu dữ liệu (contributor)
-/collect/export   → (trong /collect) tải file mẫu đã thu
 ```
 
-Desktop: sidebar trái (logo, 5 tab) + nội dung giữa + cột phải (StatChips, mục tiêu ngày, mẹo). Mobile/tablet: bottom nav 5 tab; cột phải chuyển lên TopBar.
+Trang giới thiệu dùng chung `MarketingLayout`: thanh trên có menu 4 trang, nút Đăng nhập/menu tài khoản và nút **Vào học**; trên điện thoại menu thành hàng viên thuốc dưới thanh trên. Trong app: desktop có sidebar trái (logo, 6 tab) + thanh trên dính (menu tài khoản, chuỗi ngày, XP, tim); mobile có thanh trên + dock viên thuốc nổi 6 tab ở đáy. Khi có menu tài khoản, chữ "SignLingo" cạnh logo ẩn dưới 640 px để thanh trên không tràn.
 
 ## 5. Màn hình chính
 
@@ -141,17 +138,17 @@ Desktop: sidebar trái (logo, 5 tab) + nội dung giữa + cột phải (StatChi
 │          │  │ [📖 HƯỚNG DẪN]                      │  │ Mục tiêu hôm nay   │
 │ ● Học    │  └────────────────────────────────────┘  │ ▓▓▓▓▓░░░ 15/20 XP  │
 │ ○ Luyện  │              (★)  A                       │───────────────────│
-│ ○ Từ điển│           (★)     B                       │ Chữ cần ôn         │
+│ ○ Chữ cái│           (★)     B                       │ Chữ cần ôn         │
 │ ○ AI Lab │              (◐)  C  ← "BẮT ĐẦU" tooltip  │ N · S · R          │
 │ ○ Hồ sơ  │           (🔒)    D                       │ [ÔN NGAY]          │
 │          │              (🔒) 🏆 Checkpoint           │───────────────────│
-│ ⚙ Cài đặt│  ┌────────────────────────────────────┐  │ AI đang dùng:      │
-│          │  │ CẤP 1 · UNIT 2  F–K  (khóa)         │  │ landmark-mlp 1.2   │
+│ ⚙ Cài đặt│  ┌────────────────────────────────────┐  │ Đồng bộ tiến độ    │
+│          │  │ CẤP 1 · UNIT 2  F–K  (khóa)         │  │ [Đăng nhập]        │
 └──────────┴──┴────────────────────────────────────┴──┴───────────────────┘
 ```
-- Node xếp **zig-zag** theo trục dọc; banner mỗi Unit dùng nền `brand-600` chữ trắng, Unit cấp 2 dùng `sky-500`→`brand-600` gradient, cấp 3 `brand-800`.
+- Node xếp **zig-zag** theo trục dọc; banner mỗi Unit dùng gradient `unit-banner-bg` chữ `ink-on-pink`. Lộ trình hiện có 3 unit: Bảng chữ cái ASL (7 bài), Chữ cái động J & Z (1 bài), Chữ số 0–10 (2 bài).
 - Click node available → popover: tên bài, số bài tập, XP, nút **BẮT ĐẦU**.
-- Banner nhắc sao lưu: "Tiến độ chỉ lưu trên trình duyệt này — Xuất bản sao lưu" (hiện sau mỗi 7 ngày hoặc khi XP ≥ 100, đóng được).
+- Thẻ "Đồng bộ tiến độ" ở cột phải mời đăng nhập (link tới Hồ sơ & Tài khoản). Banner nhắc sao lưu đã bỏ (2026-11-22).
 - Khi `localStorage` bị chặn: banner `warning` "Tiến độ sẽ không được lưu" (AC-ACC-02).
 
 ### 5.2 Lesson Player – Màn học Webcam (`/lesson/:id`) — FT-LRN-02..05
@@ -179,7 +176,8 @@ Desktop: sidebar trái (logo, 5 tab) + nội dung giữa + cột phải (StatChi
 - **FeedbackBanner** trượt lên khi verified: nền `success-bg`, "Tuyệt vời! ⚡ +1", nút TIẾP TỤC (Enter). Khi timed_out: nền `danger-bg`, "Chưa đúng — đây là cách làm chữ C", hiện lại media, mất 1 tim (animation tim vỡ).
 - **Near-miss:** nếu top-1 là chữ dễ nhầm → chip `warning`: "Đang giống **O** — mở rộng khoảng cách ngón cái".
 - **Fingerspelling (`spell_word`):** hàng ô chữ `[H][E][L][L][O]` phía trên; ô hiện tại viền brand, ô đã verify nền success; HoldRing áp cho chữ hiện tại; chữ trùng liên tiếp (LL) yêu cầu hạ tay/nhả (no-hand hoặc đổi nhãn) giữa hai lần.
-- **choose_sign:** hiện ảnh tay, chọn 1 trong 4 chữ (không cần camera) — giảm mệt.
+- **choose_sign:** hiện ảnh tay, chọn 1 trong 4 chữ (không cần camera) — giảm mệt. *(Chưa có trong curriculum hiện tại.)*
+- **perform_dynamic (J, Z, số 10):** kiểm dáng tay khởi đầu, rồi vẽ vệt sáng hồng theo quỹ đạo đầu ngón trên khung camera; đủ quỹ đạo thì verified.
 - Phím tắt: `Enter` tiếp tục, `S` bỏ qua, `H` ẩn skeleton, `Esc` thoát (xác nhận).
 - Mobile: camera trên, chữ mục tiêu + HoldRing chồng góc trên trái camera, gợi ý dạng bottom sheet.
 
@@ -217,10 +215,14 @@ Tabs: **Benchmark · Phân tích lỗi · Live Monitor · Data Leakage · Về d
 - **Về dữ liệu:** phân bố lớp, ảnh mẫu mỗi chữ, giấy phép dataset.
 
 ### 5.6 Hồ sơ (`/profile`)
-Avatar chữ cái đầu (từ tên hiển thị tùy chọn), tổng XP, streak dài nhất, heatmap hoạt động 12 tuần (màu brand), bảng "độ thành thạo" từng chữ (vòng % đúng).
+Avatar chữ cái đầu (từ tên hiển thị tùy chọn), tổng XP, streak dài nhất, heatmap hoạt động 12 tuần (màu brand), bảng "độ thành thạo" từng chữ (vòng % đúng). Bên dưới: thẻ **Tài khoản** (`AccountCard`) và thẻ **Tham gia bảng xếp hạng** (`JoinCard`, ô tên hiển thị 2–24 ký tự, đồng bộ trước khi bật).
+
+### 5.6b Đăng nhập (`/login`) và Bảng xếp hạng (`/leaderboard`)
+- `/login`: trang riêng, logo + "Đăng nhập" + `AccountCard` + link "Học tiếp không cần đăng nhập". Đăng nhập/đăng ký xong chuyển `/learn`.
+- `/leaderboard`: tab **Tuần này · Tổng XP · Chuỗi ngày · Độ chính xác** (chọn "Tất cả" hoặc một chữ). Hàng của mình gắn nhãn "Bạn". Chưa đăng nhập → mời đăng nhập; chưa ai đủ điều kiện → trạng thái trống.
 
 ### 5.7 Cài đặt (`/settings`)
-Giao diện (System/Light/Dark preview), Tay thuận (trái/phải — ảnh hưởng mirror), Camera (chọn thiết bị, xem thử), Âm thanh (on/off), Mục tiêu ngày (10/20/30/50), Dữ liệu (ghi chú "Mọi dữ liệu chỉ nằm trên trình duyệt này, không gửi đi đâu"; nút **Xuất tiến độ**, **Nhập tiến độ** (hỏi xác nhận ghi đè), **Xóa toàn bộ dữ liệu** (xác nhận 2 bước)), Tên hiển thị (tùy chọn).
+Âm thanh (on/off), Mục tiêu ngày (10/20/30/50), Tên hiển thị (tùy chọn, lưu khi rời ô), Camera (chọn thiết bị), Dữ liệu (nút **Nhập tiến độ** (hỏi xác nhận ghi đè), **Xóa toàn bộ dữ liệu** (xác nhận 2 bước)); link **Giới thiệu & Liên hệ** ở cuối. Đã bỏ: chọn giao diện sáng/tối, tay thuận, nút **Xuất tiến độ** (2026-11-22).
 
 ### 5.8 Thu mẫu (`/collect`) — FT-SYS-02
 Nhập mã người ra dấu ẩn danh (S01…) → chọn chữ → đếm ngược 3-2-1 → ghi N khung landmark → xem lại skeleton → Giữ / Bỏ. Thanh tiến độ "30/50 mẫu chữ R". Nút **TẢI FILE** (`landmarks_<chữ>_<mã>_<thời gian>.json`). Ghi rõ: "Chỉ lưu tọa độ khớp tay, không lưu hình ảnh". Mẫu chưa tải giữ tạm trong bộ nhớ trang; rời trang sẽ hỏi xác nhận.
@@ -235,17 +237,17 @@ Nhập mã người ra dấu ẩn danh (S01…) → chọn chữ → đếm ngư
 | Streak tăng | "whoosh" | Ngọn lửa phóng to |
 | Mất tim | "pop" | Tim vỡ |
 
-Âm thanh cần nguồn có giấy phép hoặc tự tạo — **chờ người dùng chọn**.
+Âm thanh **tự tạo** bằng Web Audio (`src/lib/sound.ts`, `uiSound.ts`), không dùng file có giấy phép; tắt ở Cài đặt.
 
 ## 7. Accessibility (AC-UI-02)
 
-- Tương phản ≥ 4,5:1 cho văn bản thường, ≥ 3:1 cho icon/viền trạng thái ở **cả hai theme** (đã chọn token theo tiêu chí này; kiểm lại bằng axe trong E2E).
+- Tương phản ≥ 4,5:1 cho văn bản thường, ≥ 3:1 cho icon/viền trạng thái (chỉ chế độ sáng) (đã chọn token theo tiêu chí này; kiểm lại bằng axe trong E2E).
 - Focus ring 3px `focus-ring`, không bỏ outline.
 - Trạng thái nhận diện được thông báo qua `aria-live="polite"` ("Đã nhận chữ C, độ tin cậy 84%"), throttle 1 lần/giây.
 - Không truyền đạt thông tin chỉ bằng màu: ngón lệch có icon ⚠ + chữ.
 - Hỗ trợ người thuận tay trái (mirror) và người dùng một tay.
 
-## 8. Prompt mẫu cho V0 / Claude Design
+## 8. Prompt mẫu cho V0 / Claude Design (lịch sử, bản xanh Cobalt ban đầu; giao diện hiện tại là tông hồng §2)
 
 ```
 Build a responsive web app UI called "SignLingo AI" — a gamified American Sign Language
@@ -271,7 +273,7 @@ Use placeholder numbers clearly marked "—"; do not invent metrics.
 
 ## 9. Cần người dùng cung cấp / quyết định
 
-1. Logo & tên hiển thị cuối cùng (SignLingo AI?), có linh vật riêng không.
-2. Nguồn ảnh/GIF minh họa từng chữ ASL (có giấy phép).
-3. Nguồn âm thanh.
-4. Ngôn ngữ UI (VI / EN / cả hai — nếu cả hai, thêm i18n từ Phase 3).
+1. ~~Logo & tên~~ **Theo code:** tên **SignLingo**, logo bàn tay (`BrandMark`); chưa có linh vật.
+2. ~~Nguồn ảnh~~ **Theo code:** hình chữ cái public domain (wpclipart.com qua Wikimedia Commons), hình số trong `public/media/numbers/`.
+3. ~~Nguồn âm thanh~~ **Theo code:** tự tổng hợp bằng Web Audio.
+4. ~~Ngôn ngữ UI~~ **Theo code:** tiếng Việt (`src/i18n/vi.ts`; riêng nội dung các trang giới thiệu viết thẳng trong component).

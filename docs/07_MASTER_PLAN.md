@@ -1,6 +1,6 @@
 # 07 — Master Implementation Plan: SignLingo AI
 
-> **Trạng thái:** v0.2 · **Ngày:** 2026-11-18 · **v0.2:** bỏ backend; Phase 2 đổi thành *Client Data & Game*; thêm deploy Vercel.
+> **Trạng thái:** v0.3 · **Ngày:** 2026-11-22 · **v0.2:** bỏ backend; Phase 2 đổi thành *Client Data & Game*; thêm deploy Vercel. · **v0.3:** đồng bộ trạng thái task với code; thêm **Phase 5** (tài khoản Supabase tùy chọn, bảng xếp hạng, số 0–10, J/Z, giao diện hồng, trang giới thiệu, `/login`).
 > Truy vết: `FT-*`, `AC-*` ([01_PRD](01_PRD.md)) · lưu trữ ([03_DATA_STORAGE](03_DATA_STORAGE.md)) · hợp đồng ([04_CONTRACTS](04_CONTRACTS.md)).
 > **Quy tắc task:** mỗi task ≤ ~100 dòng code nguồn (không tính test/lock/file sinh); 1 task = 1 lượt Agent = 1 commit. Vòng: **Plan → Review Plan → Code → Test**. Task gắn **[R]** phải duyệt plan trước khi code.
 > Ký hiệu: 🎓 = bắt buộc cho chấm điểm Tuần 5 · 🚀 = MVP · ✨ = mở rộng · ☑ = xong · ☐ = chưa.
@@ -18,6 +18,7 @@ flowchart LR
   P3 --> P4[Phase 4<br/>Test · FPS · Deploy 🎓]
   P1 -.-> P1B[Phase 1B<br/>Dynamic signs ✨]
   P1B -.-> P3
+  P3 --> P5[Phase 5<br/>Tài khoản · Xếp hạng · Số & J/Z · Giới thiệu]
 ```
 
 | Cổng | Điều kiện qua cổng |
@@ -123,6 +124,7 @@ Phase 2 và phần còn lại của Phase 3 (Skill Tree, Lesson Player đầy đ
 ## Phase 1B — Dynamic signs (J, Z, từ vựng Cấp 3) ✨
 
 > **Gated:** cần người dùng chọn nguồn dữ liệu chuỗi landmark (kiểm giấy phép) hoặc tự thu.
+> **Cập nhật 2026-11-22:** J, Z (và số 10) đã nhận diện được bằng **luật hình học trên quỹ đạo** (P5-08, không học máy). Phase 1B vẫn mở nếu muốn thay luật bằng mô hình có thí nghiệm, và cho từ vựng Cấp 3.
 
 | ☐ | ID | Task | Guide | Test |
 |---|---|---|---|---|
@@ -167,10 +169,10 @@ Phase 2 và phần còn lại của Phase 3 (Skill Tree, Lesson Player đầy đ
 
 | ☐ | ID | Task | Files (`frontend/src/…`) | Guide | Test |
 |---|---|---|---|---|---|
-| ☑ | P3-01 🎓 | `tokens.css` (light/dark) + Tailwind map + script chống nháy + `ThemeToggle` | `styles/`, `components/ui/ThemeToggle.tsx` | Hex đúng 05 §2 | Unit: đổi `data-theme`, nhớ lựa chọn (AC-UI-01) · Test ✅: hex khớp doc 05 §2, độ tương phản AA ở cả hai theme, ThemeToggle. Script chống nháy là file `public/theme-init.js` (CSP cấm script nội tuyến). Font Nunito tự host qua `@fontsource-variable/nunito`. Phát hiện: `danger-fg` trên `danger-bg` chỉ 3,95:1 → thêm token `danger-on-bg` (đã sửa doc 05) |
+| ☑ | P3-01 🎓 | `tokens.css` (light/dark) + Tailwind map + script chống nháy + `ThemeToggle` | `styles/`, `components/ui/ThemeToggle.tsx` | Hex đúng 05 §2 | Unit: đổi `data-theme`, nhớ lựa chọn (AC-UI-01) · Test ✅: hex khớp doc 05 §2, độ tương phản AA ở cả hai theme, ThemeToggle. Script chống nháy là file `public/theme-init.js` (CSP cấm script nội tuyến). Font Nunito tự host qua `@fontsource-variable/nunito`. Phát hiện: `danger-fg` trên `danger-bg` chỉ 3,95:1 → thêm token `danger-on-bg` (đã sửa doc 05). **Sau đó (P5-09, 2026-11-22):** đổi sang tông hồng và bỏ chế độ tối; `ThemeToggle` không còn trên giao diện, `theme.ts` luôn đặt sáng |
 | ☑ | P3-02 | `Button` 3D, `Card`, `ProgressBar`, `StatChip` | `components/ui/` | Radix Slot | Unit: variants, a11y · Test ✅ (Button, Card, ProgressBar, StatChip; thêm `@radix-ui/react-slot`). Chữ UI để trong `src/i18n/vi.ts` (ngôn ngữ UI vẫn là câu hỏi mở) |
 | ☑ | P3-03 | AppShell: Sidebar/BottomNav/TopBar + React Router + ESLint C5 (cấm hex) | `app/`, `components/layout/` | | Unit: nav active · Test ✅ (4 + 7): 5 tab ở thanh bên và thanh dưới, `aria-current`, liên kết bỏ qua điều hướng, trang 404 trong khung; thêm `react-router`. ESLint C5 cấm hex (≥ 6 ký tự) trong `components`, `features`, `app` — đã thử bắt được. Đã xem thật trên trình duyệt: sáng/tối, desktop và mobile. `/` chuyển thẳng `/learn` (Landing P3-04 chưa làm); các màn hình khác là trang giữ chỗ. App khởi động sau khi tải manifest để lấy ngưỡng tim |
-| ☑ | P3-04 🚀 | Landing lần đầu + banner nhắc sao lưu + banner storage bị chặn | `features/onboarding/` | 05 §4, §5.1 | Unit · Test ✅ (17): trang chào lần đầu (3 ý chính, phạm vi 24 chữ, cam kết không gửi ảnh) → bấm Bắt đầu sang `/learn`, các lần sau vào `/` chuyển thẳng; banner storage bị chặn; nhắc sao lưu sau 7 ngày hoặc khi XP ≥ 100 và chưa xuất, đóng được (im 7 ngày). Cờ `onboarded` và mốc nhắc nằm ngoài file sao lưu. Đã xem bằng mắt trong trình duyệt. |
+| ☑ | P3-04 🚀 | Landing lần đầu + banner nhắc sao lưu + banner storage bị chặn | `features/onboarding/` | 05 §4, §5.1 | Unit · Test ✅ (17): trang chào lần đầu (3 ý chính, phạm vi 24 chữ, cam kết không gửi ảnh) → bấm Bắt đầu sang `/learn`, các lần sau vào `/` chuyển thẳng; banner storage bị chặn; nhắc sao lưu sau 7 ngày hoặc khi XP ≥ 100 và chưa xuất, đóng được (im 7 ngày). Cờ `onboarded` và mốc nhắc nằm ngoài file sao lưu. Đã xem bằng mắt trong trình duyệt. **Sau đó (P5-03):** bỏ banner nhắc sao lưu; Landing được thay bằng bộ 4 trang giới thiệu (P5-09, P5-06) |
 | ☑ | P3-05 | Static data loader: fetch `/models/index.json`, `/data/experiments/index.json` có kiểm schema, lỗi rõ ràng | `app/staticData.ts` | Không fetch ngoài origin | Unit (mock fetch) · Test ✅ (5): đọc và kiểm schema các file thật do `ml/` xuất bản; chỉ fetch `/models` và `/data` |
 | ☑ | P3-06 🚀 | Dashboard Skill Tree (`SkillNode`, unit banner, popover) | `features/skill-tree/` | Zig-zag | Unit: trạng thái node từ `lessonStatus` · Test ✅ (7) + axe ✅ (sáng/tối): 7 bài zig-zag, trạng thái suy từ `lessonStatus` (khóa/sẵn sàng/đang học/xong), trạng thái luôn có chữ trong tên truy cập; hộp chi tiết (số bài tập, XP, nút Bắt đầu/Học lại, giải thích bài khóa, Esc để đóng); cột phải có mục tiêu ngày và mô hình đang dùng. `/lesson/:code` hiện trang giữ chỗ cho tới P3-16. **Chưa làm:** khối "Chữ cần ôn" và Checkpoint trong mẫu thiết kế (cần quy tắc do bạn chốt). |
 
@@ -199,11 +201,11 @@ Phase 2 và phần còn lại của Phase 3 (Skill Tree, Lesson Player đầy đ
 | ◐ | P3-20 🎓 | Free Practice (`/practice`) | `features/practice/` | Không trừ tim | Unit · Màn `/practice` + `vision/letterTyper` (giữ chữ 1 s để gõ, nhả tay mới gõ lại cùng chữ nên "LL" chạy được, chịu được 1 khung nhiễu), `HoldRing`, `PredictionBars`, `useRecognition`, engine có `onFrame` để vẽ khung xương thẳng lên canvas. Test ✅ (8 + 4 + 9 + 1). Đã xem thật trên trình duyệt: màn đầu và trạng thái từ chối camera. CHƯA chạy với webcam thật (ô trình duyệt trong app chặn camera): chưa biết độ chính xác, FPS và hình khung xương thực tế. Chưa nối `recordBenchmark` vào UI (thuộc P3-22) |
 | ◐ | P3-21 🎓 | AI Lab Benchmark + Leakage (Recharts) từ `/data/experiments` | `features/lab/` | Không hardcode số | Unit: render từ JSON test · Đã làm tab Benchmark (bảng ± độ lệch chuẩn qua seed, biểu đồ cột Test Macro-F1, vạch đứt baseline tốt nhất) và Data Leakage (random vs group split); vẽ bằng SVG/CSS thuần, không thêm Recharts. Test ✅ (12). Đọc `index.json` thật; các hàng trùng tên được gắn thêm đặc trưng/cấu hình. Landmark ghi rõ "chia theo thứ tự file, chưa phải theo người ra dấu". |
 | ◐ | P3-22 🎓 | AI Lab ConfusionMatrix SVG + per-class F1 + Live Monitor (24 bars, FpsMeter, ghi & tải benchmark) | `features/lab/` | | Unit · Đã làm tab Phân tích lỗi: ma trận nhầm 24×24 (SVG, chuẩn hóa hàng), bảng cặp nhầm nhiều nhất và F1 từng chữ, đọc từ file từng lần chạy (có kiểm schema). Test ✅. Đã làm tab Live Monitor: 24 thanh xác suất, đồng hồ thời gian khung (p50/p95, vạch 33 ms, MediaPipe, bộ phân loại, backend ONNX, delegate), nút "Ghi 60 giây" lưu vào lịch sử (localStorage qua `useLearner`) và tải file JSON. Test ✅ (3 + 1). **Chưa chạy với webcam thật**, chưa có số đo FPS nào để báo cáo. |
-| ◐ | P3-23 🚀 | Profile + Settings (theme, tay thuận, camera, âm, mục tiêu, tên; Xuất/Nhập/Xóa có xác nhận) | `features/profile/`, `features/settings/` | | Unit · Đã làm: Cài đặt (giao diện, mục tiêu XP, tên hiển thị, chọn camera, xuất/nhập có xác nhận/xóa 2 bước, báo khi storage bị chặn) và Hồ sơ (chữ cái đầu, XP, chuỗi, heatmap 12 tuần, độ thành thạo từng chữ). Test ✅ (15). **Cố ý chưa làm** "tay thuận" và "âm thanh": chưa có chức năng nào dùng chúng, để tránh một nút không có tác dụng; sẽ thêm cùng P3-19 (âm thanh) và khi chốt cách xử lý gương. |
+| ◐ | P3-23 🚀 | Profile + Settings (theme, tay thuận, camera, âm, mục tiêu, tên; Xuất/Nhập/Xóa có xác nhận) — **cập nhật 2026-11-22:** bỏ chọn giao diện và nút Xuất (P5-03, P5-09); Hồ sơ có thêm thẻ Tài khoản và thẻ Tham gia bảng xếp hạng | `features/profile/`, `features/settings/` | | Unit · Đã làm: Cài đặt (giao diện, mục tiêu XP, tên hiển thị, chọn camera, xuất/nhập có xác nhận/xóa 2 bước, báo khi storage bị chặn) và Hồ sơ (chữ cái đầu, XP, chuỗi, heatmap 12 tuần, độ thành thạo từng chữ). Test ✅ (15). **Cố ý chưa làm** "tay thuận" và "âm thanh": chưa có chức năng nào dùng chúng, để tránh một nút không có tác dụng; sẽ thêm cùng P3-19 (âm thanh) và khi chốt cách xử lý gương. |
 | ◐ | P3-24 🎓 | Collect page: mã người ra dấu, đếm ngược, ghi landmark, xem lại, **tải file JSON** theo `landmark_capture` | `features/collect/` | Không lưu ảnh | Unit: file đúng schema · Test ✅ (14): file tạo ra khớp `landmark_capture.schema.json`, tọa độ không lật gương, từ chối mã người không ẩn danh và chữ J/Z, đếm ngược 3 s rồi ghi đúng 40 khung có tay, hủy thì không lưu, tải file đúng schema. Route `/collect` (không có trong menu). Đã thêm bước xem lại (phát lại khung xương, **Giữ / Bỏ**) và hỏi xác nhận khi rời trang còn mẫu chưa tải (test ✅ 16). Chưa thử với webcam thật |
-| ☐ | P3-25 ✨ | Item `perform_dynamic` (buffer 32 khung) — sau P1B | | | Unit |
+| ☑ | P3-25 ✨ | Item `perform_dynamic` — làm bằng luật quỹ đạo thay vì buffer 32 khung + mô hình (P5-08) | `vision/dynamicGesture.ts`, `vision/numberGesture.ts`, `features/lesson/` | | Unit ✅ (`dynamicGesture.test.ts`, `numberGesture.test.ts`). Chưa có thí nghiệm đo độ chính xác |
 
-**3 lớp kiểm thử Phase 3:** Unit = mọi module `vision/*`, component states, stores · Integration = normalizer ↔ fixture Python; classifier ↔ ONNX Python; UI + `LearnerStore` thật (jsdom) · E2E (Playwright, Chrome fake camera với video `.y4m` nhóm quay): (1) mở app lần đầu → bài 1 → verify chữ A → màn kết quả → reload vẫn còn XP; (2) từ chối camera (AC-LRN-03); (3) không có tay > 2 s (AC-LRN-02); (4) toggle dark mode; (5) AI Lab hiển thị bảng từ JSON; (6) Collect tải được file đúng schema.
+**3 lớp kiểm thử Phase 3:** Unit = mọi module `vision/*`, component states, stores · Integration = normalizer ↔ fixture Python; classifier ↔ ONNX Python; UI + `LearnerStore` thật (jsdom) · E2E (Playwright, Chrome fake camera với video `.y4m` nhóm quay): (1) mở app lần đầu → bài 1 → verify chữ A → màn kết quả → reload vẫn còn XP; (2) từ chối camera (AC-LRN-03); (3) không có tay > 2 s (AC-LRN-02); (4) ~~toggle dark mode~~ (bỏ, chỉ còn chế độ sáng); (5) AI Lab hiển thị bảng từ JSON; (6) Collect tải được file đúng schema.
 
 ---
 
@@ -219,12 +221,32 @@ Phase 2 và phần còn lại của Phase 3 (Skill Tree, Lesson Player đầy đ
 | ☐ | P4-04 🎓 [R] | Web Worker: HandLandmarker + ORT trong worker (ImageBitmap) | Interface K3 giữ nguyên | E2E vẫn xanh; số so sánh |
 | ☑ | P4-05 | Quantize int8; Macro-F1 giảm ≤ 0,005 | ml export | ML integration · Đo thật (`ml/reports/experiments/quant_int8_landmark_ens5.json`, chỉ dùng tập validation, không đọc test): lượng tử hóa động int8 cho bộ 5 mô hình landmark, Macro-F1 val 0.8571 → 0.8575 (giảm -0.0004, ngưỡng cho phép 0,005 → **đạt**), file 5.68 → 1.48 MB, khớp nhãn dự đoán 99.18%. Độ trễ 1 mẫu trên CPU máy này gần như không đổi (0.180 → 0.192 ms, một lần đo). Đã thử chạy trong onnxruntime-web (WASM) bằng Chrome: 10/10 mẫu fixture cùng nhãn, lệch xác suất ≤ 0,003. **Quyết định: giữ bản float làm mô hình phát hành** (đổi sang int8 cần dựng lại manifest/sha256 và phiên bản mới; lợi ích chỉ là dung lượng tải, không phải tốc độ). Kết quả int8 được giữ làm bằng chứng cho báo cáo. |
 | ☐ | P4-06 🎓 | **Perf E2E**: 60 s fake camera, đọc `getPerf()`, assert frame p50 ≤ 33 ms & p95 ≤ 40 ms (trên máy tham chiếu; CI chỉ cảnh báo) | | AC-PERF-01..03 |
-| ☑ | P4-07 🎓 | Privacy E2E: mọi request cùng origin; không payload ảnh/video/landmark | | AC-PRIV-01, C2, C6 · E2E ✅ `e2e/tests/privacy.spec.ts`: một phiên thật với camera giả (luyện tập, AI Lab, thu mẫu, cài đặt, hồ sơ) chỉ có request cùng origin, chỉ GET/HEAD/OPTIONS, không có body; `vercel.json` có `connect-src 'self'` và `camera=(self)`. CSP chỉ có hiệu lực trên Vercel nên chưa kiểm trên Preview URL. |
+| ☑ | P4-07 🎓 | Privacy E2E: mọi request cùng origin; không payload ảnh/video/landmark | | AC-PRIV-01, C2, C6 · E2E ✅ `e2e/tests/privacy.spec.ts`: một phiên thật với camera giả (luyện tập, AI Lab, thu mẫu, cài đặt, hồ sơ) chỉ có request cùng origin, chỉ GET/HEAD/OPTIONS, không có body; `vercel.json` có `connect-src 'self'` và `camera=(self)`. CSP chỉ có hiệu lực trên Vercel nên chưa kiểm trên Preview URL. **Sau đó (P5-01):** `connect-src` thêm `https://*.supabase.co`; test privacy chạy khi chưa đăng nhập nên vẫn chỉ cùng origin. Chưa có E2E cho trạng thái đã đăng nhập |
 | ☑ | P4-08 | A11y: axe-core 6 màn × 2 theme; bàn phím luồng học | | AC-UI-02 · E2E ✅ `e2e/tests/a11y.spec.ts`: axe-core (WCAG 2 A/AA, 2.1 A/AA) 7 màn × 2 theme không còn vi phạm; kiểm bằng axe lộ ra lỗi tương phản thật của chữ xanh (4,42:1 và 4,0:1), đã sửa bằng token `brand-fg`. Luồng bàn phím mới thử ở dashboard (chưa có luồng học). |
-| ☑ | P4-09 | E2E dữ liệu: học 1 bài → reload → XP/streak còn; export → xóa → import; storage bị chặn → banner | | AC-GAM-01, AC-ACC-01/02 · E2E ✅ `e2e/tests/data.spec.ts`: landing một lần; cài đặt còn sau khi tải lại; xuất → xóa → nhập ra cùng dữ liệu (AC-ACC-01); file hỏng bị từ chối; storage bị chặn → banner và không lỗi (AC-ACC-02). Đã thêm: bài bị bỏ qua hết không được tính ("Chưa đạt", bài 2 vẫn khóa, XP 0); tiến độ và XP đã lưu còn sau khi tải lại và mở bài 2 (AC-GAM-01). Chrome camera giả không làm được dấu tay nên bài hoàn thành được dựng sẵn trong localStorage; luồng đầy đủ có dấu đúng nằm ở test thành phần. |
+| ☑ | P4-09 | E2E dữ liệu: học 1 bài → reload → XP/streak còn; export → xóa → import; storage bị chặn → banner (**cập nhật P5-03:** nút Xuất đã bỏ, test sửa theo: Cài đặt không còn nút Xuất, nhập file vẫn chạy) | | AC-GAM-01, AC-ACC-01/02 · E2E ✅ `e2e/tests/data.spec.ts`: landing một lần; cài đặt còn sau khi tải lại; xuất → xóa → nhập ra cùng dữ liệu (AC-ACC-01); file hỏng bị từ chối; storage bị chặn → banner và không lỗi (AC-ACC-02). Đã thêm: bài bị bỏ qua hết không được tính ("Chưa đạt", bài 2 vẫn khóa, XP 0); tiến độ và XP đã lưu còn sau khi tải lại và mở bài 2 (AC-GAM-01). Chrome camera giả không làm được dấu tay nên bài hoàn thành được dựng sẵn trong localStorage; luồng đầy đủ có dấu đúng nằm ở test thành phần. |
 | ☐ | P4-10 🎓 | README gốc + `reports/RESULTS.md` (RQ1–3, bảng, hình, link Vercel, giới hạn, hướng phát triển) | Bám Week 5 | AC-REPO-01..03 |
-| ☐ | P4-11 🎓 | Deploy Production Vercel; chạy lại E2E smoke + perf trên URL production | | URL hoạt động, header đúng |
+| ◐ | P4-11 🎓 | Deploy Production Vercel; chạy lại E2E smoke + perf trên URL production | | URL hoạt động, header đúng · Đã deploy: `https://signlingo-vn.vercel.app` (project `sign-lingo`), có biến môi trường Supabase. **Chưa** chạy E2E smoke/perf trên URL production |
 | ◐ | P4-12 🎓 | Kịch bản demo + dự phòng (mạng yếu → `pnpm preview` localhost; camera lỗi → video fake) | | Diễn tập · Đã viết `docs/08_DEMO_SCRIPT.md` (kịch bản ~7 phút, danh sách chuẩn bị, phương án dự phòng, câu hỏi hay gặp; số liệu đọc từ AI Lab). **Chưa diễn tập**, chưa có link production, và cách camera giả bằng video `.y4m` cần quay chuẩn bị từ trước. |
+
+## Phase 5 — Tài khoản, Bảng xếp hạng, Số & J/Z, Giao diện mới (2026-11-22) 🚀
+
+> Làm theo yêu cầu người dùng sau Phase 4. Thiết kế tài khoản: [ADR_backend_sync](drafts/ADR_backend_sync_DRAFT.md) (người dùng đã chấp thuận hướng). Lược đồ: `supabase/migrations/`. Chi tiết: 02 §5.5, 03 §6, 04 §8.
+
+| ☐ | ID | Task | Files | Test / Bằng chứng |
+|---|---|---|---|---|
+| ☑ | P5-01 | Supabase schema (`user_backups`, `public_profiles`, RLS, `delete_my_account`), gộp tiến độ thuần, đăng nhập email (Google tùy chọn), đồng bộ tự động; CSP `connect-src` thêm Supabase | `supabase/migrations/0001_init.sql`, `frontend/src/sync/*`, `features/account/AccountCard.tsx`, `vercel.json` | Unit ✅ (`merge`, `account`, `syncProgress`, `AccountCard`). Người dùng đã chạy SQL và thử đăng nhập trên Vercel |
+| ☑ | P5-02 | Báo lý do gốc khi đăng nhập lỗi, gợi ý Đăng ký; nút Google chỉ hiện khi `VITE_SUPABASE_GOOGLE` | `sync/*`, `AccountCard.tsx` | Unit ✅ |
+| ☑ | P5-03 | Bỏ nút Xuất JSON và banner nhắc sao lưu | `features/settings`, `features/onboarding/Banners.tsx`, `storage/useLearner.ts`, `e2e/tests/data.spec.ts` | Unit ✅ + E2E cập nhật |
+| ☑ | P5-04 | Nút mắt hiện/ẩn mật khẩu | `AccountCard.tsx`, `components/ui/Icons.tsx` | Unit ✅ |
+| ☑ | P5-05 | Bảng xếp hạng: migration 0002 (`get_leaderboard`, điểm độ chính xác, chỉ người đăng nhập đọc), trang `/leaderboard` (4 tab, chọn chữ), thẻ Tham gia trên Hồ sơ, tab "Hạng"; sửa `join` bằng update-rồi-insert; tổng XP không nhỏ hơn tổng XP các ngày khi gộp | `supabase/migrations/0002_leaderboard.sql`, `features/leaderboard/*`, `sync/supabase.ts`, `sync/merge.ts` | Unit ✅. Người dùng đã chạy SQL 0002 và tham gia được. **Chưa** thử với 2 tài khoản, chưa thấy tab Độ chính xác có dữ liệu thật |
+| ☑ | P5-06 | Trang Giới thiệu & Liên hệ (nhóm, MSSV, phụ trách, email trưởng nhóm, GitHub), link trong menu giới thiệu và Cài đặt | `features/onboarding/AboutPage.tsx` | Unit ✅; đã xem desktop + mobile |
+| ☑ | P5-07 | Trang `/login` riêng; menu tài khoản ở thanh trên (chưa đăng nhập: link Đăng nhập; đã đăng nhập: tên, email, Hồ sơ, Đăng xuất) | `features/account/LoginPage.tsx`, `AccountMenu.tsx`, `components/layout/AppShell.tsx`, `MarketingLayout.tsx` | Unit ✅; trạng thái đã đăng nhập chỉ kiểm bằng test |
+| ☑ | P5-08 | Số 0–10 và chữ động J, Z bằng luật hình học; Unit 2 (J & Z) và Unit 3 (số) trong `curriculum.json`; hình số | `vision/numberGesture.ts`, `vision/dynamicGesture.ts`, `content/curriculum.json`, `public/media/numbers/` | Unit ✅. Chưa có thí nghiệm độ chính xác |
+| ☑ | P5-09 | Thiết kế lại giao diện tông hồng, chỉ chế độ sáng; trang Trang chủ/Tính năng/Cách hoạt động; Bảng chữ cái thay Từ điển; âm thanh UI | `styles/tokens.css`, `features/onboarding/*`, `features/alphabet/*`, `lib/uiSound.ts` | Unit ✅ |
+| ☐ | P5-10 | Chuyển ADR nháp thành ADR chính thức sau khi người dùng duyệt quy tắc gộp và câu chữ quyền riêng tư | `docs/` | — |
+| ☐ | P5-11 | E2E đăng nhập giả (Supabase giả lập) và privacy E2E cho trạng thái đã đăng nhập | `e2e/` | AC-PRIV-01, AC-ACC-03 |
+| ☐ | P5-12 | Trước khi có người dùng thật: bật lại "Confirm email" + SMTP riêng; cân nhắc giới hạn XP/ngày, lọc tên hiển thị | Supabase, `sync/` | — |
+| ☐ | P5-13 | Bảng xếp hạng khi chưa đăng nhập đang chỉ tới Hồ sơ; đổi sang `/login` | `i18n/vi.ts`, `features/leaderboard` | Unit |
 
 **3 lớp kiểm thử Phase 4:** Unit = micro-benchmark normalizer/classifier (< 2 ms) · Integration = worker ↔ engine protocol; ONNX quantized parity · E2E = perf 60 s, privacy, a11y, dữ liệu cục bộ, smoke trên production.
 
@@ -268,9 +290,9 @@ Next: P1-04
 | Full DL pipeline demo Data → Model → Output | P1-26 + Free Practice/AI Lab trên URL Vercel + P4-12 |
 | Final model performance summary | AI Lab + `reports/RESULTS.md` |
 | Limitations & risks | PRD §8 + RESULTS.md (domain gap, signer ít, XP cục bộ sửa được) |
-| Future improvements | Phase 1B, P4-05, thu dữ liệu đa người, đồng bộ tài khoản nếu có backend sau này |
+| Future improvements | Phase 1B (mô hình học máy cho J/Z, số, từ vựng), P4-05, thu dữ liệu đa người, P5-10..13 |
 | Final GitHub review | AC-REPO-*, P1-26 |
-| 8 mục weekly (What/When/Why/Who/How much/risks/changes/issues) | Nhóm tự điền; "Major changes": bỏ backend, deploy Vercel (2026-11-18) |
+| 8 mục weekly (What/When/Why/Who/How much/risks/changes/issues) | Nhóm tự điền; "Major changes": bỏ backend, deploy Vercel (2026-11-18); thêm tài khoản Supabase tùy chọn, bảng xếp hạng, số và J/Z, giao diện hồng (2026-11-22) |
 
 ## 8. Việc người dùng cần làm / quyết định
 
@@ -278,9 +300,10 @@ Next: P1-04
 |---|---|---|
 | U1 | ~~Gửi mã nguồn tuần 3–4~~ **Đã có `data/`** (Kaggle CSV + `keypoint.csv`); mã và báo cáo cũ không dùng | — |
 | U2 | Câu chữ chính thức RQ1–RQ3 | P1-27 |
-| U3 | Ngôn ngữ UI (VI/EN/song ngữ) | P3-01..03 (i18n) |
-| U4 | Nội dung `curriculum.json`: danh sách bài, từ Cấp 2, hint; ảnh/âm thanh có giấy phép | P2-14, P3-17 |
-| U5 | Chủ project Vercel; repo public/private; `LICENSE` | P0-01b, P0-14 |
+| U3 | ~~Ngôn ngữ UI~~ **Xong:** tiếng Việt | — |
+| U4 | Nội dung `curriculum.json`: **còn thiếu** danh sách từ Cấp 2 (`spell_word`) và ảnh cho `choose_sign`; ảnh chữ, ảnh số và âm thanh đã có | P3-17, P3-18 |
+| U5 | ~~Chủ project Vercel; repo; `LICENSE`~~ **Xong:** Vercel `sign-lingo`, repo `Nyanta-dotcom/SignLingo`, MIT | — |
+| U10 | Supabase: đặt Site URL/Redirect URLs cho `https://signlingo-vn.vercel.app`; mở lại dự án trước buổi demo (gói Free tự tạm dừng) | P5-* |
 | U6 | Cài uv (hoặc chốt pip) | P0-13 |
 | U7 | Thu dữ liệu ≥ 3 người; quay video fake-camera | P1-21, E2E Phase 3 |
 | U8 | Duyệt danh sách skill | P0-10 |
