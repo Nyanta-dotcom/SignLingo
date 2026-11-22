@@ -7,9 +7,9 @@ const REPO_URL = 'https://github.com/Nyanta-dotcom/SignLingo';
 
 const TEAM = [
   { name: 'Nguyễn Tuấn Hưng', id: '24090019', role: 'Trưởng nhóm; huấn luyện mô hình nhận diện, nhận diện trong trình duyệt, lộ trình bài học và AI Lab, tài khoản và bảng xếp hạng' },
-  { name: 'Nguyễn Hữu Triết', id: '24090003', role: 'Thu thập dữ liệu webcam từ nhiều người, kiểm tra chất lượng dữ liệu, tìm hiểu tài liệu nhận diện ký hiệu, soạn danh sách từ cho bài đánh vần' },
-  { name: 'Trần Công Sanh', id: '24090009', role: 'Kiểm thử thủ công trên nhiều trình duyệt và thiết bị, ghi nhận lỗi, đo hiệu năng trên nhiều máy, kiểm tra trợ năng' },
-  { name: 'Nguyễn Thảo Anh', id: '24090028', role: 'Viết báo cáo cuối kỳ, làm slide thuyết trình, kịch bản và video demo, khảo sát ý kiến người dùng' },
+  { name: 'Nguyễn Hữu Triết', id: '24090003', role: 'Tối ưu điểm Lighthouse, tối ưu giao diện trên máy tính, tối ưu giao diện trên điện thoại, giảm thời gian tải trang và dung lượng ảnh' },
+  { name: 'Trần Công Sanh', id: '24090009', role: 'Thu thập dữ liệu webcam từ nhiều người, kiểm tra chất lượng dữ liệu, kiểm thử trên nhiều trình duyệt và thiết bị, kiểm tra trợ năng' },
+  { name: 'Nguyễn Thảo Anh', id: '24090028', role: 'Viết báo cáo cuối kỳ, làm slide thuyết trình, kịch bản và video demo, khảo sát ý kiến người dùng, soạn danh sách từ cho bài đánh vần' },
   { name: 'Nguyễn Anh Dũng', id: '24090021', role: 'Thiết kế lại giao diện, các trang giới thiệu, nhận diện số 0–10 và ký hiệu động J, Z, âm thanh bài học' },
 ] as const;
 
