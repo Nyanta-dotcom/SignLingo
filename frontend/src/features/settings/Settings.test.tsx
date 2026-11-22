@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { initLearner } from '@/storage/useLearner';
 import { Settings } from './Settings';
@@ -25,14 +26,14 @@ const fileOf = (content: string) => new File([content], 'x.json', { type: 'appli
 
 describe('Settings', () => {
   it('changes the daily XP goal and keeps it', () => {
-    render(<Settings />);
+    render(<MemoryRouter><Settings /></MemoryRouter>);
     fireEvent.click(screen.getByRole('radio', { name: '30 XP' }));
     expect(store.getState().settings.daily_xp_goal).toBe(30);
     expect(screen.getByRole('radio', { name: '30 XP' })).toBeChecked();
   });
 
   it('turns the lesson sounds off and on', () => {
-    render(<Settings />);
+    render(<MemoryRouter><Settings /></MemoryRouter>);
     const box = screen.getByRole('checkbox', { name: /Bật âm báo/ });
     expect(box).toBeChecked();
     fireEvent.click(box);
@@ -42,7 +43,7 @@ describe('Settings', () => {
   });
 
   it('saves the display name when the field loses focus', () => {
-    render(<Settings />);
+    render(<MemoryRouter><Settings /></MemoryRouter>);
     const input = screen.getByLabelText(/Tên hiển thị/);
     fireEvent.change(input, { target: { value: ' Lan ' } });
     fireEvent.blur(input);
@@ -50,7 +51,7 @@ describe('Settings', () => {
   });
 
   it('lists only video devices and stores the chosen camera', async () => {
-    render(<Settings />);
+    render(<MemoryRouter><Settings /></MemoryRouter>);
     await screen.findByRole('option', { name: 'Webcam A' });
     expect(screen.getByRole('option', { name: 'Camera 2' })).toBeInTheDocument();
     expect(screen.queryByRole('option', { name: 'Mic' })).toBeNull();
@@ -60,8 +61,13 @@ describe('Settings', () => {
     expect(store.getState().settings.camera_device_id).toBeUndefined();
   });
 
+  it('links to the about & contact page', () => {
+    render(<MemoryRouter><Settings /></MemoryRouter>);
+    expect(screen.getByRole('link', { name: 'Giới thiệu & Liên hệ' })).toHaveAttribute('href', '/about');
+  });
+
   it('offers no export of the learner data', () => {
-    render(<Settings />);
+    render(<MemoryRouter><Settings /></MemoryRouter>);
     expect(screen.queryByRole('button', { name: 'Xuất tiến độ' })).toBeNull();
   });
 
@@ -69,7 +75,7 @@ describe('Settings', () => {
     store.getState().updateSettings({ daily_xp_goal: 50 });
     const file = JSON.stringify(store.getState().backup.exportBackup());
     store.getState().updateSettings({ daily_xp_goal: 10 });
-    render(<Settings />);
+    render(<MemoryRouter><Settings /></MemoryRouter>);
     fireEvent.change(screen.getByLabelText('Nhập tiến độ'), { target: { files: [fileOf(file)] } });
     expect(await screen.findByRole('alertdialog')).toHaveTextContent('ghi đè');
     fireEvent.click(screen.getByRole('button', { name: 'Hủy' }));
@@ -81,7 +87,7 @@ describe('Settings', () => {
     store.getState().updateSettings({ daily_xp_goal: 50 });
     const file = JSON.stringify(store.getState().backup.exportBackup());
     store.getState().updateSettings({ daily_xp_goal: 10 });
-    render(<Settings />);
+    render(<MemoryRouter><Settings /></MemoryRouter>);
     fireEvent.change(screen.getByLabelText('Nhập tiến độ'), { target: { files: [fileOf(file)] } });
     fireEvent.click(await screen.findByRole('button', { name: 'Ghi đè và nhập' }));
     expect(screen.getByRole('status')).toHaveTextContent('Đã nhập tiến độ.');
@@ -90,7 +96,7 @@ describe('Settings', () => {
 
   it('rejects a file that is not a valid backup and leaves the data alone', async () => {
     store.getState().updateSettings({ daily_xp_goal: 30 });
-    render(<Settings />);
+    render(<MemoryRouter><Settings /></MemoryRouter>);
     fireEvent.change(screen.getByLabelText('Nhập tiến độ'), { target: { files: [fileOf('not json')] } });
     expect(await screen.findByRole('status')).toHaveTextContent('File không hợp lệ');
     fireEvent.change(screen.getByLabelText('Nhập tiến độ'), { target: { files: [fileOf('{"schema_version":1}')] } });
@@ -101,7 +107,7 @@ describe('Settings', () => {
 
   it('clears everything only after a second confirmation', async () => {
     store.getState().updateSettings({ daily_xp_goal: 50 });
-    render(<Settings />);
+    render(<MemoryRouter><Settings /></MemoryRouter>);
     fireEvent.click(screen.getByRole('button', { name: 'Xóa toàn bộ dữ liệu' }));
     expect(store.getState().settings.daily_xp_goal).toBe(50);
     expect(screen.getByRole('alertdialog')).toHaveTextContent('không thể hoàn tác');

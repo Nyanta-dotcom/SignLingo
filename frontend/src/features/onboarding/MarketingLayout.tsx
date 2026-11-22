@@ -9,7 +9,8 @@ const PAGES = [
   { to: '/welcome', label: 'Trang chủ' },
   { to: '/features', label: 'Tính năng' },
   { to: '/how-it-works', label: 'Cách hoạt động' },
-] as const;
+  { to: '/about', label: 'Giới thiệu & Liên hệ', short: 'Liên hệ' },
+] as { to: string; label: string; short?: string }[];
 
 type Props = {
   onStart: () => void;
@@ -64,12 +65,12 @@ export function MarketingLayout({ onStart, activeHome = false, children }: Props
               to={p.to}
               className={({ isActive }) => {
                 const current = isActive || (activeHome && p.to === '/welcome');
-                return `rounded-full px-3.5 py-1.5 text-xs font-extrabold transition-colors ${
+                return `whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-extrabold transition-colors ${
                   current ? 'btn-pink text-ink-on-pink shadow-none' : 'text-text-muted hover:bg-brand-50 hover:text-brand-fg'
                 }`;
               }}
             >
-              {p.label}
+              {p.short ?? p.label}
             </NavLink>
           ))}
         </nav>
