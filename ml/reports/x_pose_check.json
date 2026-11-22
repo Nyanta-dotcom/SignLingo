@@ -1,0 +1,8 @@
+{
+  "class": "X",
+  "n_rows": 1094,
+  "index_dip_mean_deg": 160.0,
+  "index_pip_mean_deg": 146.1,
+  "share_hooked_tip_dip_lt_110": 0.026,
+  "note": "Angle at the index DIP joint in lm-v1 2D coordinates; 180 = straight. The lesson image shows a hooked tip (standard ASL X)."
+}
