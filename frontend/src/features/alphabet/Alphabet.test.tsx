@@ -19,17 +19,19 @@ const at = (path: string, loader: () => Promise<LearnData> = load) =>
         <Route path="alphabet" element={<Alphabet load={loader} />} />
         <Route path="alphabet/:letter" element={<Alphabet load={loader} />} />
         <Route path="practice" element={<h1>Luyện tự do</h1>} />
+        <Route path="learn" element={<h1>Học</h1>} />
       </Routes>
     </MemoryRouter>,
   );
 
-describe('Alphabet', () => {
-  it('lists all 26 ASL letters in order (24 static + dynamic J and Z)', async () => {
+describe('Alphabet & Numbers reference', () => {
+  it('lists all 26 ASL letters (A–Z) and 11 basic numbers (0–10) in order', async () => {
     at('/alphabet');
-    expect(screen.getByRole('heading', { level: 1, name: 'Bảng chữ cái' })).toBeInTheDocument();
-    const links = await screen.findAllByRole('link', { name: /^Xem thao tác chữ / });
-    expect(links.map((l) => l.getAttribute('href')?.slice(-1)).join('')).toBe('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
-    expect(screen.getByText(/J và Z/)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: 'Bảng chữ cái & Chữ số' })).toBeInTheDocument();
+    const letterLinks = await screen.findAllByRole('link', { name: /^Xem thao tác chữ / });
+    expect(letterLinks.map((l) => l.getAttribute('href')?.slice(-1)).join('')).toBe('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+    const numberLinks = screen.getAllByRole('link', { name: /^Xem thao tác số / });
+    expect(numberLinks.map((l) => l.getAttribute('href')?.split('/').pop())).toEqual(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10']);
   });
 
   it('opens the standard handshape of a static letter, with its source and the neighbours', async () => {
@@ -52,6 +54,15 @@ describe('Alphabet', () => {
     expect(screen.getByText(/Public domain/)).toBeInTheDocument();
   });
 
+  it('opens numbers 0–10 including dynamic 10 with matching SVG illustrations and navigation', async () => {
+    at('/alphabet/0');
+    expect(await screen.findByRole('heading', { level: 1, name: 'Số 0' })).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: /chữ 0/ })).toHaveAttribute('src', '/media/numbers/asl_number_0.svg');
+    expect(screen.queryByRole('link', { name: /^Số trước/ })).toBeNull();
+    fireEvent.click(screen.getByRole('link', { name: 'Số sau: 1' }));
+    expect(screen.getByRole('heading', { level: 1, name: 'Số 1' })).toBeInTheDocument();
+  });
+
   it('has no previous link on the first letter and no next link on the last', async () => {
     at('/alphabet/A');
     await screen.findByRole('heading', { level: 1, name: 'Chữ A' });
@@ -65,8 +76,8 @@ describe('Alphabet', () => {
   });
 
   it('explains a character the app does not teach', async () => {
-    at('/alphabet/9');
-    expect(await screen.findByRole('alert')).toHaveTextContent('Không có chữ 9');
+    at('/alphabet/99');
+    expect(await screen.findByRole('alert')).toHaveTextContent('Không có ký hiệu 99');
   });
 
   it('says so when the alphabet cannot be loaded', async () => {

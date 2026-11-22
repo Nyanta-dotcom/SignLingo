@@ -18,7 +18,7 @@ const STEPS = [
   {
     num: '03',
     title: 'Chấm điểm & phản hồi tức thì',
-    desc: 'ONNX Runtime phân loại 24 chữ tĩnh, còn bộ theo dõi quỹ đạo 2D nhận diện chữ động J và Z, kèm gợi ý chỉnh ngón tay ngay lập tức.',
+    desc: 'ONNX Runtime phân loại 24 chữ tĩnh, bộ hình học 21 khớp nhận diện chữ số 0–10 và quỹ đạo 2D nhận diện J, Z, 10 kèm gợi ý chỉnh ngón tay tức thì.',
   },
 ] as const;
 
@@ -32,8 +32,8 @@ const FAQS = [
     a: 'Mọi tiến độ, XP, tim và cài đặt được lưu cục bộ tại localStorage trên trình duyệt. Bạn có thể xuất hoặc nhập file sao lưu JSON bất cứ lúc nào trong mục Cài đặt.',
   },
   {
-    q: '2 chữ cái động J và Z được nhận diện như thế nào?',
-    a: 'Hệ thống kiểm tra đúng dáng tay khởi đầu (giơ ngón út cho J, giơ ngón trỏ cho Z) rồi theo dõi quỹ đạo đầu ngón tay trong không trung và vẽ vệt sáng hồng trực tiếp trên màn hình.',
+    q: 'Các ký hiệu động (J, Z và số 10) được nhận diện như thế nào?',
+    a: 'Hệ thống kiểm tra đúng dáng tay khởi đầu (ngón út cho J, ngón trỏ cho Z, ngón cái cho số 10) rồi theo dõi quỹ đạo chuyển động trong không trung và vẽ vệt sáng hồng trực tiếp trên màn hình.',
   },
   {
     q: 'Trình duyệt nào hoạt động tốt nhất?',
@@ -87,7 +87,7 @@ export function HowItWorksPage({ onStart }: { onStart: () => void }) {
             {[
               { icon: HandIcon, title: 'Webcam', sub: 'Khung hình tại chỗ' },
               { icon: SparkleIcon, title: 'MediaPipe', sub: '21 điểm bàn tay' },
-              { icon: LabIcon, title: 'ONNX + Quỹ đạo', sub: '24 tĩnh + J, Z động' },
+              { icon: LabIcon, title: 'ONNX + Hình học', sub: 'A–Z & Số 0–10' },
               { icon: ShieldLockIcon, title: 'localStorage', sub: 'Lưu XP & tiến độ' },
             ].map((stage, i) => {
               const Icon = stage.icon;

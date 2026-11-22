@@ -79,6 +79,31 @@ export const HAND_ART: Record<string, Art> = {
       head: 'M 171 71 L 182 78 L 171 85',
     },
   },
+  // Basic ASL numbers 0–10
+  '0': { layers: [{ kind: 'ring', cx: 100, cy: 128, rx: 46, ry: 52, w: 34 }] },
+  '1': { layers: [{ kind: 'palm' }, curl('pinky'), curl('ring'), curl('middle'), up('index'), thumbAcross(172)] },
+  '2': { layers: [{ kind: 'palm' }, curl('pinky'), curl('ring'), lean('middle', -10), lean('index', 10), thumbAcross(174)] },
+  '3': { layers: [{ kind: 'palm' }, curl('pinky'), curl('ring'), lean('middle', -10), lean('index', 10), thumbOut()] },
+  '4': { layers: [{ kind: 'palm' }, lean('pinky', -10), lean('ring', -4), lean('middle', 4), lean('index', 10), thumbAcross(176)] },
+  '5': { layers: [{ kind: 'palm' }, lean('pinky', -12), lean('ring', -4), lean('middle', 4), lean('index', 12), thumbOut()] },
+  '6': { layers: [{ kind: 'palm' }, lean('ring', -6), up('middle'), lean('index', 10), limb([[68, 128], [84, 150], [104, 166]], 19), limb([[148, 190], [128, 178], [108, 166]], 20)] },
+  '7': { layers: [{ kind: 'palm' }, lean('pinky', -12), up('middle'), lean('index', 10), limb([[88, 128], [100, 152], [112, 168]], 19), limb([[148, 190], [130, 178], [114, 168]], 20)] },
+  '8': { layers: [{ kind: 'palm' }, lean('pinky', -12), lean('ring', -4), lean('index', 10), limb([[108, 128], [114, 152], [120, 168]], 19), limb([[148, 190], [134, 178], [122, 168]], 20)] },
+  '9': { layers: [{ kind: 'palm' }, lean('pinky', -12), lean('ring', -4), up('middle'), { kind: 'ring', cx: 130, cy: 106, rx: 14, ry: 16, w: 14 }, limb([[148, 192], [138, 150], [132, 122]], 20)] },
+  '10': {
+    layers: [
+      { kind: 'palm' },
+      limb([[82, 128], [80, 82], [82, 46]], 24),
+      limb([[78, 124], [126, 124]], 20),
+      limb([[76, 146], [128, 146]], 20),
+      limb([[78, 168], [128, 168]], 20),
+      limb([[82, 190], [124, 190]], 19),
+    ],
+    motion: {
+      path: 'M 46 102 Q 28 130 42 158 M 156 128 Q 174 156 158 186',
+      head: 'M 38 106 L 47 100 L 50 111 M 34 150 L 43 160 L 48 148 M 148 135 L 155 126 L 163 136 M 151 178 L 158 188 L 166 177',
+    },
+  },
 };
 
 export const HAND_LETTERS = Object.keys(HAND_ART);

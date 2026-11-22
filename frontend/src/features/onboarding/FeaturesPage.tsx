@@ -66,10 +66,10 @@ export function FeaturesPage({ onStart }: { onStart: () => void }) {
               Lộ trình game hóa
             </span>
             <h2 className="text-3xl font-black tracking-tight text-text">
-              Chia nhỏ 26 chữ cái thành từng bài học 2 phút
+              Chia nhỏ 26 chữ cái &amp; 11 chữ số (0–10) thành từng bài học ngắn
             </h2>
             <p className="leading-relaxed text-text-muted">
-              Mỗi bài học giới thiệu 3–4 chữ cái kèm thẻ minh họa, sau đó chuyển ngay sang thực hành trước camera. Hoàn thành bài nhận XP, giữ chuỗi ngày học (streak), và mở khóa các bài nâng cao cùng chương riêng cho 2 chữ động <strong>J &amp; Z</strong>.
+              Lộ trình gồm 3 cấp rõ ràng: <strong>Cấp 1</strong> (24 chữ cái tĩnh), <strong>Cấp 2</strong> (2 chữ động <strong>J &amp; Z</strong>), và <strong>Cấp 3</strong> (chữ số cơ bản <strong>0 – 10</strong>). Mỗi bài học kết hợp thẻ minh họa trực quan và thực hành ngay trước webcam.
             </p>
             <ul className="flex flex-col gap-2 text-sm font-bold text-text">
               <li>✓ Hệ thống tim, chuỗi ngày học và biểu đồ nhiệt 12 tuần</li>
@@ -86,10 +86,10 @@ export function FeaturesPage({ onStart }: { onStart: () => void }) {
               Phản hồi từng ngón tay
             </span>
             <h2 className="text-3xl font-black tracking-tight text-text">
-              Nhận diện cả chữ tĩnh lẫn chuyển động vẽ nét J &amp; Z
+              Nhận diện chữ tĩnh, chữ số 0–10 và cử chỉ động J, Z, 10
             </h2>
             <p className="leading-relaxed text-text-muted">
-              Khi bạn giơ tay trước webcam, hệ thống hiển thị vòng tiến độ giữ chữ, top 3 xác suất dự đoán và gợi ý chỉnh từng ngón tay theo thời gian thực. Với chữ động <strong>J</strong> và <strong>Z</strong>, màn hình vẽ trực tiếp vệt sáng hồng theo đầu ngón tay để bạn kiểm soát nét vẽ.
+              Khi bạn giơ tay trước webcam, hệ thống hiển thị vòng tiến độ giữ chữ, top 3 xác suất dự đoán và gợi ý chỉnh từng ngón tay theo thời gian thực. Với các ký hiệu động <strong>J</strong>, <strong>Z</strong> và số <strong>10</strong>, màn hình vẽ trực tiếp vệt sáng hồng theo đầu ngón tay.
             </p>
             <ul className="flex flex-col gap-2 text-sm font-bold text-text">
               <li>✓ Khung gợi ý cố định chống giật bố cục khi đang luyện</li>
@@ -137,8 +137,8 @@ export function FeaturesPage({ onStart }: { onStart: () => void }) {
             <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-brand-100 text-brand-fg">
               <AlphabetIcon className="size-5" />
             </span>
-            <h3 className="text-lg font-black">Từ điển 26 chữ cái trực quan</h3>
-            <p className="text-sm text-text-muted">Tra cứu nhanh dáng tay chuẩn cho đủ 26 chữ A–Z kèm hướng dẫn thao tác chi tiết.</p>
+            <h3 className="text-lg font-black">Từ điển chữ cái &amp; chữ số trực quan</h3>
+            <p className="text-sm text-text-muted">Tra cứu nhanh dáng tay chuẩn cho đủ 26 chữ A–Z và 11 chữ số 0–10 kèm hướng dẫn chi tiết.</p>
           </Card>
           <Card className="flex flex-col gap-3 p-6">
             <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-brand-100 text-brand-fg">

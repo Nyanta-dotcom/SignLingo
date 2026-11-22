@@ -8,19 +8,20 @@ import { MarketingLayout } from './MarketingLayout';
 
 const POINT_ICONS = [HandIcon, ShieldLockIcon, LabIcon] as const;
 
-const PREVIEW_LETTERS = [
-  { letter: 'A', kind: 'Tĩnh', tip: 'Nắm tay gọn, ngón cái áp sát cạnh ngón trỏ.' },
-  { letter: 'B', kind: 'Tĩnh', tip: 'Duỗi thẳng 4 ngón khép kín, gập ngón cái vào lòng bàn tay.' },
-  { letter: 'L', kind: 'Tĩnh', tip: 'Giơ thẳng ngón trỏ và ngón cái tạo góc vuông hình chữ L.' },
-  { letter: 'J', kind: 'Động', tip: 'Giơ ngón út, kéo xuống rồi hất cong vẽ nét móc chữ J.' },
-  { letter: 'Z', kind: 'Động', tip: 'Giơ ngón trỏ, vẽ đường ziczac ngang → chéo xuống → ngang.' },
+const PREVIEW_ITEMS = [
+  { symbol: 'A', kind: 'Tĩnh', isNumber: false, tip: 'Nắm tay gọn, ngón cái áp sát cạnh ngón trỏ.' },
+  { symbol: 'J', kind: 'Động', isNumber: false, tip: 'Giơ ngón út, kéo xuống rồi hất cong vẽ nét móc chữ J.' },
+  { symbol: 'Z', kind: 'Động', isNumber: false, tip: 'Giơ ngón trỏ, vẽ đường ziczac ngang → chéo xuống → ngang.' },
+  { symbol: '0', kind: 'Tĩnh', isNumber: true, tip: 'Khép cong các đầu ngón chạm ngón cái tạo vòng tròn số 0.' },
+  { symbol: '5', kind: 'Tĩnh', isNumber: true, tip: 'Xòe rộng cả 5 ngón tay hướng về trước.' },
+  { symbol: '10', kind: 'Động', isNumber: true, tip: 'Giơ ngón cái lên và lắc nhẹ cổ tay qua lại để tạo số 10.' },
 ] as const;
 
 /** Page 1 of the 3-page pre-app website: Hero with live interactive SignLingo preview + 3 highlights. */
 export function Landing({ onStart }: { onStart: () => void }) {
   const t = vi.landing;
   const [selected, setSelected] = useState(0);
-  const current = PREVIEW_LETTERS[selected];
+  const current = PREVIEW_ITEMS[selected];
 
   return (
     <MarketingLayout onStart={onStart} activeHome>
@@ -30,7 +31,7 @@ export function Landing({ onStart }: { onStart: () => void }) {
           <div className="flex flex-col items-start gap-5 text-left">
             <div className="inline-flex items-center gap-2 rounded-full border-2 border-brand-200 bg-surface px-4 py-1.5 text-xs font-extrabold uppercase tracking-widest text-brand-fg shadow-[0_2px_0_var(--brand-100)]">
               <SparkleIcon className="size-3.5 text-brand-500" />
-              26 chữ cái ASL · Realtime trên trình duyệt
+              26 chữ cái A–Z · Số 0–10 · Realtime
             </div>
 
             <h1 className="text-4xl font-black leading-[1.12] tracking-tight text-text sm:text-5xl lg:text-6xl">
@@ -84,7 +85,7 @@ export function Landing({ onStart }: { onStart: () => void }) {
               <div className="mt-5 flex flex-col items-center gap-4 text-center">
                 <div className="flex items-center gap-2">
                   <span className="rounded-full bg-brand-50 px-3.5 py-1 text-xs font-extrabold uppercase tracking-wider text-brand-fg">
-                    Xem thử thao tác chữ {current.letter}
+                    Xem thử thao tác {current.isNumber ? `số ${current.symbol}` : `chữ ${current.symbol}`}
                   </span>
                   {current.kind === 'Động' && (
                     <span className="btn-pink rounded-full px-2.5 py-0.5 text-[11px] font-extrabold text-ink-on-pink shadow-none">
@@ -95,12 +96,12 @@ export function Landing({ onStart }: { onStart: () => void }) {
 
                 <div className="flex items-center justify-center gap-5">
                   <div className="unit-banner flex size-28 items-center justify-center rounded-3xl text-6xl font-black text-ink-on-pink sm:size-32">
-                    {current.letter}
+                    {current.symbol}
                   </div>
                   <div className="flex size-28 items-center justify-center rounded-3xl border-2 border-brand-200 bg-brand-50 p-3 sm:size-32">
                     <img
-                      src={`/media/letters/${current.letter}.svg`}
-                      alt={`Minh họa bàn tay chữ ${current.letter}`}
+                      src={current.isNumber ? `/media/numbers/asl_number_${current.symbol}.svg` : `/media/letters/${current.symbol}.svg`}
+                      alt={`Minh họa bàn tay ${current.isNumber ? `số ${current.symbol}` : `chữ ${current.symbol}`}`}
                       className="size-full object-contain"
                     />
                   </div>
@@ -108,11 +109,11 @@ export function Landing({ onStart }: { onStart: () => void }) {
 
                 <p className="min-h-10 max-w-xs text-sm font-bold text-text-muted">{current.tip}</p>
 
-                {/* Clickable letter selector pills */}
-                <div className="flex flex-wrap justify-center gap-2" role="group" aria-label="Chọn chữ cái xem thử">
-                  {PREVIEW_LETTERS.map((item, idx) => (
+                {/* Clickable symbol selector pills */}
+                <div className="flex flex-wrap justify-center gap-2" role="group" aria-label="Chọn ký hiệu xem thử">
+                  {PREVIEW_ITEMS.map((item, idx) => (
                     <button
-                      key={item.letter}
+                      key={item.symbol}
                       type="button"
                       onClick={() => setSelected(idx)}
                       aria-pressed={selected === idx}
@@ -122,7 +123,7 @@ export function Landing({ onStart }: { onStart: () => void }) {
                           : 'border-border bg-surface text-text-muted hover:border-brand-300 hover:bg-brand-50 hover:text-brand-fg'
                       }`}
                     >
-                      {item.letter}
+                      {item.symbol}
                     </button>
                   ))}
                 </div>
