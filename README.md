@@ -31,8 +31,8 @@ Mở địa chỉ `Local:` mà terminal in ra (thường là `http://localhost:5
 
 | Địa chỉ | Việc |
 |---|---|
-| `/welcome`, `/features`, `/how-it-works`, `/about` | Trang giới thiệu, tính năng, cách hoạt động, nhóm & liên hệ |
-| `/learn` | Lộ trình học: bảng chữ cái, J & Z, số 0–10 |
+| `/`, `/welcome`, `/features`, `/how-it-works`, `/about` | Trang chào (nút Vào học / Tiếp tục học), tính năng, cách hoạt động, nhóm & liên hệ |
+| `/learn` | Lộ trình học kiểu bản đồ kẹo: bảng chữ cái, J & Z, số 0–10 |
 | `/practice` | Luyện tự do: ra dấu trước camera, giữ 1 giây để gõ chữ |
 | `/alphabet` | Bảng chữ cái: hình mẫu từng chữ |
 | `/leaderboard` | Bảng xếp hạng (cần đăng nhập) |
@@ -60,6 +60,20 @@ shared/     hợp đồng dữ liệu giữa ml/ và frontend/
 supabase/   SQL cho tài khoản và bảng xếp hạng (tùy chọn)
 e2e/        kiểm thử đầu cuối (Playwright)
 ```
+
+## Nhóm thực hiện
+
+Đồ án cuối kỳ môn Nhập môn Trí tuệ nhân tạo (Introduction to AI), VNUK. Phân công giống trang Giới thiệu & Liên hệ của app; task theo người ở [`docs/07_MASTER_PLAN.md`](docs/07_MASTER_PLAN.md) §9.
+
+| Thành viên | MSSV | Phụ trách |
+|---|---|---|
+| Nguyễn Tuấn Hưng (trưởng nhóm) | 24090019 | Huấn luyện mô hình nhận diện, nhận diện trong trình duyệt, lộ trình bài học và AI Lab, tài khoản và bảng xếp hạng |
+| Nguyễn Hữu Triết | 24090003 | Tối ưu điểm Lighthouse, tối ưu giao diện trên máy tính, tối ưu giao diện trên điện thoại, giảm thời gian tải trang và dung lượng ảnh |
+| Trần Công Sanh | 24090009 | Thu thập dữ liệu webcam từ nhiều người, kiểm tra chất lượng dữ liệu, kiểm thử trên nhiều trình duyệt và thiết bị, kiểm tra trợ năng |
+| Nguyễn Thảo Anh | 24090028 | Viết báo cáo cuối kỳ, làm slide thuyết trình, kịch bản và video demo, khảo sát ý kiến người dùng, soạn danh sách từ cho bài đánh vần |
+| Nguyễn Anh Dũng | 24090021 | Thiết kế lại giao diện, các trang giới thiệu, nhận diện số 0–10 và ký hiệu động J, Z, âm thanh bài học |
+
+Liên hệ: hung.nguyen240919@vnuk.udn.vn (trưởng nhóm).
 
 ## Giấy phép
 

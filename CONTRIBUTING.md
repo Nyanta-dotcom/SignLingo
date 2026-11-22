@@ -2,6 +2,10 @@
 
 Tài liệu cho các thành viên nhóm. Nguồn sự thật về sản phẩm và kỹ thuật nằm trong [`docs/`](docs/); kế hoạch và trạng thái từng task ở [`docs/07_MASTER_PLAN.md`](docs/07_MASTER_PLAN.md).
 
+## Ai phụ trách phần nào
+
+Xem bảng phân công trong [`docs/07_MASTER_PLAN.md`](docs/07_MASTER_PLAN.md) §9 (giống trang Giới thiệu & Liên hệ). Khi đổi phân công, sửa `frontend/src/features/onboarding/AboutPage.tsx`, PRD §10, docs/07 §9 và README cùng lúc.
+
 ## Quy trình làm việc
 
 Nhánh `main` được bảo vệ: **không push thẳng vào `main`**. Mọi thay đổi đi qua Pull Request.

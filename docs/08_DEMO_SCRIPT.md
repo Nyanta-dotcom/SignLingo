@@ -17,7 +17,7 @@ Mục tiêu: trong khoảng 7 phút cho người chấm thấy (1) vấn đề v
 | Phút | Màn hình | Nói và làm |
 |---|---|---|
 | 0:00 | Trang chào | Vấn đề: học bảng chữ cái ngôn ngữ ký hiệu ASL cần người sửa tay. Giải pháp: học trước webcam, AI nhận dạng ngay trong trình duyệt. Nhấn mạnh: hình camera và dữ liệu bàn tay không bao giờ rời khỏi máy; chỉ khi đăng nhập thì tiến độ học (không có hình) được đồng bộ. |
-| 1:00 | `/learn` | Lộ trình 3 phần: bảng chữ cái (7 bài), chữ động J & Z, số 0–10; bài sau chỉ mở khi xong bài trước; mục tiêu XP trong ngày. |
+| 1:00 | `/learn` | Bấm **Vào học** (hiệu ứng chuyển cảnh với mèo Lingo). Lộ trình kiểu bản đồ kẹo, 3 vùng: bảng chữ cái (7 bài), chữ động J & Z, số 0–10; bài sau chỉ mở khi xong bài trước; mục tiêu XP trong ngày. |
 | 1:30 | Bài 1 | Thẻ chữ, rồi ra dấu: vòng tiến độ đầy sau khi giữ đúng dấu khoảng 1 giây, gợi ý chỉnh ngón tay khi lệch. Làm đúng một chữ, và (nếu tình huống tự nhiên) một chữ sai để thấy mất tim. |
 | 3:00 | Kết quả bài | XP, độ chính xác, chuỗi ngày. Nêu luật: cần đúng từ 50% mới tính hoàn thành. |
 | 3:30 | `/practice` | Luyện tự do: giữ từng chữ để "gõ" thành văn bản, không trừ tim. |

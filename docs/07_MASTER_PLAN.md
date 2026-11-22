@@ -1,6 +1,6 @@
 # 07 — Master Implementation Plan: SignLingo AI
 
-> **Trạng thái:** v0.3 · **Ngày:** 2026-11-22 · **v0.2:** bỏ backend; Phase 2 đổi thành *Client Data & Game*; thêm deploy Vercel. · **v0.3:** đồng bộ trạng thái task với code; thêm **Phase 5** (tài khoản Supabase tùy chọn, bảng xếp hạng, số 0–10, J/Z, giao diện hồng, trang giới thiệu, `/login`).
+> **Trạng thái:** v0.4 · **Ngày:** 2026-11-23 · **v0.2:** bỏ backend; Phase 2 đổi thành *Client Data & Game*; thêm deploy Vercel. · **v0.3:** đồng bộ trạng thái task với code; thêm **Phase 5** (tài khoản Supabase tùy chọn, bảng xếp hạng, số 0–10, J/Z, giao diện hồng, trang giới thiệu, `/login`). · **v0.4 (2026-11-23):** Phase 5 thêm P5-17..P5-25 (bản đồ kẹo, giao diện kawaii, Vào học, điện thoại, Lighthouse, favicon, `.well-known`, phân công); sửa ID trùng P5-14; thêm §9 Phân công thành viên.
 > Truy vết: `FT-*`, `AC-*` ([01_PRD](01_PRD.md)) · lưu trữ ([03_DATA_STORAGE](03_DATA_STORAGE.md)) · hợp đồng ([04_CONTRACTS](04_CONTRACTS.md)).
 > **Quy tắc task:** mỗi task ≤ ~100 dòng code nguồn (không tính test/lock/file sinh); 1 task = 1 lượt Agent = 1 commit. Vòng: **Plan → Review Plan → Code → Test**. Task gắn **[R]** phải duyệt plan trước khi code.
 > Ký hiệu: 🎓 = bắt buộc cho chấm điểm Tuần 5 · 🚀 = MVP · ✨ = mở rộng · ☑ = xong · ☐ = chưa.
@@ -228,7 +228,7 @@ Phase 2 và phần còn lại của Phase 3 (Skill Tree, Lesson Player đầy đ
 | ◐ | P4-11 🎓 | Deploy Production Vercel; chạy lại E2E smoke + perf trên URL production | | URL hoạt động, header đúng · Đã deploy: `https://signlingo-vn.vercel.app` (project `sign-lingo`), có biến môi trường Supabase. **Chưa** chạy E2E smoke/perf trên URL production |
 | ◐ | P4-12 🎓 | Kịch bản demo + dự phòng (mạng yếu → `pnpm preview` localhost; camera lỗi → video fake) | | Diễn tập · Đã viết `docs/08_DEMO_SCRIPT.md` (kịch bản ~7 phút, danh sách chuẩn bị, phương án dự phòng, câu hỏi hay gặp; số liệu đọc từ AI Lab). **Chưa diễn tập**, chưa có link production, và cách camera giả bằng video `.y4m` cần quay chuẩn bị từ trước. |
 
-## Phase 5 — Tài khoản, Bảng xếp hạng, Số & J/Z, Giao diện mới (2026-11-22) 🚀
+## Phase 5 — Tài khoản, Bảng xếp hạng, Số & J/Z, Giao diện mới, Lighthouse (2026-11-22 → 23) 🚀
 
 > Làm theo yêu cầu người dùng sau Phase 4. Thiết kế tài khoản: [ADR_backend_sync](drafts/ADR_backend_sync_DRAFT.md) (người dùng đã chấp thuận hướng). Lược đồ: `supabase/migrations/`. Chi tiết: 02 §5.5, 03 §6, 04 §8.
 
@@ -246,11 +246,19 @@ Phase 2 và phần còn lại của Phase 3 (Skill Tree, Lesson Player đầy đ
 | ☐ | P5-10 | Chuyển ADR nháp thành ADR chính thức sau khi người dùng duyệt quy tắc gộp và câu chữ quyền riêng tư | `docs/` | — |
 | ☐ | P5-11 | E2E đăng nhập giả (Supabase giả lập) và privacy E2E cho trạng thái đã đăng nhập | `e2e/` | AC-PRIV-01, AC-ACC-03 |
 | ☐ | P5-12 | Trước khi có người dùng thật: bật lại "Confirm email" + SMTP riêng; cân nhắc giới hạn XP/ngày, lọc tên hiển thị | Supabase, `sync/` | — |
-| ◐ | P5-16 | Thanh xác suất 24 chữ ở Live Monitor mượt hơn: làm mượt chỉ để hiển thị (mỗi lần cập nhật đi 35% về giá trị mới, không ảnh hưởng quyết định của engine), chuyển động 220 ms; tô nổi chữ có xác suất cao nhất thay vì luôn tô chữ A | `features/lab/smoothBars.ts`, `LiveMonitor.tsx`, `components/ui/PredictionBars.tsx` | Unit ✅ (4). Chưa xem bằng webcam thật |
-| ◐ | P5-15 | Tối ưu tốc độ nhận diện sau lần đo CPU đầu tiên (p50 29,8 ms, p95 38,6 ms, 22,6 khung/giây): đăng ký khung kế tiếp trước khi xử lý để không bỏ khung. Đã thử GPU: chậm hơn (MediaPipe p50 76,1 ms, 9,2 khung/giây) nên giữ CPU | `vision/engine.ts` | Unit ✅ (3). **Chưa đo lại** với CPU sau khi sửa xếp lịch khung |
-| ☑ | P5-14 | Trang `/register` riêng: đăng ký trước rồi mới đăng nhập; form đăng nhập bỏ nút Đăng ký, thêm link "Tạo tài khoản"; nhập lại mật khẩu phải khớp | `features/account/AccountCard.tsx`, `LoginPage.tsx`, `app/App.tsx`, `i18n/vi.ts` | Unit ✅; xem trên trình duyệt ✅ |
 | ☑ | P5-13 | Bảng xếp hạng khi chưa đăng nhập chỉ tới `/login` (trước là Hồ sơ); trang Cách hoạt động và Giới thiệu bỏ nhắc Google, chỉ tới nút Đăng nhập | `i18n/vi.ts`, `features/leaderboard`, `features/onboarding` | Unit ✅ |
-| ◐ | P5-14 | Lộ trình học kiểu bản đồ kẹo: đường kẹo uốn lượn, viên kẹo bài học (số, sao, khóa), 3 vùng màu theo cấp, biển cấp + thanh đếm, cúp đích, trang trí hai bên (seed cố định), thẻ Mục tiêu/Đồng bộ/Chú thích; giữ nguyên trạng thái, ô chi tiết, phím Esc, mục tiêu ngày | `features/skill-tree/*` (`candyLayout.ts`, `CandyDecor.tsx`), `styles/tokens.css`, `index.css`, `i18n/vi.ts` | `candyLayout.test.ts` (đã chạy thật bằng tsc + node: đạt). **Chưa chạy** `pnpm lint/test/typecheck` và E2E a11y (máy agent không cài được npm); cần chạy trước khi merge. Vượt mức 100 dòng/task |
+| ☑ | P5-14 | Trang `/register` riêng: đăng ký trước rồi mới đăng nhập; form đăng nhập bỏ nút Đăng ký, thêm link "Tạo tài khoản"; nhập lại mật khẩu phải khớp | `features/account/AccountCard.tsx`, `LoginPage.tsx`, `app/App.tsx`, `i18n/vi.ts` | Unit ✅; xem trên trình duyệt ✅ |
+| ◐ | P5-15 | Tối ưu tốc độ nhận diện sau lần đo CPU đầu tiên (p50 29,8 ms, p95 38,6 ms, 22,6 khung/giây): đăng ký khung kế tiếp trước khi xử lý để không bỏ khung. Đã thử GPU: chậm hơn (MediaPipe p50 76,1 ms, 9,2 khung/giây) nên giữ CPU | `vision/engine.ts` | Unit ✅ (3). **Chưa đo lại** với CPU sau khi sửa xếp lịch khung |
+| ◐ | P5-16 | Thanh xác suất 24 chữ ở Live Monitor mượt hơn: làm mượt chỉ để hiển thị (mỗi lần cập nhật đi 35% về giá trị mới, không ảnh hưởng quyết định của engine), chuyển động 220 ms; tô nổi chữ có xác suất cao nhất thay vì luôn tô chữ A | `features/lab/smoothBars.ts`, `LiveMonitor.tsx`, `components/ui/PredictionBars.tsx` | Unit ✅ (4). Chưa xem bằng webcam thật |
+| ☑ | P5-17 | Lộ trình học kiểu bản đồ kẹo: đường kẹo uốn lượn, viên kẹo bài học (số, sao, khóa), 3 vùng màu theo cấp, biển cấp + thanh đếm, cúp đích, trang trí hai bên (seed cố định), thẻ Mục tiêu/Đồng bộ/Chú thích; giữ nguyên trạng thái, ô chi tiết, phím Esc, mục tiêu ngày | `features/skill-tree/*` (`candyLayout.ts`, `CandyDecor.tsx`), `styles/tokens.css`, `index.css`, `i18n/vi.ts` | `candyLayout.test.ts` ✅; toàn bộ `pnpm lint/typecheck/test` đã chạy trên `main` 023a29c: 449 test qua. E2E a11y chưa chạy lại. Vượt mức 100 dòng/task |
+| ☑ | P5-18 | Giao diện kawaii: khung app trời pastel, cửa sổ tai mèo, thẻ kẹo; linh vật mèo Lingo (`Mascot`, 7 tư thế) ở sidebar, thanh trên và trang chào | `components/layout/AppShell.tsx`, `components/ui/Mascot.tsx`, `AmbientBackdrop.tsx`, `Card.tsx`, `styles/tokens.css`, `index.css`, `public/mascot/` | `Mascot.test.tsx` ✅ (449 test qua trên `main` 023a29c). Nguồn và giấy phép ảnh linh vật chưa ghi |
+| ☑ | P5-19 | Bố cục gọn: bản đồ kẹo nhỏ hơn, cột nhiệm vụ bên phải, trang Luyện vừa một màn hình | `features/skill-tree/SkillTree.tsx`, `features/practice/Practice.tsx` | Unit ✅ (449 test qua trên `main` 023a29c) |
+| ☑ | P5-20 | Hiệu ứng chuyển cảnh "Vào học" (vòng tròn, chữ bay, dấu chân mèo) trước khi tới `/learn`; `/` luôn hiện trang chào, người đã học thấy nút "Tiếp tục học" | `features/onboarding/LearnTransition.tsx`, `learnTransitionStore.ts`, `Landing.tsx`, `app/App.tsx` | `learnTransitionStore.test.ts` ✅, `App.test.tsx` ✅ |
+| ☑ | P5-21 | Hoàn thiện giao diện điện thoại: lộ trình, bài học, luyện, bảng chữ cái, hồ sơ, AI Lab | `hooks/useIsPhone.ts`, các `features/*` | `useIsPhone.test.tsx` ✅ (449 test qua trên `main` 023a29c). Chưa kiểm trên điện thoại thật |
+| ☑ | P5-22 | Sửa theo Lighthouse: trang tải theo nhu cầu (`React.lazy`), bỏ script chặn hiển thị (`theme-init.js`), thêm `robots.txt`, `sitemap.xml`, `llms.txt`, thẻ meta mô tả, cache ảnh 30 ngày, source map; ảnh linh vật WebP | `app/App.tsx`, `index.html`, `public/*`, `vercel.json`, `vite.config.ts` | Unit ✅. Điểm Lighthouse trên production do người dùng đo, chưa lưu file kết quả trong repo |
+| ☑ | P5-23 | Biểu tượng tab (favicon) tròn hồng với bàn tay, giống logo trong app | `public/favicon.svg`, `index.html` | Xem trên trình duyệt ✅; Safari/iOS (PNG) chưa làm |
+| ☑ | P5-24 | `/.well-known/*` không còn trả `index.html`: file không có thì 404, mục Agentic Browsing của Lighthouse thành "Not applicable" thay vì lỗi JSON | `vercel.json` | Kiểm quy tắc rewrite bằng regex ✅; chưa đo lại Lighthouse sau deploy |
+| ☑ | P5-25 | Cập nhật phân công trên trang Giới thiệu & Liên hệ (Triết: Lighthouse và tối ưu giao diện máy tính/điện thoại) | `features/onboarding/AboutPage.tsx` | `AboutPage.test.tsx` ✅ |
 
 **3 lớp kiểm thử Phase 4:** Unit = micro-benchmark normalizer/classifier (< 2 ms) · Integration = worker ↔ engine protocol; ONNX quantized parity · E2E = perf 60 s, privacy, a11y, dữ liệu cục bộ, smoke trên production.
 
@@ -296,7 +304,7 @@ Next: P1-04
 | Limitations & risks | PRD §8 + RESULTS.md (domain gap, signer ít, XP cục bộ sửa được) |
 | Future improvements | Phase 1B (mô hình học máy cho J/Z, số, từ vựng), P4-05, thu dữ liệu đa người, P5-10..13 |
 | Final GitHub review | AC-REPO-*, P1-26 |
-| 8 mục weekly (What/When/Why/Who/How much/risks/changes/issues) | Nhóm tự điền; "Major changes": bỏ backend, deploy Vercel (2026-11-18); thêm tài khoản Supabase tùy chọn, bảng xếp hạng, số và J/Z, giao diện hồng (2026-11-22) |
+| 8 mục weekly (What/When/Why/Who/How much/risks/changes/issues) | Nhóm tự điền; "Major changes": bỏ backend, deploy Vercel (2026-11-18); thêm tài khoản Supabase tùy chọn, bảng xếp hạng, số và J/Z, giao diện hồng (2026-11-22); giao diện kawaii với linh vật, lộ trình bản đồ kẹo, tối ưu Lighthouse (2026-11-23). "Who": xem §9 |
 
 ## 8. Việc người dùng cần làm / quyết định
 
@@ -312,3 +320,15 @@ Next: P1-04
 | U7 | Thu dữ liệu ≥ 3 người; quay video fake-camera | P1-21, E2E Phase 3 |
 | U8 | Duyệt danh sách skill | P0-10 |
 | U9 | Cấu hình laptop tham chiếu | AC-PERF-01 |
+
+## 9. Phân công thành viên
+
+Theo trang Giới thiệu & Liên hệ (`frontend/src/features/onboarding/AboutPage.tsx`, cũng ở PRD §10). Cột "Phần việc trong kế hoạch" là khu vực mỗi người phụ trách, không phải danh sách người đã viết từng commit.
+
+| Thành viên | Phụ trách | Phần việc trong kế hoạch |
+|---|---|---|
+| Nguyễn Tuấn Hưng (trưởng nhóm) | Huấn luyện mô hình nhận diện, nhận diện trong trình duyệt, lộ trình bài học và AI Lab, tài khoản và bảng xếp hạng | Phase 1 (ML), P3-10..P3-13 (engine), P3-17..P3-22 (bài học, AI Lab), P5-01..P5-07, P5-13..P5-16 |
+| Nguyễn Hữu Triết | Tối ưu điểm Lighthouse, tối ưu giao diện trên máy tính, trên điện thoại, giảm thời gian tải trang và dung lượng ảnh | P4 (đo FPS, tối ưu), P5-21..P5-24; theo dõi điểm Lighthouse sau mỗi lần deploy |
+| Trần Công Sanh | Thu thập dữ liệu webcam từ nhiều người, kiểm tra chất lượng dữ liệu, kiểm thử trên nhiều trình duyệt và thiết bị, kiểm tra trợ năng | P1-21 (thu mẫu, signer holdout), trang `/collect`, P4 (E2E, a11y), P5-11 |
+| Nguyễn Thảo Anh | Báo cáo cuối kỳ, slide, kịch bản và video demo, khảo sát người dùng, danh sách từ cho bài đánh vần | §7 (báo cáo), docs/08 (demo), §8 (danh sách từ `spell_word`) |
+| Nguyễn Anh Dũng | Thiết kế lại giao diện, các trang giới thiệu, nhận diện số 0–10 và J, Z, âm thanh bài học | P5-08, P5-09, P5-17..P5-20, âm thanh |

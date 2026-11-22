@@ -1,6 +1,6 @@
 # 01 — PRD: SignLingo AI
 
-> **Trạng thái:** v0.3 · **Ngày:** 2026-11-22 · **v0.2:** bỏ backend; app là SPA tĩnh trên Vercel, dữ liệu người học lưu trong trình duyệt. · **v0.3 (đồng bộ với code):** thêm tài khoản tùy chọn (Supabase) để đồng bộ tiến độ, bảng xếp hạng tự nguyện, số 0–10 và chữ động J, Z (luật hình học), trang đăng nhập và trang Giới thiệu & Liên hệ; bỏ Xuất JSON và chế độ tối.
+> **Trạng thái:** v0.4 · **Ngày:** 2026-11-23 · **v0.2:** bỏ backend; app là SPA tĩnh trên Vercel, dữ liệu người học lưu trong trình duyệt. · **v0.3 (đồng bộ với code):** thêm tài khoản tùy chọn (Supabase) để đồng bộ tiến độ, bảng xếp hạng tự nguyện, số 0–10 và chữ động J, Z (luật hình học), trang đăng nhập và trang Giới thiệu & Liên hệ; bỏ Xuất JSON và chế độ tối. · **v0.4 (2026-11-23, đồng bộ với code):** trang `/register`; lộ trình kiểu bản đồ kẹo, linh vật mèo Lingo, hiệu ứng "Vào học"; tối ưu Lighthouse; thêm §10 Nhóm thực hiện và phân công.
 > **Tài liệu liên quan:** [02_SOLUTION_ARCHITECTURE](02_SOLUTION_ARCHITECTURE.md) · [03_DATA_STORAGE](03_DATA_STORAGE.md) · [04_CONTRACTS](04_CONTRACTS.md) · [05_UI_DESIGN_SPEC](05_UI_DESIGN_SPEC.md) · [07_MASTER_PLAN](07_MASTER_PLAN.md)
 > **Nguồn đầu vào:** `docs/course/topic.docx`, `week1–5.docx` (yêu cầu môn). Các báo cáo tuần 3–4 cũ **không được dùng** (xem §2).
 
@@ -74,7 +74,7 @@ Mã tính năng được dùng xuyên suốt ARCH / DATA / CONTRACTS / PLAN. C�
 
 | ID | Tính năng | Mô tả | Ưu tiên | Dữ liệu / Hợp đồng |
 |---|---|---|---|---|
-| FT-LRN-01 | Skill Tree | Lộ trình Unit → Lesson dạng đường đi; khóa/mở theo tiến độ | SHOULD | `curriculum.json` + `progress` (03 §2–3) |
+| FT-LRN-01 | Skill Tree | Lộ trình Unit → Lesson dạng bản đồ kẹo: đường uốn lượn, viên kẹo bài học, 3 vùng theo cấp, cúp đích mỗi unit; khóa/mở theo tiến độ | SHOULD | `curriculum.json` + `progress` (03 §2–3) |
 | FT-LRN-02 | Lesson Player – Cấp 1 Chữ cái | Chuỗi bài tập: Xem mẫu → Làm theo trước webcam → Hold-to-Verify | MUST | K3 engine + K4 `startSession/recordAttempt/completeSession` |
 | FT-LRN-03 | Hold-to-Verify | Giữ đúng ký hiệu liên tục ≥ `hold_ms` (mặc định 1.000 ms) với confidence ≥ `threshold` (mặc định 0,60) | MUST | `HoldVerifier`; tham số `item.config` / `manifest.recommended` |
 | FT-LRN-04 | Phản hồi sửa lỗi ngón tay | Tô màu ngón lệch so với mẫu chuẩn (template) + gợi ý bằng chữ + "Đang giống chữ…" | SHOULD | `manifest.class_templates`, `confusable` |
@@ -207,3 +207,17 @@ Không có telemetry, nên đo bằng **buổi thử nghiệm có hướng dẫn
 5. ~~Nguồn hình minh họa?~~ **Theo code (2026-11-22):** 26 hình chữ cái public domain từ wpclipart.com qua Wikimedia Commons (`frontend/public/media/letters/ATTRIBUTION.md`); hình số nằm ở `public/media/numbers/`.
 6. Danh sách từ cho Cấp 2 (Fingerspelling) và từ vựng Cấp 3 — **vẫn chờ người dùng cung cấp**.
 7. ~~Deploy?~~ **Đã chốt:** Vercel Hobby (project `sign-lingo`, `https://signlingo-vn.vercel.app`); repo `github.com/Nyanta-dotcom/SignLingo`; tài khoản tùy chọn qua Supabase (2026-11-22).
+
+## 10. Nhóm thực hiện và phân công
+
+Đồ án cuối kỳ môn Nhập môn Trí tuệ nhân tạo (Introduction to AI), VNUK. Phân công lấy theo trang Giới thiệu & Liên hệ của app (`frontend/src/features/onboarding/AboutPage.tsx`); khi đổi phân công, sửa cả hai nơi. Bảng task theo người ở docs/07 §9.
+
+| Thành viên | MSSV | Phụ trách |
+|---|---|---|
+| Nguyễn Tuấn Hưng | 24090019 | Trưởng nhóm; huấn luyện mô hình nhận diện, nhận diện trong trình duyệt, lộ trình bài học và AI Lab, tài khoản và bảng xếp hạng |
+| Nguyễn Hữu Triết | 24090003 | Tối ưu điểm Lighthouse, tối ưu giao diện trên máy tính, tối ưu giao diện trên điện thoại, giảm thời gian tải trang và dung lượng ảnh |
+| Trần Công Sanh | 24090009 | Thu thập dữ liệu webcam từ nhiều người, kiểm tra chất lượng dữ liệu, kiểm thử trên nhiều trình duyệt và thiết bị, kiểm tra trợ năng |
+| Nguyễn Thảo Anh | 24090028 | Viết báo cáo cuối kỳ, làm slide thuyết trình, kịch bản và video demo, khảo sát ý kiến người dùng, soạn danh sách từ cho bài đánh vần |
+| Nguyễn Anh Dũng | 24090021 | Thiết kế lại giao diện, các trang giới thiệu, nhận diện số 0–10 và ký hiệu động J, Z, âm thanh bài học |
+
+Liên hệ: trưởng nhóm Nguyễn Tuấn Hưng, hung.nguyen240919@vnuk.udn.vn. Mã nguồn: https://github.com/Nyanta-dotcom/SignLingo.

@@ -1,6 +1,6 @@
 # 05 — UI Design Spec: SignLingo AI
 
-> **Trạng thái:** v0.3 · **Ngày:** 2026-11-22 · **v0.2:** bỏ đăng nhập; tiến độ lưu trên máy · **v0.3 (đồng bộ với code):** giao diện tông **hồng**, chỉ chế độ sáng; thêm trang giới thiệu, `/login`, `/about`, `/alphabet`, `/leaderboard`, menu tài khoản; bỏ Xuất JSON và banner nhắc sao lưu. Nguồn sự thật cho giá trị màu là `frontend/src/styles/tokens.css`.
+> **Trạng thái:** v0.4 · **Ngày:** 2026-11-23 · **v0.2:** bỏ đăng nhập; tiến độ lưu trên máy · **v0.3 (đồng bộ với code):** giao diện tông **hồng**, chỉ chế độ sáng; thêm trang giới thiệu, `/login`, `/about`, `/alphabet`, `/leaderboard`, menu tài khoản; bỏ Xuất JSON và banner nhắc sao lưu. Nguồn sự thật cho giá trị màu là `frontend/src/styles/tokens.css`. · **v0.4 (2026-11-23, đồng bộ với code):** giao diện kawaii (trời pastel, cửa sổ tai mèo, thẻ kẹo, linh vật mèo Lingo), lộ trình bản đồ kẹo, hiệu ứng Vào học, `/register`, `/` luôn hiện trang chào, favicon.
 > Phong cách: *học tập gamification kiểu Duolingo* (cảm hứng về cơ chế & cảm giác vui, **không sao chép thương hiệu, linh vật, minh họa hay màu xanh lá đặc trưng của Duolingo**). Màu chủ đạo: **Hồng** (đổi từ xanh Cobalt ở bản thiết kế lại giao diện, 2026-11-22).
 
 ---
@@ -99,6 +99,8 @@
 | `AccountMenu` | signed_out (link Đăng nhập) · signed_in (chữ cái đầu + tên, menu: email, Hồ sơ, Đăng xuất; Esc/bấm ngoài để đóng) | Thanh trên app và đầu trang giới thiệu |
 | `JoinCard` | chưa tham gia (ô tên hiển thị) · đã tham gia (rời bảng) · lỗi (lý do gốc) | Trên trang Hồ sơ |
 | `StatChip`, `AmbientBackdrop`, `BrandMark` | | `components/ui` |
+| `Mascot` | tư thế `front · wave · wink · shock · laptop · headset · back`, chuyển động `hop · sway · breathe · none` | Mèo Lingo, chỉ trang trí (`aria-hidden`), ảnh `public/mascot/*.webp` |
+| `LearnTransition` | ẩn · đang chạy (vòng tròn, chữ bay, dấu chân mèo, "Đi học thôi!") | Chạy khi bấm Vào học, xong thì điều hướng tới `/learn` |
 | `ConfusionMatrix` | heatmap 24×24, hover hiện `true→pred %`, click ô mở gallery | Màu tuần tự brand-50 → brand-900 |
 | `MetricTable` | sort theo cột, đánh dấu mô hình tốt nhất | |
 | `FpsMeter` | số + sparkline 60 s, ngưỡng 30 vạch đứt | |
@@ -108,7 +110,7 @@ Không dùng Radix ngoài `@radix-ui/react-slot` (cho `Button asChild`); hộp t
 ## 4. Kiến trúc thông tin & Điều hướng
 
 ```
-/                 → Lần đầu: Trang chủ giới thiệu · lần sau chuyển thẳng /learn
+/                 → Trang chủ giới thiệu (luôn hiện; người đã học thấy nút "Tiếp tục học"); bấm Vào học chạy hiệu ứng chuyển cảnh rồi tới /learn
 /welcome          → Trang chủ (giới thiệu, xem thử thao tác chữ)        [menu giới thiệu]
 /features         → Tính năng                                          [menu giới thiệu]
 /how-it-works     → Cách hoạt động & quyền riêng tư, câu hỏi thường gặp [menu giới thiệu]
@@ -147,7 +149,7 @@ Trang giới thiệu dùng chung `MarketingLayout`: thanh trên có menu 4 trang
 │          │  │ CẤP 1 · UNIT 2  F–K  (khóa)         │  │ [Đăng nhập]        │
 └──────────┴──┴────────────────────────────────────┴──┴───────────────────┘
 ```
-- Node xếp **zig-zag** theo trục dọc; banner mỗi Unit dùng gradient `unit-banner-bg` chữ `ink-on-pink`. Lộ trình hiện có 3 unit: Bảng chữ cái ASL (7 bài), Chữ cái động J & Z (1 bài), Chữ số 0–10 (2 bài).
+- **Bản đồ kẹo** (`features/skill-tree/candyLayout.ts`, `CandyDecor.tsx`): đường kẹo uốn lượn nối các viên kẹo bài học (số bài, sao, khóa), mỗi unit là một vùng màu ("Thung lũng Kẹo Dâu", "Rừng Bạc Hà", "Lâu đài Kẹo Nho") có biển cấp, thanh đếm bài và cúp đích; trang trí hai bên dùng seed cố định. Cột phải: Mục tiêu hôm nay, Đồng bộ tiến độ, Chú thích. Lộ trình hiện có 3 unit: Bảng chữ cái ASL (7 bài), Chữ cái động J & Z (1 bài), Chữ số 0–10 (2 bài).
 - Click node available → popover: tên bài, số bài tập, XP, nút **BẮT ĐẦU**.
 - Thẻ "Đồng bộ tiến độ" ở cột phải mời đăng nhập (link tới Hồ sơ & Tài khoản). Banner nhắc sao lưu đã bỏ (2026-11-22).
 - Khi `localStorage` bị chặn: banner `warning` "Tiến độ sẽ không được lưu" (AC-ACC-02).
@@ -275,7 +277,7 @@ Use placeholder numbers clearly marked "—"; do not invent metrics.
 
 ## 9. Cần người dùng cung cấp / quyết định
 
-1. ~~Logo & tên~~ **Theo code:** tên **SignLingo**, logo bàn tay (`BrandMark`); chưa có linh vật.
+1. ~~Logo & tên~~ **Theo code:** tên **SignLingo**, logo bàn tay (`BrandMark`, cũng là biểu tượng tab `public/favicon.svg`); linh vật mèo **Lingo** (`public/mascot/*.webp`). **Cần nhóm ghi nguồn và giấy phép ảnh linh vật** (repo chưa có).
 2. ~~Nguồn ảnh~~ **Theo code:** hình chữ cái public domain (wpclipart.com qua Wikimedia Commons), hình số trong `public/media/numbers/`.
 3. ~~Nguồn âm thanh~~ **Theo code:** tự tổng hợp bằng Web Audio.
 4. ~~Ngôn ngữ UI~~ **Theo code:** tiếng Việt (`src/i18n/vi.ts`; riêng nội dung các trang giới thiệu viết thẳng trong component).
