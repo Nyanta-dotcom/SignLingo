@@ -9,9 +9,11 @@ import { vi } from '@/i18n/vi';
 import { downloadJson } from '@/lib/downloadJson';
 import type { PerfRecord } from '@/storage/types';
 import { useLearner } from '@/storage/useLearner';
+import type { RecognitionEvent } from '@/vision/engine';
 import type { HandFrame } from '@/vision/types';
 import { realEngineFactory, useRecognition, type EngineBundle, type EngineFactory, type PerfSnapshot } from '../practice/useRecognition';
 import { FpsMeter } from './FpsMeter';
+import { smoothBars } from './smoothBars';
 
 const PERF_EVERY_MS = 500;
 const RECORD_S = 60;
@@ -26,6 +28,7 @@ export function LiveMonitor({ factory = realEngineFactory }: { factory?: EngineF
   const lastPerf = useRef(-Infinity);
   const recording = useRef<{ startedAt: number; token: number } | null>(null);
   const [perf, setPerf] = useState<PerfSnapshot | null>(null);
+  const [bars, setBars] = useState<Record<string, number>>({});
   const [left, setLeft] = useState<number | null>(null);
   const [outcome, setOutcome] = useState<{ record: PerfRecord; saved: boolean } | null>(null);
   const history = useLearner((s) => s.benchmarks);
@@ -41,8 +44,9 @@ export function LiveMonitor({ factory = realEngineFactory }: { factory?: EngineF
     if (canvas && ctx) drawSkeleton(ctx, frame?.landmarks ?? null, { width: canvas.width, height: canvas.height, color: colors.current.ok, badColor: colors.current.bad });
   }, []);
 
-  const onEvent = useCallback((e: { type: string }, bundle: EngineBundle) => {
+  const onEvent = useCallback((e: RecognitionEvent, bundle: EngineBundle) => {
     if (e.type !== 'prediction' && e.type !== 'no_hand') return;
+    if (e.type === 'prediction') setBars((prev) => smoothBars(prev, e.topK));
     const nowMs = performance.now();
     if (nowMs - lastPerf.current >= PERF_EVERY_MS) {
       lastPerf.current = nowMs;
@@ -82,7 +86,7 @@ export function LiveMonitor({ factory = realEngineFactory }: { factory?: EngineF
   }, [camera.status, camera.error, rec.phase, rec.noHandSince]);
 
   const t = vi.lab.live;
-  const items = rec.prediction ? [...rec.prediction.topK].sort((a, b) => a.label.localeCompare(b.label)) : [];
+  const items = rec.prediction ? Object.entries(bars).map(([label, p]) => ({ label, p })).sort((a, b) => a.label.localeCompare(b.label)) : [];
 
   return (
     <div className="flex flex-col gap-4">

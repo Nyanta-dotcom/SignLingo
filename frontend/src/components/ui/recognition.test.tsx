@@ -31,6 +31,11 @@ describe('PredictionBars', () => {
     expect(rows[0]).toHaveTextContent('84%');
     expect(rows[2]).toHaveTextContent('3%');
   });
+  it('highlights the most likely letter even when the list is in A-Z order', () => {
+    render(<PredictionBars items={[{ label: 'A', p: 0.01 }, { label: 'E', p: 0.86 }, { label: 'F', p: 0.02 }]} caption="Tất cả" />);
+    const rows = screen.getAllByRole('listitem');
+    expect(rows.map((r) => r.dataset.top)).toEqual([undefined, 'true', undefined]);
+  });
   it('renders an empty list without crashing', () => {
     render(<PredictionBars items={[]} caption="Top 3" />);
     expect(screen.queryAllByRole('listitem')).toHaveLength(0);
