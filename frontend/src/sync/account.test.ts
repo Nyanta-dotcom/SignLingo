@@ -73,7 +73,7 @@ describe('account store', () => {
     const store = createAccountStore({ api, local: fakeLocal() });
     await store.getState().start();
     await store.getState().signInWithPassword('a@example.com', 'wrong');
-    expect(store.getState()).toMatchObject({ message: 'auth_failed', busy: false, status: 'signed_out' });
+    expect(store.getState()).toMatchObject({ message: 'auth_failed', detail: 'Invalid login credentials', busy: false, status: 'signed_out' });
   });
 
   it('asks the user to confirm their email after sign-up when the project requires it', async () => {

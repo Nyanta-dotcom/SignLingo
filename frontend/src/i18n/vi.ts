@@ -209,11 +209,12 @@ export const vi = {
     deleteAsk: 'Xóa tài khoản và tiến trình đã lưu trên máy chủ? Tiến trình trên máy này vẫn còn. Không thể hoàn tác.',
     deleteYes: 'Xóa vĩnh viễn',
     deleteNo: 'Giữ lại',
+    detail: (reason: string) => `Lý do từ máy chủ: ${reason}`,
     messages: {
       confirm_email: 'Kiểm tra email để xác nhận tài khoản, rồi đăng nhập.',
       sync_failed: 'Chưa đồng bộ được. Tiến trình vẫn an toàn trên máy này; hãy thử lại sau.',
       app_too_old: 'Tiến trình đã lưu do bản ứng dụng mới hơn tạo ra. Hãy tải lại trang để cập nhật.',
-      auth_failed: 'Không thực hiện được. Kiểm tra email và mật khẩu rồi thử lại.',
+      auth_failed: 'Không thực hiện được. Nếu chưa có tài khoản, hãy bấm Đăng ký trước.',
     },
   },
   profile: {

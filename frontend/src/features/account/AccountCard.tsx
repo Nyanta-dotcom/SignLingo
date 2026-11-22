@@ -16,6 +16,7 @@ export function AccountCard({ store = accountStore(), google = googleEnabled }: 
   const sync = store((s) => s.sync);
   const lastSyncAt = store((s) => s.lastSyncAt);
   const message = store((s) => s.message);
+  const detail = store((s) => s.detail);
   const busy = store((s) => s.busy);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -29,6 +30,7 @@ export function AccountCard({ store = accountStore(), google = googleEnabled }: 
     <Card className="flex flex-col gap-4">
       <h2 className="text-lg font-black text-text">{t.title}</h2>
       {message && <p role="status" className={`text-sm font-bold ${message === 'confirm_email' ? 'text-text' : 'text-danger-on-bg'}`}>{t.messages[message]}</p>}
+      {message === 'auth_failed' && detail && <p className="text-xs text-text-muted">{t.detail(detail)}</p>}
 
       {status === 'loading' && <p className="text-text-muted">{vi.common.loading}</p>}
 

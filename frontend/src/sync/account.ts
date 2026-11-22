@@ -17,6 +17,8 @@ type State = {
   lastSyncAt: string | null;
   /** A short, user-facing code for the last failure or notice; the UI maps it to text. */
   message: 'confirm_email' | 'sync_failed' | 'app_too_old' | 'auth_failed' | null;
+  /** The service's own reason for the last sign-in failure (e.g. "Invalid login credentials"), shown small under the message. */
+  detail: string | null;
   busy: boolean;
   start(): Promise<void>;
   signInWithGoogle(): Promise<void>;
@@ -45,11 +47,11 @@ export function createAccountStore({ api, local, now = () => new Date() }: Optio
 
     /** Runs a sign-in style call; a failure shows a message instead of throwing into the UI. */
     const attempt = async (run: () => Promise<void>) => {
-      set({ busy: true, message: null });
+      set({ busy: true, message: null, detail: null });
       try {
         await run();
-      } catch {
-        set({ message: 'auth_failed' });
+      } catch (e) {
+        set({ message: 'auth_failed', detail: e instanceof Error ? e.message : null });
       } finally {
         set({ busy: false });
       }
@@ -61,6 +63,7 @@ export function createAccountStore({ api, local, now = () => new Date() }: Optio
       sync: 'idle',
       lastSyncAt: null,
       message: null,
+      detail: null,
       busy: false,
 
       async start() {

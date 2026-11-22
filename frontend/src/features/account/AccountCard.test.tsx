@@ -57,6 +57,16 @@ describe('AccountCard', () => {
     await waitFor(() => expect(api.signInWithPassword).toHaveBeenCalledWith('an@example.com', 'secret-pass'));
   });
 
+  it('shows the reason the service gave when sign-in fails', async () => {
+    setup({ signInWithPassword: vi.fn(async () => { throw new Error('Invalid login credentials'); }) });
+    await screen.findByRole('button', { name: 'Đăng nhập' });
+    fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'an@example.com' } });
+    fireEvent.change(screen.getByLabelText(/Mật khẩu/), { target: { value: 'secret-pass' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Đăng nhập' }));
+    expect(await screen.findByText(/Lý do từ máy chủ: Invalid login credentials/)).toBeInTheDocument();
+    expect(screen.getByRole('status')).toHaveTextContent('bấm Đăng ký trước');
+  });
+
   it('sign up asks to confirm the email', async () => {
     setup();
     await screen.findByRole('button', { name: 'Đăng ký' });
