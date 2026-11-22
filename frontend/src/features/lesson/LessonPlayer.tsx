@@ -20,6 +20,7 @@ import { loadLearnData, type LearnData } from '../skill-tree/SkillTree';
 import { realEngineFactory, useRecognition, type EngineFactory } from '../practice/useRecognition';
 import { FeedbackBanner } from './FeedbackBanner';
 import { LearnCard } from './LearnCard';
+import { ReferenceHand } from './ReferenceHand';
 import { LessonResult } from './LessonResult';
 import { useLessonRun } from './useLessonRun';
 import { useSpeller } from './useSpeller';
@@ -234,9 +235,12 @@ function Run({ lesson, signs, model, factory, onRetry }: { lesson: Lesson; signs
                   })}
                 </ol>
               )}
-              <HoldRing progress={performing ? (live?.progress ?? 0) : run.feedback?.kind === 'correct' ? 1 : 0} label={t.holdRing}>
-                <span role="img" aria-label={t.current(letter)} className="text-8xl font-extrabold">{letter}</span>
-              </HoldRing>
+              <div className="flex flex-wrap items-center justify-center gap-4">
+                <HoldRing progress={performing ? (live?.progress ?? 0) : run.feedback?.kind === 'correct' ? 1 : 0} label={t.holdRing}>
+                  <span role="img" aria-label={t.current(letter)} className="text-8xl font-extrabold">{letter}</span>
+                </HoldRing>
+                <ReferenceHand letter={letter} sign={signs.find((x) => x.gloss === letter)} />
+              </div>
               {performing && live?.confused && <p role="status" className="rounded-full bg-surface-2 px-4 py-1 font-bold text-warning-fg">{t.nearMiss(live.confused)}</p>}
               {performing && live && live.fingers.length > 0 && (
                 <ul aria-label={vi.fingers.list} className="flex flex-col gap-1 text-sm">

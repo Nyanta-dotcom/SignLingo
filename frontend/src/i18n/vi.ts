@@ -7,7 +7,7 @@ export const vi = {
   common: { loading: 'Đang tải…', comingSoon: 'Màn hình này đang được xây dựng.', notFound: 'Không tìm thấy trang', startupError: 'Không tải được dữ liệu khởi động' },
   theme: { label: 'Giao diện', system: 'Hệ thống', light: 'Sáng', dark: 'Tối' },
   nav: {
-    learn: 'Học', practice: 'Luyện', dictionary: 'Từ điển', lab: 'AI Lab', profile: 'Hồ sơ', settings: 'Cài đặt',
+    learn: 'Học', practice: 'Luyện', alphabet: 'Bảng chữ cái', lab: 'AI Lab', profile: 'Hồ sơ', settings: 'Cài đặt',
     skip: 'Bỏ qua điều hướng', sidebar: 'Điều hướng chính', bottom: 'Điều hướng nhanh',
   },
   camera: {
@@ -23,6 +23,19 @@ export const vi = {
     gpuFailed: 'Trình duyệt không chạy được bộ theo dõi bàn tay.',
     retry: 'Thử lại',
     label: 'Khung camera',
+  },
+  alphabet: {
+    title: 'Bảng chữ cái',
+    intro: 'Bấm vào một chữ để xem thao tác tay chuẩn của chữ đó.',
+    open: (l: string) => `Xem thao tác chữ ${l}`,
+    back: 'Bảng chữ cái',
+    howTo: 'Làm theo đúng hướng bàn tay trong hình và giữ yên khoảng 1 giây. Luyện với camera để AI kiểm tra giúp bạn.',
+    practice: 'Luyện với camera',
+    prev: (l: string) => `Chữ trước: ${l}`,
+    next: (l: string) => `Chữ sau: ${l}`,
+    unknown: (l: string) => `Không có chữ ${l} trong bảng chữ cái của ứng dụng.`,
+    notIncluded: 'J và Z là chữ cần chuyển động nên chưa có trong ứng dụng.',
+    loadError: 'Không tải được bảng chữ cái.',
   },
   practice: {
     title: 'Luyện tự do',
@@ -62,6 +75,7 @@ export const vi = {
     cardTitle: (l: string) => `Chữ ${l}`,
     cardText: 'Ở bước sau bạn sẽ làm dấu này trước camera.',
     cardImageAlt: (l: string) => `Hình minh họa bàn tay làm chữ ${l}`,
+    referenceCaption: 'Mẫu để đối chiếu',
     cardArtCredit: 'Hình minh họa của SignLingo theo bảng chữ cái ASL (Gallaudet). Chỉ để tham khảo.',
     cardImageCredit: (by: string, license: string) => `Hình: ${by} (${license})`,
     cardLetter: 'Chữ cái cần học',

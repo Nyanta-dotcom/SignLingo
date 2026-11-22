@@ -6,7 +6,7 @@ import { StatChip } from '@/components/ui/StatChip';
 export const NAV_ITEMS = [
   { to: '/learn', label: vi.nav.learn, icon: '🏠' },
   { to: '/practice', label: vi.nav.practice, icon: '🖐' },
-  { to: '/dictionary', label: vi.nav.dictionary, icon: '📖' },
+  { to: '/alphabet', label: vi.nav.alphabet, icon: '🔤' },
   { to: '/lab', label: vi.nav.lab, icon: '🧪' },
   { to: '/profile', label: vi.nav.profile, icon: '👤' },
 ] as const;
