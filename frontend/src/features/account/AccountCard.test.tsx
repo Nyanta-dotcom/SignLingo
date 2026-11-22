@@ -16,6 +16,7 @@ const setup = (over: Partial<AuthApi> = {}, user: AccountUser | null = null) => 
     signOut: vi.fn(async () => {}),
     deleteAccount: vi.fn(async () => {}),
     progressFor: vi.fn(() => ({ load: vi.fn(async () => null), save: vi.fn(async () => {}) })),
+    leaderboardFor: vi.fn(),
     ...over,
   } satisfies AuthApi;
   const store = createAccountStore({ api, local: { readData: () => ({}), applyData: vi.fn() } });
@@ -34,6 +35,16 @@ describe('AccountCard', () => {
     expect(await screen.findByRole('button', { name: 'Tiếp tục với Google' })).toBeInTheDocument();
     expect(screen.getByText(/không bao giờ rời máy bạn/)).toBeInTheDocument();
     expect(screen.getByLabelText('Email')).toBeInTheDocument();
+  });
+
+  it('lets the learner show and hide the password they typed', async () => {
+    setup();
+    const field = await screen.findByLabelText(/Mật khẩu/);
+    expect(field).toHaveAttribute('type', 'password');
+    fireEvent.click(screen.getByRole('button', { name: 'Hiện mật khẩu' }));
+    expect(field).toHaveAttribute('type', 'text');
+    fireEvent.click(screen.getByRole('button', { name: 'Ẩn mật khẩu' }));
+    expect(field).toHaveAttribute('type', 'password');
   });
 
   it('hides the Google button until Google sign-in is switched on', async () => {

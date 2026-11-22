@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { Navigate, Route, Routes, useNavigate } from 'react-router';
+import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { Alphabet } from '@/features/alphabet/Alphabet';
 import { LessonPlayer } from '@/features/lesson/LessonPlayer';
@@ -9,6 +9,7 @@ import { FeaturesPage } from '@/features/onboarding/FeaturesPage';
 import { HowItWorksPage } from '@/features/onboarding/HowItWorksPage';
 import { Landing } from '@/features/onboarding/Landing';
 import { Lab } from '@/features/lab/Lab';
+import { Leaderboard } from '@/features/leaderboard/Leaderboard';
 import { Profile } from '@/features/profile/Profile';
 import { Settings } from '@/features/settings/Settings';
 import { SkillTree } from '@/features/skill-tree/SkillTree';
@@ -70,8 +71,21 @@ function useGlobalUiSound() {
   useEffect(() => attachUiSound((kind) => sound.play(kind)), [sound]);
 }
 
+/** Resets window scroll to the top whenever the user navigates to a different route. */
+function useScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    try {
+      window.scrollTo(0, 0);
+    } catch {
+      /* jsdom does not implement window.scrollTo */
+    }
+  }, [pathname]);
+}
+
 export function AppRoutes() {
   useGlobalUiSound();
+  useScrollToTop();
   return (
     <Routes>
       <Route index element={<Home />} />
@@ -87,6 +101,7 @@ export function AppRoutes() {
         <Route path="alphabet" element={<Alphabet />} />
         <Route path="alphabet/:letter" element={<Alphabet />} />
         <Route path="dictionary" element={<Navigate to="/alphabet" replace />} />
+        <Route path="leaderboard" element={<Leaderboard />} />
         <Route path="lab" element={<Lab />} />
         <Route path="profile" element={<Profile />} />
         <Route path="settings" element={<Settings />} />

@@ -15,11 +15,13 @@ Dùng **Supabase** (Auth + Postgres, gói miễn phí) làm dịch vụ có sẵ
 5. **Xung đột giữa các máy:** gộp theo từng phần, không ghi đè mù. Quy tắc nháp: XP và số lần hoàn thành lấy giá trị lớn hơn, trạng thái bài lấy "completed" nếu một bên đã completed, chuỗi ngày và tim lấy bên có `updated_at` mới hơn. Cần bạn duyệt các quy tắc này.
 6. **Bảo mật:** chỉ dùng khóa `anon` công khai trong bundle (an toàn nhờ RLS); tuyệt đối không đưa khóa `service_role` vào repo hay trình duyệt.
 
-## Bảng xếp hạng (bạn muốn làm về sau; nền tảng làm sẵn từ bây giờ)
-- Bảng `public_profiles` chỉ chứa tên hiển thị và điểm: tổng XP, XP 7 ngày gần nhất, chuỗi ngày. **Mặc định không hiện** (`show_on_leaderboard = false`); người dùng phải tự bật.
-- Điểm do trigger trong cơ sở dữ liệu sao chép từ bản sao lưu đã đồng bộ; trình duyệt không được ghi trực tiếp vào cột điểm.
-- Ai cũng đọc được các dòng đã bật hiển thị (kể cả chưa đăng nhập); email và mọi dữ liệu khác không bao giờ lộ.
-- **Giới hạn trung thực:** XP do trình duyệt báo lên, nên người cố tình sửa file đồng bộ vẫn có thể gian lận điểm. Không có backend tự chấm bài thì không tránh được. Đủ dùng cho đồ án và bảng xếp hạng bạn bè; muốn xếp hạng thi đấu thật cần thêm kiểm tra phía máy chủ (ví dụ giới hạn XP tăng mỗi ngày). Màn hình bảng xếp hạng sẽ là một task riêng sau này.
+## Bảng xếp hạng (đã làm theo `supabase/migrations/0002_leaderboard.sql`)
+- Bảng `public_profiles` chỉ chứa tên hiển thị và điểm: tổng XP, XP 7 ngày gần nhất, chuỗi ngày, số lượt thử và lượt đúng (chung và từng chữ). **Mặc định không hiện** (`show_on_leaderboard = false`); người dùng phải tự bật ở Hồ sơ và tự đặt tên hiển thị 2 đến 24 ký tự (không lấy từ email hay tên ở Cài đặt).
+- Bốn bảng: Tuần này, Tổng XP, Chuỗi ngày, Độ chính xác (chung, hoặc riêng từng chữ). Độ chính xác cần tối thiểu 20 lượt thử cho bảng chung và 5 lượt cho một chữ, để một lần may mắn không đứng đầu. Hai ngưỡng này là lựa chọn thiết kế, không phải kết quả thí nghiệm.
+- Điểm do trigger trong cơ sở dữ liệu sao chép từ bản sao lưu đã đồng bộ; trình duyệt không được ghi trực tiếp vào cột điểm. Khi người dùng bật tham gia, điểm lấy ngay từ bản sao lưu (ứng dụng đồng bộ trước khi bật). Số lượt đúng không bao giờ vượt số lượt thử.
+- **Chỉ người đã đăng nhập** đọc được bảng (khách không đọc được); chỉ các dòng đã bật hiển thị. Email và mọi dữ liệu khác không bao giờ lộ.
+- XP tuần là 7 ngày gần nhất tính tại lần đồng bộ cuối, nên chỉ làm mới khi người đó đồng bộ.
+- **Giới hạn trung thực:** XP và số lượt đúng do trình duyệt báo lên, nên người cố tình sửa file đồng bộ vẫn có thể gian lận điểm. Không có backend tự chấm bài thì không tránh được. Hiện chỉ kiểm tra tính nhất quán (đúng không vượt thử); chưa giới hạn XP tăng mỗi ngày vì chưa có số liệu để chọn mức. Đủ dùng cho đồ án và bảng xếp hạng bạn bè.
 - Người dùng xóa tài khoản bằng hàm `delete_my_account()` (xóa luôn mọi dòng của họ).
 
 ## Thay đổi kéo theo (làm khi được duyệt)

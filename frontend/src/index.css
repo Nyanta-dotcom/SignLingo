@@ -4,8 +4,18 @@
 
 /* Signature luminous pink pill button (inspired by reference image + Duolingo 3D lip) */
 .btn-pink {
+  position: relative;
+  overflow: hidden;
   background-image: var(--btn-pink-bg);
   box-shadow: var(--btn-pink-shadow);
+}
+.btn-pink::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--btn-shine);
+  transform: translateX(-120%);
+  pointer-events: none;
 }
 .btn-pink:hover:not(:disabled):not([aria-disabled='true']) {
   background-image: var(--btn-pink-hover);
@@ -16,8 +26,19 @@
 }
 
 .unit-banner {
+  position: relative;
+  overflow: hidden;
   background-image: var(--unit-banner-bg);
   box-shadow: var(--unit-banner-shadow);
+}
+.unit-banner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--btn-shine);
+  opacity: 0.45;
+  transform: translateX(-120%);
+  pointer-events: none;
 }
 
 .node-available {
@@ -35,6 +56,16 @@
 .hero-backdrop {
   background-image: var(--hero-glow);
 }
+
+.bg-landmark-grid {
+  background-image: radial-gradient(var(--bg-dot-color) 1.35px, transparent 1.35px);
+  background-size: 26px 26px;
+}
+
+.bg-orb-pink { background-image: var(--orb-pink); }
+.bg-orb-rose { background-image: var(--orb-rose); }
+.bg-orb-warm { background-image: var(--orb-warm); }
+.bg-scan-beam { background-image: var(--scan-beam); }
 
 .progress-fill {
   background-image: var(--btn-pink-bg);
@@ -104,6 +135,103 @@
   to { stroke-dashoffset: 0; }
 }
 
+@keyframes hero-enter {
+  0% { transform: translateY(18px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes page-enter {
+  0% { transform: translateY(10px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes sign-pop {
+  0% { transform: scale(0.84) rotate(-4deg); opacity: 0; }
+  65% { transform: scale(1.05) rotate(1.5deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+@keyframes popover-pop {
+  0% { transform: translateY(-6px) scale(0.94); opacity: 0.75; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@keyframes pipeline-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.09); }
+}
+
+@keyframes orb-drift-1 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(28px, 22px, 0) scale(1.08); }
+}
+
+@keyframes orb-drift-2 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-26px, 18px, 0) scale(1.06); }
+}
+
+@keyframes orb-drift-3 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(18px, -24px, 0) scale(1.1); }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(2deg); }
+}
+
+@keyframes float-slow-reverse {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(10px) rotate(-2deg); }
+}
+
+@keyframes float-bob {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes keypoint-ping {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.45); opacity: 0.45; }
+}
+
+@keyframes btn-shimmer {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(120%); }
+}
+
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes scan-sweep {
+  0% { transform: translateY(-100%); opacity: 0; }
+  15%, 85% { opacity: 1; }
+  100% { transform: translateY(420%); opacity: 0; }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .motion-arrow { animation: motion-flow 1.4s linear infinite; }
+  .trail-dash { animation: motion-flow 2.8s linear infinite; }
+  .hero-enter { animation: hero-enter 520ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .hero-enter-delay { animation: hero-enter 620ms 110ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .page-enter { animation: page-enter 300ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .sign-pop { animation: sign-pop 380ms var(--motion-bounce, ease-out) both; }
+  .popover-pop { transform-origin: top center; animation: popover-pop 150ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .stagger-in { animation: hero-enter 460ms calc(var(--stagger-i, 0) * 65ms) cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .pipeline-pulse { animation: pipeline-pulse 2.4s calc(var(--stagger-i, 0) * 320ms) ease-in-out infinite; }
+  .orb-float-1 { animation: orb-drift-1 16s ease-in-out infinite; }
+  .orb-float-2 { animation: orb-drift-2 20s ease-in-out infinite; }
+  .orb-float-3 { animation: orb-drift-3 18s ease-in-out infinite; }
+  .float-slow { animation: float-slow 5.5s ease-in-out infinite; }
+  .float-slow-reverse { animation: float-slow-reverse 6.2s ease-in-out infinite; }
+  .float-bob { animation: float-bob 2.2s ease-in-out infinite; }
+  .keypoint-ping { transform-box: fill-box; transform-origin: center; animation: keypoint-ping 2.6s calc(var(--kp-d, 0) * 180ms) ease-in-out infinite; }
+  .btn-pink:hover:not(:disabled):not([aria-disabled='true'])::after { animation: btn-shimmer 720ms ease-out; }
+  .unit-banner:hover::after { animation: btn-shimmer 950ms ease-out; }
+  .marquee-track { animation: marquee-scroll 28s linear infinite; }
+  .marquee-group:hover .marquee-track { animation-play-state: paused; }
+  .scan-beam { animation: scan-sweep 3.2s ease-in-out infinite; }
 }

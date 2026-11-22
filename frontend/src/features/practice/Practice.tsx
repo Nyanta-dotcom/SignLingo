@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { HoldRing } from '@/components/ui/HoldRing';
-import { PlayIcon } from '@/components/ui/Icons';
+import { HandIcon, PlayIcon } from '@/components/ui/Icons';
 import { PredictionBars } from '@/components/ui/PredictionBars';
 import { CameraFrame, type CameraFrameState } from '@/components/vision/CameraFrame';
 import { drawSkeleton, drawTrail, tokenColor } from '@/components/vision/overlay';
@@ -127,6 +127,14 @@ export function Practice({ factory = realEngineFactory }: { factory?: EngineFact
         <div>
           <h1 className="text-3xl font-black tracking-tight text-text">{vi.practice.title}</h1>
           <p className="mt-1 text-text-muted">{vi.practice.intro}</p>
+          <div className="mt-3 flex flex-wrap gap-2 text-xs font-extrabold">
+            <span className="rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-brand-fg">
+              ✓ Giữ chữ tĩnh 1 giây để gõ
+            </span>
+            <span className="rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-brand-fg">
+              ✓ Vẽ nét móc J hoặc ziczac Z
+            </span>
+          </div>
         </div>
         {running || camera.status === 'error' ? (
           <CameraFrame
@@ -141,7 +149,13 @@ export function Practice({ factory = realEngineFactory }: { factory?: EngineFact
             onRetry={() => void camera.start()}
           />
         ) : (
-          <Card className="flex aspect-[4/3] flex-col items-center justify-center gap-4 border-dashed border-brand-300 bg-brand-50/40">
+          <Card className="relative flex aspect-[4/3] flex-col items-center justify-center gap-4 overflow-hidden border-dashed border-brand-300 bg-brand-50/40">
+            <div aria-hidden="true" className="float-slow flex size-20 items-center justify-center rounded-3xl border-2 border-brand-200 bg-surface text-brand-fg shadow-(--card-shadow)">
+              <HandIcon className="size-10" />
+            </div>
+            <p className="max-w-xs text-center text-sm font-bold text-text-muted">
+              Giơ tay trước webcam để nhận diện 21 điểm bàn tay theo thời gian thực
+            </p>
             <Button size="lg" onClick={() => void camera.start()}>
               <PlayIcon className="size-4" />
               {vi.practice.start}
