@@ -4,6 +4,7 @@ import { AmbientBackdrop } from '@/components/ui/AmbientBackdrop';
 import { Button } from '@/components/ui/Button';
 import { BrandMark, PlayIcon } from '@/components/ui/Icons';
 import { vi } from '@/i18n/vi';
+import { AccountMenu } from '@/features/account/AccountMenu';
 import { useAccount } from '@/sync/useAccount';
 
 const PAGES = [
@@ -22,7 +23,7 @@ type Props = {
 /** Shared 3-page pre-app marketing shell: themed ASL backdrop + frosted navbar + animated content + clean footer. */
 export function MarketingLayout({ onStart, activeHome = false, children }: Props) {
   const { pathname } = useLocation();
-  const signedOut = useAccount((s) => s.status === 'signed_out');
+  const hasAccount = useAccount((s) => s.status === 'signed_in' || s.status === 'signed_out');
   return (
     <div className="hero-backdrop relative flex min-h-dvh flex-col bg-bg text-text">
       <AmbientBackdrop variant="marketing" />
@@ -31,7 +32,7 @@ export function MarketingLayout({ onStart, activeHome = false, children }: Props
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
           <Link to="/welcome" className="group flex items-center gap-2.5 rounded-2xl">
             <BrandMark className="size-9 transition-transform duration-(--motion-bounce) group-hover:-rotate-6 group-hover:scale-110" />
-            <span className={`text-xl font-black tracking-tight text-brand-fg ${signedOut ? 'hidden sm:inline' : ''}`}>{vi.appName}</span>
+            <span className={`text-xl font-black tracking-tight text-brand-fg ${hasAccount ? 'hidden sm:inline' : ''}`}>{vi.appName}</span>
           </Link>
 
           <nav aria-label="Điều hướng giới thiệu" className="hidden items-center gap-1 rounded-full border-2 border-border bg-surface-2/80 p-1 md:flex">
@@ -52,11 +53,7 @@ export function MarketingLayout({ onStart, activeHome = false, children }: Props
           </nav>
 
           <div className="flex items-center gap-2.5">
-            {signedOut && (
-              <Button size="sm" variant="secondary" asChild>
-                <Link to="/login" className="whitespace-nowrap">{vi.login.title}</Link>
-              </Button>
-            )}
+            <AccountMenu />
             <Button size="sm" onClick={onStart} className="whitespace-nowrap">
               <PlayIcon className="size-3.5" />
               Vào học

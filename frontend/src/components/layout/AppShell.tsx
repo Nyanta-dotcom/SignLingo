@@ -92,7 +92,7 @@ function BottomNav() {
 }
 
 /** Desktop: crisp white Duolingo sidebar + themed ASL backdrop + sticky stat bar. Mobile: top bar + floating pill dock. */
-export function AppShell({ stats, banner, loginLink = false }: { stats: Stats; banner?: ReactNode; loginLink?: boolean }) {
+export function AppShell({ stats, banner, account }: { stats: Stats; banner?: ReactNode; account?: ReactNode }) {
   const { pathname } = useLocation();
   return (
     <div className="relative min-h-dvh bg-bg text-text md:grid md:grid-cols-[16.5rem_1fr]">
@@ -122,18 +122,10 @@ export function AppShell({ stats, banner, loginLink = false }: { stats: Stats; b
         <header className="sticky top-0 z-20 flex items-center justify-between gap-2 border-b-2 border-border/80 bg-surface/85 px-4 py-2.5 backdrop-blur-xl md:justify-end md:px-8">
           <Link to="/" className="flex items-center gap-2 md:hidden">
             <BrandMark className="size-8" />
-            <span className={`text-lg font-black tracking-tight text-brand-fg ${loginLink ? 'hidden sm:inline' : ''}`}>{vi.appName}</span>
+            <span className={`text-lg font-black tracking-tight text-brand-fg ${account ? 'hidden sm:inline' : ''}`}>{vi.appName}</span>
           </Link>
           <div className="flex items-center gap-2">
-            {loginLink && (
-              <Link
-                to="/login" aria-label={vi.login.title}
-                className="inline-flex min-h-10 min-w-10 items-center justify-center gap-1.5 rounded-full border-2 border-brand-300 bg-brand-50 px-2.5 text-sm font-extrabold text-brand-fg transition-colors hover:bg-brand-100"
-              >
-                <UserIcon className="size-5" />
-                <span className="hidden sm:inline">{vi.login.title}</span>
-              </Link>
-            )}
+            {account}
             <StatChip kind="streak" value={stats.streak} />
             <StatChip kind="xp" value={stats.xp} />
             <StatChip kind="hearts" value={stats.hearts} />
