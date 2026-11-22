@@ -1,18 +1,18 @@
 # ADR (nháp) · Tài khoản và đồng bộ tiến trình học
 
-Trạng thái: **ĐƯỢC CHẤP THUẬN HƯỚNG** (người dùng muốn backend để đăng nhập, lưu tiến trình và làm bảng xếp hạng về sau, 2026-11-22). Các quy tắc gộp ở mục 5 và lời hứa quyền riêng tư mới đang được thực hiện theo nháp này, chờ xác nhận chi tiết.
+Trạng thái: **ĐƯỢC CHẤP THUẬN HƯỚNG VÀ ĐÃ TRIỂN KHAI** (2026-11-22). Đăng nhập, đồng bộ và bảng xếp hạng đang chạy trên production; người dùng đã chạy `0001_init.sql` và `0002_leaderboard.sql`. Còn chờ duyệt chính thức: quy tắc gộp ở mục 5 (bản đang chạy ghi ở dưới) để chuyển nháp này thành ADR chính thức (task P5-10).
 
 ## Bối cảnh
-Hiện tiến trình lưu trong `localStorage` (có xuất/nhập JSON). Người dùng không giữ được tiến trình khi đổi máy hay xóa dữ liệu trình duyệt. Mục tiêu của bạn: có tài khoản và đồng bộ tiến trình để thể hiện kiến trúc đầy đủ cho đồ án, còn nhiều thời gian.
+Trước đây tiến trình chỉ lưu trong `localStorage` (có xuất/nhập JSON; nút Xuất đã bỏ ngày 2026-11-22 vì tài khoản thay thế). Người dùng không giữ được tiến trình khi đổi máy hay xóa dữ liệu trình duyệt. Mục tiêu của bạn: có tài khoản và đồng bộ tiến trình để thể hiện kiến trúc đầy đủ cho đồ án, còn nhiều thời gian.
 
 ## Quyết định đề xuất
 Dùng **Supabase** (Auth + Postgres, gói miễn phí) làm dịch vụ có sẵn, **không tự viết server**.
 
 1. **Đồng bộ là tùy chọn.** Không đăng nhập vẫn dùng đủ mọi tính năng như hiện nay (local-first). Đăng nhập chỉ thêm việc đồng bộ.
-2. **Đăng nhập:** Google (OAuth) và email + mật khẩu (xác thực email). Mật khẩu do Supabase xử lý, app không bao giờ thấy.
-3. **Chỉ đồng bộ tiến trình** theo đúng `shared/contracts/schemas/backup.schema.json` (profile, stats, progress, daily, settings, sessions tóm tắt). **Không bao giờ tải lên** hình camera, video hay landmark bàn tay. Collect vẫn chỉ xuất file ra máy.
+2. **Đăng nhập:** email + mật khẩu (Supabase xử lý mật khẩu). Google (OAuth) đã có mã nhưng chỉ hiện khi đặt `VITE_SUPABASE_GOOGLE=true`; hiện chưa bật. "Confirm email" đang tắt để thử nhanh, cần bật lại kèm SMTP riêng trước khi có người dùng thật. Giao diện: trang `/login`, menu tài khoản ở thanh trên (tên, email, Hồ sơ, Đăng xuất), thẻ Tài khoản ở Hồ sơ (đồng bộ ngay, đăng xuất, xóa tài khoản).
+3. **Chỉ đồng bộ tiến trình**: các khóa `profile, stats, progress, daily, sign_stats` của `backup.schema.json`. `settings`, `sessions`, `benchmarks` ở lại máy. **Không bao giờ tải lên** hình camera, video hay landmark bàn tay. Collect vẫn chỉ xuất file ra máy.
 4. **Một dòng JSON cho mỗi người dùng** (bảng `user_backups`: `user_id`, `schema_version`, `data jsonb`, `updated_at`), bật Row Level Security: mỗi người chỉ đọc/ghi dòng của mình. Tái dùng bộ kiểm tra backup đã có, nên không thêm lược đồ mới.
-5. **Xung đột giữa các máy:** gộp theo từng phần, không ghi đè mù. Quy tắc nháp: XP và số lần hoàn thành lấy giá trị lớn hơn, trạng thái bài lấy "completed" nếu một bên đã completed, chuỗi ngày và tim lấy bên có `updated_at` mới hơn. Cần bạn duyệt các quy tắc này.
+5. **Xung đột giữa các máy:** gộp theo từng phần, không ghi đè mù, quy tắc "không bao giờ mất tiến độ" (`frontend/src/sync/merge.ts`, chi tiết ở docs/03 §6.2): bài lấy `completed` nếu một bên đã xong, điểm và số lần lấy lớn hơn; ngày học hợp lại; tổng XP lấy lớn hơn nhưng không nhỏ hơn tổng XP các ngày; chuỗi ngày theo bên có ngày đạt mục tiêu mới hơn; tim theo bên có `hearts_updated_at` mới hơn; thống kê từng chữ theo bên nhiều lượt thử hơn. Cần bạn duyệt chính thức.
 6. **Bảo mật:** chỉ dùng khóa `anon` công khai trong bundle (an toàn nhờ RLS); tuyệt đối không đưa khóa `service_role` vào repo hay trình duyệt.
 
 ## Bảng xếp hạng (đã làm theo `supabase/migrations/0002_leaderboard.sql`)
@@ -24,12 +24,13 @@ Dùng **Supabase** (Auth + Postgres, gói miễn phí) làm dịch vụ có sẵ
 - **Giới hạn trung thực:** XP và số lượt đúng do trình duyệt báo lên, nên người cố tình sửa file đồng bộ vẫn có thể gian lận điểm. Không có backend tự chấm bài thì không tránh được. Hiện chỉ kiểm tra tính nhất quán (đúng không vượt thử); chưa giới hạn XP tăng mỗi ngày vì chưa có số liệu để chọn mức. Đủ dùng cho đồ án và bảng xếp hạng bạn bè.
 - Người dùng xóa tài khoản bằng hàm `delete_my_account()` (xóa luôn mọi dòng của họ).
 
-## Thay đổi kéo theo (làm khi được duyệt)
-- Nới CSP đúng một địa chỉ: `connect-src 'self' https://<project>.supabase.co`, và cho phép `https://accounts.google.com` nếu dùng Google.
-- Sửa lời hứa trên trang chào, trang Cài đặt, `docs/08_DEMO_SCRIPT.md` và câu hỏi Network: từ "không dữ liệu nào rời máy" thành "mặc định không rời máy; chỉ khi bạn đăng nhập, tiến trình học (không có hình ảnh) được đồng bộ".
-- Cập nhật docs 02 (kiến trúc), 03 (lưu trữ), 04 (hợp đồng), ADR chính thức; thêm biến môi trường `VITE_SUPABASE_URL` và `VITE_SUPABASE_ANON_KEY` trên Vercel.
-- Màn hình: nút Đăng nhập trong Hồ sơ/Cài đặt, trạng thái đồng bộ, nút Đăng xuất, nút xóa dữ liệu trên máy chủ (quyền xóa của người dùng).
-- Test: đơn vị cho phần gộp, mô phỏng Supabase bằng giả lập, e2e đăng nhập giả; kiểm tra CSP trên `pnpm preview`.
+## Thay đổi kéo theo (trạng thái 2026-11-22)
+- ☑ CSP: `connect-src 'self' https://*.supabase.co` (`frontend/vercel.json`). Chưa thêm `accounts.google.com` vì Google chưa bật.
+- ☑ Lời hứa quyền riêng tư đã đổi trên trang giới thiệu, Cách hoạt động, Giới thiệu & Liên hệ, Cài đặt và `docs/08_DEMO_SCRIPT.md`: hình camera và dữ liệu bàn tay không rời máy; chỉ khi đăng nhập, tiến trình học được đồng bộ.
+- ☑ Docs 01–05, 07 đã cập nhật (v0.3). ☐ ADR chính thức (P5-10).
+- ☑ Biến môi trường `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` (và tùy chọn `VITE_SUPABASE_GOOGLE`) trên Vercel.
+- ☑ Màn hình: `/login`, menu tài khoản, thẻ Tài khoản (trạng thái đồng bộ, Đăng xuất, Xóa tài khoản), thẻ Tham gia bảng xếp hạng, trang `/leaderboard`.
+- ◐ Test: đơn vị cho phần gộp và account store với Supabase giả lập ☑; e2e đăng nhập giả ☐ (P5-11); kiểm CSP trên Vercel ☐.
 
 ## Phương án đã cân nhắc
 - **Giữ local + sao lưu JSON:** an toàn, rẻ, nhưng không có tài khoản.

@@ -1,6 +1,6 @@
 # 01 — PRD: SignLingo AI
 
-> **Trạng thái:** Draft v0.2 — chờ review · **Ngày:** 2026-11-18 · **v0.2:** bỏ backend; app là SPA tĩnh trên Vercel, dữ liệu người học lưu trong trình duyệt.
+> **Trạng thái:** v0.3 · **Ngày:** 2026-11-22 · **v0.2:** bỏ backend; app là SPA tĩnh trên Vercel, dữ liệu người học lưu trong trình duyệt. · **v0.3 (đồng bộ với code):** thêm tài khoản tùy chọn (Supabase) để đồng bộ tiến độ, bảng xếp hạng tự nguyện, số 0–10 và chữ động J, Z (luật hình học), trang đăng nhập và trang Giới thiệu & Liên hệ; bỏ Xuất JSON và chế độ tối.
 > **Tài liệu liên quan:** [02_SOLUTION_ARCHITECTURE](02_SOLUTION_ARCHITECTURE.md) · [03_DATA_STORAGE](03_DATA_STORAGE.md) · [04_CONTRACTS](04_CONTRACTS.md) · [05_UI_DESIGN_SPEC](05_UI_DESIGN_SPEC.md) · [07_MASTER_PLAN](07_MASTER_PLAN.md)
 > **Nguồn đầu vào:** `docs/course/topic.docx`, `week1–5.docx` (yêu cầu môn). Các báo cáo tuần 3–4 cũ **không được dùng** (xem §2).
 
@@ -24,8 +24,8 @@
 | Tiến độ môn | Lịch môn học theo `docs/course/week1–5.docx`. Tiến độ **thực** của nhóm chỉ được tính bằng kết quả chạy trong repo này (xem `docs/07_MASTER_PLAN.md`) |
 | Kết quả đã có | **Chưa có kết quả nào được kiểm chứng.** Số liệu trong các báo cáo tuần 3–4 cũ không do mã trong repo này sinh ra nên **không dùng** làm bằng chứng, ngưỡng hay mục tiêu (quyết định 2026-11-18). Mọi số liệu về sau đến từ `ml/reports/experiments/*.json` (có seed và git commit) |
 | Dữ liệu | Kaggle Sign Language MNIST (27.455 train / 7.172 test, 28×28 xám, 24 lớp; số đếm đã kiểm trực tiếp trên file) · `keypoint.csv` (36.402 dòng, 33.536 mẫu sau khi bỏ J, Z, 24 chữ; giấy phép MIT, từ dự án American-Sign-Language-Detection; **không có cột người ra dấu hay phiên thu**) · Dữ liệu webcam tự thu của nhóm (kế hoạch: ≥ 3 người × 30–50 mẫu/chữ). Cách Kaggle tạo tập train (số ảnh gốc, số bản augment) **chưa được kiểm chứng**; ta chỉ dựa vào bằng chứng đo được (chia ngẫu nhiên gây rò rỉ) |
-| Quyết định hạ tầng (2026-11-18) | Dự án học tập phi thương mại → **SPA tĩnh deploy Vercel (gói Hobby)**, **không backend, không DB server, không tài khoản**. Tiến độ lưu `localStorage` + Xuất/Nhập JSON; mẫu landmark thu thêm tải về dạng file |
-| Ràng buộc kỹ thuật | Inference trên trình duyệt (privacy: không dữ liệu nào rời máy) · random_seed = 42 · Không chia validation ngẫu nhiên trên MNIST · Chuẩn hóa chỉ fit trên Train · Không lật ngang ảnh MNIST |
+| Quyết định hạ tầng (2026-11-18, sửa 2026-11-22) | Dự án học tập phi thương mại → **SPA tĩnh deploy Vercel (gói Hobby)**, không tự viết server. Tiến độ lưu `localStorage` (local-first). **Từ 2026-11-22:** tài khoản tùy chọn qua Supabase (Auth + Postgres) để đồng bộ tiến độ và tham gia bảng xếp hạng; xem [ADR_backend_sync](drafts/ADR_backend_sync_DRAFT.md). Mẫu landmark thu thêm vẫn tải về dạng file |
+| Ràng buộc kỹ thuật | Inference trên trình duyệt (privacy: hình camera và landmark không rời máy; chỉ tiến độ học được đồng bộ khi người học tự đăng nhập) · random_seed = 42 · Không chia validation ngẫu nhiên trên MNIST · Chuẩn hóa chỉ fit trên Train · Không lật ngang ảnh MNIST |
 
 ### 2.1 Research Questions (dùng cho rubric "3 Research Questions")
 
@@ -49,9 +49,9 @@
 | Mức ưu tiên | Bao gồm |
 |---|---|
 | **MUST (bắt buộc cho Tuần 5 / chấm điểm)** | Pipeline ML tái lập được · Baseline vs CNN vs Landmark-MLP · Group split chống leakage · Xuất ONNX · Web nhận diện real-time > 30 FPS · Cấp độ 1 (bảng chữ cái) với Hold-to-Verify · Free Practice · AI Lab hiển thị kết quả từ JSON · Deploy Vercel · README |
-| **SHOULD (MVP)** | Skill Tree · XP, Streak, Hearts cục bộ · Light/Dark mode · Âm thanh · Phản hồi sửa lỗi ngón tay · Cấp độ 2 Fingerspelling · Xuất/Nhập tiến độ · Trang thu mẫu landmark |
-| **COULD (mở rộng)** | Cấp độ 3 từ vựng động (chuỗi landmark) · J, Z động · PWA offline |
-| **WON'T (lần này)** | **Backend, DB server, tài khoản / đăng nhập, đồng bộ nhiều máy, bảng xếp hạng, telemetry** · App mobile native · Nhận diện câu ASL liên tục · VSL · Biểu cảm khuôn mặt |
+| **SHOULD (MVP)** | Skill Tree · XP, Streak, Hearts · Âm thanh · Phản hồi sửa lỗi ngón tay · Cấp độ 2 Fingerspelling · Nhập/Xóa tiến độ · Trang thu mẫu landmark · Bảng chữ cái tra cứu · **(đã làm, 2026-11-22)** J, Z động và số 0–10 bằng luật hình học · tài khoản tùy chọn + đồng bộ tiến độ · bảng xếp hạng tự nguyện · trang giới thiệu (Trang chủ, Tính năng, Cách hoạt động, Giới thiệu & Liên hệ) |
+| **COULD (mở rộng)** | Cấp độ 3 từ vựng động (chuỗi landmark) · mô hình học máy cho J, Z, số (thay luật) · đăng nhập Google · PWA offline |
+| **WON'T (lần này)** | Tự viết backend/server · telemetry, analytics · chế độ tối (đã bỏ 2026-11-22, giao diện chỉ sáng) · App mobile native · Nhận diện câu ASL liên tục · VSL · Biểu cảm khuôn mặt |
 
 ## 5. Danh sách tính năng (Features – Ft)
 
@@ -81,6 +81,9 @@ Mã tính năng được dùng xuyên suốt ARCH / DATA / CONTRACTS / PLAN. C�
 | FT-LRN-05 | Cấp 2 Fingerspelling | Đánh vần một từ: chuỗi chữ cái tĩnh lần lượt, mỗi chữ Hold-to-Verify | SHOULD | `item.type = spell_word` |
 | FT-LRN-06 | Cấp 3 Từ vựng động | Nhận diện từ vựng qua chuỗi landmark | COULD | `sign.kind = dynamic`, task `dynamic_words` |
 | FT-LRN-07 | Luyện tự do (Free Practice) | Bật webcam, hiển thị chữ dự đoán + top-3 xác suất, không tính tim | MUST | K3; session `mode = free_practice` |
+| FT-LRN-08 | Chữ động J, Z | Kiểm dáng tay khởi đầu rồi theo dõi quỹ đạo đầu ngón, vẽ vệt sáng trên màn hình (luật hình học, không học máy) | SHOULD (đã làm) | `vision/dynamicGesture.ts`, `item.type = perform_dynamic`, Unit 2 |
+| FT-LRN-09 | Chữ số 0–10 | 0–9 theo tổ hợp ngón; 10 là ngón cái giơ lên kèm lắc cổ tay (luật hình học) | SHOULD (đã làm) | `vision/numberGesture.ts`, Unit 3 |
+| FT-LRN-10 | Bảng chữ cái | Trang `/alphabet` tra cứu hình mẫu từng chữ (thay tab Từ điển) | SHOULD (đã làm) | `curriculum.json` `signs.media` |
 
 ### 5.3 Nhóm Gamification (tính hoàn toàn ở client)
 
@@ -90,19 +93,21 @@ Mã tính năng được dùng xuyên suốt ARCH / DATA / CONTRACTS / PLAN. C�
 | FT-GAM-02 | Streak | Chuỗi ngày đạt mục tiêu XP/ngày theo múi giờ máy | SHOULD | `daily`, `stats` |
 | FT-GAM-03 | Hearts (Tim/mạng) | Tối đa 5; mất 1 khi trượt bài tập mà mô hình đủ tự tin (không phạt khi mô hình phân vân); hồi 1 tim/30 phút | SHOULD | `stats.hearts`, `hearts_updated_at` |
 | FT-GAM-04 | Thanh tiến độ & màn kết quả | Tiến độ trong bài, màn tổng kết XP/độ chính xác/thời gian | SHOULD | `CompleteResult` |
-| FT-GAM-05 | Âm thanh & hiệu ứng | Âm đúng/sai/hoàn thành, confetti; luôn có tín hiệu hình tương đương; tôn trọng `prefers-reduced-motion` | SHOULD | `settings` |
+| FT-GAM-05 | Âm thanh & hiệu ứng | Âm đúng/sai/hoàn thành (tổng hợp bằng Web Audio), confetti CSS; luôn có tín hiệu hình tương đương; tôn trọng `prefers-reduced-motion` | SHOULD | `settings` |
+| FT-GAM-06 | Bảng xếp hạng | Bốn bảng: Tuần này, Tổng XP, Chuỗi ngày, Độ chính xác (chung hoặc từng chữ); chỉ người đã đăng nhập xem; chỉ hiện người tự bật tham gia | SHOULD (đã làm) | Supabase `public_profiles`, `get_leaderboard` (03 §6.3) |
 
-### 5.4 Nhóm Hồ sơ cục bộ & Hệ thống
+### 5.4 Nhóm Hồ sơ, Tài khoản & Hệ thống
 
 | ID | Tính năng | Mô tả | Ưu tiên | Dữ liệu / Hợp đồng |
 |---|---|---|---|---|
-| FT-ACC-02 | Hồ sơ cục bộ | Không đăng nhập; tên hiển thị tùy chọn; mọi dữ liệu nằm trong trình duyệt | SHOULD | `profile` |
-| FT-ACC-03 | Cài đặt | Theme Light/Dark/System, tay thuận, camera, âm thanh, mục tiêu XP/ngày | SHOULD | `settings` |
-| FT-ACC-04 | Xuất / Nhập / Xóa tiến độ | Sao lưu thành file JSON, khôi phục trên máy khác, xóa toàn bộ | SHOULD | 03 §3.6 · K5 |
+| FT-ACC-01 | Tài khoản tùy chọn & đồng bộ | Đăng ký/đăng nhập bằng email + mật khẩu (trang `/login`, thẻ Tài khoản ở Hồ sơ, menu tài khoản ở thanh trên); đồng bộ tiến độ giữa các máy theo quy tắc "không mất tiến độ"; đăng xuất; xóa tài khoản. Không đăng nhập vẫn dùng đủ | SHOULD (đã làm) | Supabase `user_backups` (03 §6) · K6 |
+| FT-ACC-02 | Hồ sơ | Tên hiển thị tùy chọn; XP, chuỗi ngày, lịch hoạt động 12 tuần, độ thành thạo từng chữ | SHOULD | `profile` |
+| FT-ACC-03 | Cài đặt | Âm thanh, mục tiêu XP/ngày, tên hiển thị, camera (giao diện chỉ chế độ sáng) | SHOULD | `settings` |
+| FT-ACC-04 | Nhập / Xóa tiến độ | Nhập file sao lưu từ bản cũ; xóa toàn bộ dữ liệu trên máy. Nút Xuất JSON đã bỏ (2026-11-22) vì tài khoản thay thế việc chuyển máy | SHOULD | 03 §3.6 · K5 |
 | FT-SYS-01 | Quản lý phiên bản mô hình | Client đọc `models/index.json`, tải manifest + ONNX, kiểm sha256, cache theo version | MUST | K2 |
 | FT-SYS-02 | Thu thập mẫu landmark | Ghi landmark (không ghi video) có nhãn, **tải về dạng file JSON**; nhóm gom vào `ml/data/raw/webcam/` | MUST cho nhóm dev | 03 §4 · K5 |
 
-> FT-ACC-01 (Đăng ký/Đăng nhập) **đã bỏ** ở v0.2.
+> FT-ACC-01 bị bỏ ở v0.2 và **làm lại ở dạng tùy chọn** ở v0.3 (2026-11-22).
 
 ### 5.5 Nhóm AI Lab (Phòng thí nghiệm — cho người chấm)
 
@@ -151,11 +156,13 @@ Mỗi AC đo được và gắn với rubric (R1 = Problem Definition, R2 = Prob
 | AC-GAM-01 | XP, streak, hearts chỉ thay đổi qua module `src/game/` + `LearnerStore`; gọi `completeSession` 2 lần cho cùng session không cộng XP 2 lần (idempotent); reload trang vẫn giữ tiến độ | FT-GAM-01..03 |
 | AC-GAM-02 | Streak tăng đúng 1 khi người dùng đạt mục tiêu ngày lần đầu trong ngày theo múi giờ của họ; bỏ 1 ngày → reset về 0 (khi chưa có streak freeze) | FT-GAM-02 |
 | AC-GAM-03 | Hết tim → không bắt đầu được bài học mới (Free Practice vẫn được) và hiển thị thời gian hồi | FT-GAM-03 |
-| AC-ACC-01 | Xuất tiến độ ra JSON rồi nhập lại trên trình duyệt khác (đã xóa dữ liệu) cho ra cùng XP, streak, tiến độ bài; file sai schema bị từ chối, không ghi đè | FT-ACC-04 |
+| AC-ACC-01 | Nhập file sao lưu hợp lệ cho ra cùng XP, streak, tiến độ bài; file sai schema bị từ chối, không ghi đè | FT-ACC-04 |
+| AC-ACC-03 | Đăng nhập cùng tài khoản trên trình duyệt khác thì tiến độ xuất hiện; hai máy có tiến độ khác nhau gộp lại không mất bài hoàn thành, XP hay ngày học nào; tài khoản này không đọc được dữ liệu tài khoản khác (RLS) | FT-ACC-01 |
+| AC-ACC-04 | Người chưa bật tham gia không xuất hiện trên bảng xếp hạng; khách chưa đăng nhập không đọc được bảng; email không lộ | FT-GAM-06 |
 | AC-ACC-02 | localStorage bị chặn → app vẫn chạy, hiện banner "Tiến độ sẽ không được lưu" | FT-ACC-02 |
-| AC-UI-01 | Chuyển Light/Dark không reload trang, nhớ lựa chọn; mặc định theo hệ thống | FT-ACC-03 |
-| AC-UI-02 | Tương phản văn bản đạt WCAG 2.1 AA ở cả 2 theme; toàn bộ luồng học điều khiển được bằng bàn phím | Toàn bộ UI |
-| AC-PRIV-01 | App không gửi request nào ra ngoài origin của chính nó (kiểm network log trong E2E); không request nào mang ảnh/video/landmark; mẫu landmark chỉ rời trình duyệt khi người dùng bấm tải file | FT-SYS-02 |
+| ~~AC-UI-01~~ | **Bỏ (2026-11-22):** giao diện chỉ còn chế độ sáng | — |
+| AC-UI-02 | Tương phản văn bản đạt WCAG 2.1 AA; toàn bộ luồng học điều khiển được bằng bàn phím | Toàn bộ UI |
+| AC-PRIV-01 | Khi chưa đăng nhập, app không gửi request nào ra ngoài origin của chính nó (kiểm network log trong E2E); khi đã đăng nhập, chỉ thêm request tới Supabase mang tiến độ học. Không request nào mang ảnh/video/landmark; mẫu landmark chỉ rời trình duyệt khi người dùng bấm tải file | FT-SYS-02, FT-ACC-01 |
 
 ### 6.4 AC kho mã (R4)
 
@@ -167,26 +174,28 @@ Mỗi AC đo được và gắn với rubric (R1 = Problem Definition, R2 = Prob
 
 ## 7. Chỉ số thành công
 
-Không có telemetry (không backend), nên đo bằng **buổi thử nghiệm có hướng dẫn** với ≥ 5 người ngoài nhóm:
+Không có telemetry, nên đo bằng **buổi thử nghiệm có hướng dẫn** với ≥ 5 người ngoài nhóm:
 
 | Chỉ số | Mục tiêu MVP | Cách đo |
 |---|---|---|
 | Hoàn thành bài đầu tiên không cần trợ giúp | ≥ 4/5 người | Quan sát |
 | Tỉ lệ nhận diện đúng do người thử xác nhận | ≥ 85% | Phiếu ghi |
-| Thời gian xử lý khung p95 trên máy người thử | ≤ 40 ms | File benchmark JSON xuất từ AI Lab |
+| Thời gian xử lý khung p95 trên máy người thử | ≤ 40 ms | File benchmark JSON tải từ AI Lab (Live Monitor) |
 
 ## 8. Rủi ro & Giới hạn
 
 | Rủi ro | Ảnh hưởng | Giảm thiểu |
 |---|---|---|
 | Domain gap Kaggle → webcam thật | Điểm trên tập test Kaggle (cùng nguồn với train) có thể cao hơn nhiều so với webcam thật | Dùng landmark-MLP cho web; signer-holdout; thu dữ liệu webcam nhóm; báo cáo cả hai phép đo |
-| Tốc độ xử lý trên trình duyệt **chưa được đo** | Có thể không đạt RQ3 | Đo baseline sớm (P4-01); MediaPipe Tasks Vision + GPU delegate, VIDEO mode, giảm độ phân giải input, worker (Phase 4) |
+| Tốc độ xử lý trên trình duyệt chưa có đủ phép đo | Có thể không đạt RQ3 | Ghi benchmark 60 s bằng Live Monitor trên nhiều máy; MediaPipe Tasks Vision (CPU mặc định, GPU tùy chọn), VIDEO mode, giảm độ phân giải input, worker (Phase 4) |
 | Các cặp chữ dễ nhầm trên tọa độ 2D (chưa kiểm chứng) | Người học bị chấm sai | Phân tích Confusion Matrix thật; dùng thêm z, góc ngón; ngưỡng 0,60; feedback "có thể nhầm với…" |
 | Ít người ra dấu trong dữ liệu | Không tổng quát | Signer-holdout, thu thêm dữ liệu có consent |
 | Dữ liệu từ vựng động (Cấp 3) chưa chốt nguồn/giấy phép | Trễ Cấp 3 | Để COULD; cần quyết định nguồn trước Phase 1B |
 | Ảnh/video mẫu ký hiệu cho thẻ học chưa có nguồn hợp lệ | Thiếu nội dung học | **Cần người dùng cung cấp hoặc chọn nguồn có giấy phép** |
-| Mất tiến độ khi xóa dữ liệu trình duyệt (không có server) | Người học mất XP/streak | Xuất/Nhập JSON; banner nhắc sao lưu |
-| XP/streak sửa được bằng DevTools | Gamification không đáng tin tuyệt đối | Chấp nhận (dự án học tập); ghi trong Giới hạn |
+| Mất tiến độ khi xóa dữ liệu trình duyệt | Người học chưa đăng nhập mất XP/streak | Đăng nhập để đồng bộ (FT-ACC-01) |
+| XP/streak sửa được bằng DevTools, kể cả điểm trên bảng xếp hạng | Gamification không đáng tin tuyệt đối | Chấp nhận (dự án học tập); DB chỉ kiểm đúng ≤ thử; ghi trong Giới hạn |
+| Phụ thuộc Supabase gói Free (dự án tạm dừng khi lâu không dùng) | Không đăng nhập/đồng bộ được | App vẫn chạy local; mở lại dự án Supabase trước buổi demo |
+| Luật nhận diện số và J, Z chưa được đo độ chính xác | Không trích được số liệu | Ghi rõ trong Giới hạn; COULD: thay bằng mô hình học máy có thí nghiệm |
 | Giới hạn gói Vercel Hobby (băng thông, thành viên nhóm) | Deploy bị chặn | File tĩnh nhỏ; repo public hoặc chủ project merge; kiểm điều khoản khi tạo project |
 
 ## 9. Câu hỏi mở (cần người dùng trả lời)
@@ -194,7 +203,7 @@ Không có telemetry (không backend), nên đo bằng **buổi thử nghiệm c
 1. Wording chính thức của RQ1–RQ3 đã nộp tuần 2?
 2. Ngày trình bày cuối kỳ (Tuần 5) và hạn nộp GitHub/báo cáo?
 3. ~~Mã nguồn tuần 3–4~~ **Đã chốt (2026-11-18):** không dùng; viết lại toàn bộ trong repo này, mọi số liệu tự đo.
-4. Ngôn ngữ giao diện: Tiếng Việt, Tiếng Anh hay song ngữ?
-5. Nguồn hình ảnh/video minh họa cách ra dấu từng chữ (có giấy phép)?
-6. Danh sách từ cho Cấp 2 (Fingerspelling) và từ vựng Cấp 3 — nhóm tự chọn hay muốn tôi đề xuất để duyệt?
-7. ~~Deploy?~~ **Đã chốt (2026-11-18):** Vercel Hobby, không backend. Còn cần: ai là chủ project Vercel; repo GitHub public hay private?
+4. ~~Ngôn ngữ giao diện?~~ **Theo code (2026-11-22):** tiếng Việt (`src/i18n/vi.ts`).
+5. ~~Nguồn hình minh họa?~~ **Theo code (2026-11-22):** 26 hình chữ cái public domain từ wpclipart.com qua Wikimedia Commons (`frontend/public/media/letters/ATTRIBUTION.md`); hình số nằm ở `public/media/numbers/`.
+6. Danh sách từ cho Cấp 2 (Fingerspelling) và từ vựng Cấp 3 — **vẫn chờ người dùng cung cấp**.
+7. ~~Deploy?~~ **Đã chốt:** Vercel Hobby (project `sign-lingo`, `https://signlingo-vn.vercel.app`); repo `github.com/Nyanta-dotcom/SignLingo`; tài khoản tùy chọn qua Supabase (2026-11-22).

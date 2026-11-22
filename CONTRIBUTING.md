@@ -30,11 +30,11 @@ Không báo "xong" khi test còn đỏ.
 
 - **Số liệu:** mọi con số trong tài liệu, AI Lab và báo cáo phải đến từ thí nghiệm chạy trong repo này (`ml/reports/experiments/*.json`) hoặc từ phép đo ghi rõ nguồn. Không dùng số liệu, ngưỡng hay mã từ các báo cáo tuần 3–4 cũ (đã loại, không đáng tin). Không hardcode số liệu trong frontend.
 - **Nội dung học:** không tự thêm bài học, từ vựng, ảnh, tài khoản hay số liệu. Hỏi người phụ trách nội dung.
-- **Không backend:** ứng dụng là trang tĩnh; không thêm máy chủ, cơ sở dữ liệu hay gọi API ngoài khi chưa có ADR được duyệt. Dữ liệu người học chỉ nằm trong trình duyệt.
+- **Không tự viết backend:** ứng dụng là trang tĩnh; không thêm máy chủ, cơ sở dữ liệu hay gọi API ngoài khi chưa có ADR được duyệt. Ngoại lệ đã duyệt: tài khoản và đồng bộ tiến độ qua Supabase (`docs/drafts/ADR_backend_sync_DRAFT.md`), chỉ gọi từ `frontend/src/sync/supabase.ts`. Hình camera và landmark không bao giờ rời trình duyệt. Không bao giờ đưa khóa `service_role`/`sb_secret_…` vào repo, Vercel hay trình duyệt.
 - **Không commit:** dữ liệu thô, ảnh hay video của người, mô hình lớn hơn 50 MB, file `.env`, khóa bí mật.
 - **Không sửa:** `docs/course/`, `ml/data/raw/`. Thay đổi `shared/contracts/` là một task riêng.
 - **Ngẫu nhiên:** dùng `random_seed = 42` ở mọi nơi có ngẫu nhiên.
-- **Frontend:** chỉ dùng design token (không viết mã màu hex rời trong component); `src/vision/**` và `src/game/**` không import React; chỉ `src/storage/**` được đọc/ghi `localStorage`; mọi chữ giao diện nằm trong `src/i18n/vi.ts`.
+- **Frontend:** chỉ dùng design token (không viết mã màu hex rời trong component); `src/vision/**` và `src/game/**` không import React; chỉ `src/storage/**` được đọc/ghi `localStorage` (thư viện Supabase tự lưu phiên đăng nhập); chữ giao diện nằm trong `src/i18n/vi.ts` (riêng nội dung các trang giới thiệu viết trong component).
 
 ## Thu dữ liệu webcam (task P1-21)
 
@@ -52,6 +52,7 @@ Mục tiêu là có dữ liệu từ ít nhất 3 người ra dấu để đo m�
 docs/       tài liệu thiết kế và kế hoạch (docs/course/ là tài liệu môn học, không sửa)
 frontend/   ứng dụng React + TypeScript (Vite, Tailwind, Vitest)
 ml/         pipeline Python: dữ liệu, huấn luyện, xuất ONNX, báo cáo
+supabase/   SQL cho tài khoản, đồng bộ và bảng xếp hạng (chạy tay trong Supabase)
 shared/     hợp đồng dữ liệu giữa ml/ và frontend/ (JSON Schema, fixture)
 e2e/        kiểm thử đầu cuối bằng Playwright
 scripts/    công cụ cho CI

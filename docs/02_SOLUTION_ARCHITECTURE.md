@@ -1,6 +1,6 @@
 # 02 — Solution Architecture: SignLingo AI
 
-> **Trạng thái:** Draft v0.2 — chờ review · **Ngày:** 2026-11-18 · **v0.2:** bỏ backend; SPA tĩnh trên Vercel; dữ liệu người học trong trình duyệt
+> **Trạng thái:** v0.3 · **Ngày:** 2026-11-22 · **v0.2:** bỏ backend; SPA tĩnh trên Vercel; dữ liệu người học trong trình duyệt · **v0.3 (đồng bộ với code):** thêm tài khoản và đồng bộ tiến độ tùy chọn qua Supabase, bảng xếp hạng tự nguyện, nhận diện số 0–10 và chữ động J, Z bằng luật hình học; bỏ Xuất JSON; giao diện chỉ chế độ sáng
 > Truy vết: mã `FT-*` / `AC-*` tham chiếu [01_PRD](01_PRD.md).
 
 ---
@@ -13,9 +13,9 @@
 | A2 | **2 khối độc lập: `ml/` (Python, offline) · `frontend/` (SPA)** | Chỉ giao tiếp qua *hợp đồng* trong `shared/contracts/` (JSON Schema manifest, experiment, curriculum, fixture landmark). Không import chéo mã nguồn |
 | A3 | **Mô hình là artifact có phiên bản** | Mỗi lần export sinh `model.onnx` + `manifest.json` (sha256, labels, preprocess_version). Frontend chỉ đọc manifest |
 | A4 | **Tái lập (Reproducibility) là yêu cầu chức năng** | seed 42, config YAML, 1 lệnh chạy, log thí nghiệm JSON được commit |
-| A5 | **Không backend (quyết định 2026-11-18)** | Toàn bộ app là file tĩnh trên Vercel. Tiến độ, XP, streak, hearts tính bằng module TS thuần và lưu trong trình duyệt; sao lưu bằng Xuất/Nhập JSON |
+| A5 | **Không tự viết server; local-first (2026-11-18, sửa 2026-11-22)** | App là file tĩnh trên Vercel. Tiến độ, XP, streak, hearts tính bằng module TS thuần và lưu trong trình duyệt. **Tùy chọn:** đăng nhập để đồng bộ tiến độ và tham gia bảng xếp hạng qua dịch vụ có sẵn Supabase (Auth + Postgres + RLS), xem [ADR_backend_sync](drafts/ADR_backend_sync_DRAFT.md). Không cấu hình Supabase thì app chạy đầy đủ như trước |
 | A6 | **Tiền xử lý một nguồn, hai hiện thực có kiểm chứng** | Landmark normalization viết ở Python & TS, khóa bằng golden fixture (AC-ML-09) |
-| A7 | **Không gọi mạng ra ngoài origin** | MediaPipe wasm/`.task`, model, dữ liệu AI Lab đều tự host; không CDN bên thứ ba lúc chạy |
+| A7 | **Không gọi mạng ra ngoài origin, trừ Supabase khi đã cấu hình** | MediaPipe wasm/`.task`, model, dữ liệu AI Lab đều tự host; không CDN bên thứ ba lúc chạy. Ngoại lệ duy nhất: `https://*.supabase.co` cho đăng nhập và đồng bộ (CSP `connect-src`) |
 
 ## 2. Tổng quan hệ thống (C4 – Container)
 
@@ -44,16 +44,26 @@ flowchart LR
   Repo --> SPA
 
   subgraph Browser["Trình duyệt người học"]
-    CAM[Webcam] --> MP[MediaPipe Tasks Vision<br/>HandLandmarker · GPU]
+    CAM[Webcam] --> MP[MediaPipe Tasks Vision<br/>HandLandmarker · CPU mặc định]
     MP --> NORM[Landmark Normalizer TS]
     NORM --> ORT[onnxruntime-web<br/>Classifier]
     ORT --> POST[Smoother + Threshold<br/>Hold-to-Verify FSM]
+    MP --> RULES[Luật hình học<br/>số 0–10 · quỹ đạo J, Z, 10]
+    RULES --> UI
     POST --> UI[Lesson UI · AI Lab · Feedback]
     UI <--> STORE[src/storage + src/game<br/>localStorage]
-    UI --> FILES[Tải file: backup JSON<br/>landmark capture · perf]
+    STORE <--> SYNC[src/sync<br/>gộp tiến độ]
+    UI --> FILES[Tải file: landmark capture]
   end
   SPA -- GET cùng origin --> Browser
   FILES -. nhóm gom thủ công .-> RAW
+
+  subgraph Supa["Supabase (tùy chọn, gói Free)"]
+    AUTH[Auth email + mật khẩu]
+    DB[(Postgres + RLS<br/>user_backups · public_profiles)]
+  end
+  SYNC -- HTTPS, chỉ khi đăng nhập --> AUTH
+  SYNC -- tiến độ, không ảnh --> DB
 ```
 
 ## 3. Tech Stack & Quyết định (ADR tóm tắt)
@@ -65,13 +75,14 @@ flowchart LR
 | Định dạng mô hình web | **ONNX** (opset 17) chạy bằng **onnxruntime-web** (ưu tiên WASM, WebGPU dự phòng: đo thật trên máy dev, WASM p50 0,78 ms so với WebGPU 6,4 ms cho MLP này) | 1 định dạng cho cả CNN & MLP; quantize int8 được | TF.js (phải convert 2 bước) |
 | Quản lý môi trường ML | **uv** + `pyproject.toml`, khóa `uv.lock` (tạm thời đang dùng `venv` + `pip` vì máy chưa cài uv) | Nhanh, tái lập | conda (nặng) |
 | Thí nghiệm | Config YAML + log JSON trong `reports/experiments/` (commit vào git) | Nhẹ, người chấm đọc được, AI Lab đọc trực tiếp | MLflow (thừa cho quy mô đồ án) |
-| Hand tracking | **`@mediapipe/tasks-vision` HandLandmarker** (runningMode `VIDEO`, delegate `GPU`), tự host | API hiện hành, hỗ trợ GPU delegate và chế độ VIDEO; tốc độ thực tế **sẽ được đo** ở Phase 4, chưa có số liệu | Legacy MediaPipe Hands |
+| Hand tracking | **`@mediapipe/tasks-vision` HandLandmarker** (runningMode `VIDEO`, delegate **CPU mặc định**; GPU có thể bật và tự lùi về CPU khi lỗi), tự host | API hiện hành, chế độ VIDEO; đường GPU chưa kiểm trên webcam thật nên không bật mặc định; tốc độ thực tế đo bằng Live Monitor của AI Lab | Legacy MediaPipe Hands |
 | Frontend | **React 19 + TypeScript 6 + Vite** | Phổ biến, hệ sinh thái skill/AI agent tốt; TS ghim 6.x vì typescript-eslint chưa hỗ trợ TS 7 | Next.js (không cần SSR; SPA đủ) |
-| Styling | **Tailwind CSS 4** + CSS variables (design tokens) + **Radix UI primitives** | Dark mode bằng biến; a11y sẵn có | MUI (khó đạt look Duolingo) |
+| Styling | **Tailwind CSS 4** + CSS variables (design tokens) + `@radix-ui/react-slot` + font Nunito tự host | Tông hồng, **chỉ chế độ sáng** (cài đặt giao diện vẫn lưu nhưng luôn áp dụng sáng) | MUI (khó đạt look Duolingo) |
 | State | **Zustand** (session học, camera, UI) + `src/storage/` (persist có version) | Đơn giản, test được | Redux; TanStack Query (không còn server state) |
-| Lưu trữ người học | **localStorage** (< 1 MB, có `schema_version` + migrate) qua adapter; IndexedDB nếu sau này cần lưu nhiều hơn | Không cần server; Xuất/Nhập JSON để sao lưu | Backend + DB (đã bỏ) |
-| Animation/âm thanh | Framer Motion · Howler.js · canvas-confetti | Hiệu ứng kiểu game | — |
-| Biểu đồ AI Lab | Recharts (bar/line) + heatmap tự vẽ SVG cho Confusion Matrix 24×24 | Nhẹ | Plotly (nặng) |
+| Lưu trữ người học | **localStorage** (< 1 MB, có `schema_version` + migrate) qua adapter; Nhập JSON (bản cũ) vẫn được | Local-first, chạy không cần mạng | Tự viết backend + DB |
+| Tài khoản & đồng bộ (tùy chọn) | **Supabase** (`@supabase/supabase-js`): Auth email + mật khẩu (Google chỉ hiện khi bật `VITE_SUPABASE_GOOGLE`), Postgres với Row Level Security, trigger tính điểm bảng xếp hạng | Dịch vụ có sẵn, không tự viết server; khóa `anon` công khai an toàn nhờ RLS | Firebase (NoSQL), serverless tự viết (xem ADR) |
+| Animation/âm thanh | CSS animation (token `--motion-*`) · âm thanh tổng hợp bằng Web Audio (`lib/sound.ts`), không file âm thanh | Nhẹ, không thêm thư viện | Framer Motion, Howler.js |
+| Biểu đồ AI Lab | SVG/HTML tự vẽ (cột, Confusion Matrix 24×24) | Nhẹ, không thêm thư viện | Recharts, Plotly |
 | Routing | React Router (SPA, rewrite mọi path về `index.html` trên Vercel) | | |
 | Test | ML: pytest + hypothesis · FE: Vitest + Testing Library · E2E: **Playwright** (Chrome fake camera) | Phủ 3 lớp test | Cypress (fake camera kém hơn) |
 | Hosting | **Vercel Hobby** (static, HTTPS, CDN, Preview cho mỗi PR) | Miễn phí cho dự án phi thương mại; camera cần HTTPS | Render/Railway (không cần server) |
@@ -156,7 +167,7 @@ flowchart TD
 sequenceDiagram
   participant V as <video> (getUserMedia 640×480@30)
   participant L as FrameLoop (requestVideoFrameCallback)
-  participant MP as HandLandmarker (GPU)
+  participant MP as HandLandmarker (CPU mặc định)
   participant N as Normalizer lm-v1
   participant C as Classifier (ORT-web)
   participant S as Smoother + HoldFSM
@@ -169,7 +180,7 @@ sequenceDiagram
     L->>S: reset(no_hand)
   else có tay
     L->>N: normalize(landmarks)
-    N->>C: Float32[63]
+    N->>C: Float32[42]
     C-->>L: probs (24, đã softmax, trung bình tập hợp)
     L->>S: push(probs, t)
     S-->>U: {topK, stableLabel, holdProgress 0..1, fingerDiff}
@@ -214,15 +225,28 @@ stateDiagram-v2
 | 6 | Quantize int8 nếu cần (đo lại Macro-F1, chấp nhận giảm ≤ 0,005) | Tải nhanh hơn |
 | 7 | Đo bằng `PerfMonitor`: tách `capture_fps`, `mp_ms`, `cls_ms`, `frame_total_ms` p50/p95; mục tiêu **frame_total p50 ≤ 33 ms, p95 ≤ 40 ms** (AC-PERF-01) | Bằng chứng RQ3 cho báo cáo |
 
-## 6. Lớp dữ liệu phía client (thay cho Backend)
+### 5.5 Số 0–10 và chữ động J, Z (luật hình học, không học máy)
+
+Mô hình ONNX chỉ phân loại 24 chữ tĩnh. Các ký hiệu còn lại nhận diện bằng luật trên 21 điểm MediaPipe, viết bằng TS thuần trong `src/vision/`:
+
+| Module | Ký hiệu | Cách nhận |
+|---|---|---|
+| `numberGesture.ts` | 0–9 | Tổ hợp ngón duỗi/gập; 0 là dáng chữ O; 6–9 là ngón cái chạm ngón út, áp út, giữa, trỏ |
+| `numberGesture.ts` | 10 | Dáng ngón cái giơ lên kèm lắc cổ tay trong cửa sổ trượt khoảng 1,8 s |
+| `dynamicGesture.ts` | J, Z | Kiểm dáng tay khởi đầu (ngón út cho J, ngón trỏ cho Z), rồi so quỹ đạo đầu ngón đã chuẩn hóa theo cỡ lòng bàn tay; không phụ thuộc tay trái/phải hay gương |
+
+Các luật này **chưa có thí nghiệm đo độ chính xác** trong `ml/reports/`; không trích số liệu cho chúng.
+
+## 6. Lớp dữ liệu phía client
 
 Chi tiết lược đồ ở [03_DATA_STORAGE](03_DATA_STORAGE.md), interface ở [04_CONTRACTS](04_CONTRACTS.md) §6.
 
 ```
 frontend/src/
-  storage/   # adapter localStorage: get/set có try/catch, schema_version, migrate, export/import
-  game/      # hàm thuần: computeXp, applyHeartRegen, applyDailyXp (streak), lessonStatus
+  storage/   # adapter localStorage: get/set có try/catch, schema_version, migrate, import, clear
+  game/      # hàm thuần: xp, hearts, streak, unlock, lessonFlow, spellWord
   content/   # curriculum.json (nội dung do nhóm duyệt) + loader có kiểm schema
+  sync/      # tùy chọn: supabase.ts (nơi DUY NHẤT gọi Supabase), account store, merge.ts (gộp tiến độ)
 ```
 
 Quy tắc:
@@ -230,15 +254,20 @@ Quy tắc:
 - `src/game/*` không biết DOM hay storage; nhận `now` làm tham số để test được múi giờ/qua đêm.
 - `completeSession` idempotent theo `session.id`.
 - Bộ quy tắc XP/hearts/streak mặc định ở 03 §3.5 (cần duyệt số liệu).
+- Chỉ `src/sync/supabase.ts` được import `@supabase/supabase-js`; phần còn lại dùng interface `AuthApi`/`LeaderboardApi` để test bằng giả lập.
+- Đồng bộ: đăng nhập → tải bản trên máy chủ → gộp với bản trên máy (`mergeProgress`, quy tắc "không bao giờ mất tiến độ", 03 §6) → ghi cả hai bên. Khi đã đăng nhập, tiến độ tự đồng bộ khoảng 5 s sau mỗi thay đổi.
 
 ## 7. Bảo mật & Quyền riêng tư
 
-- Không có server nhận dữ liệu → không dữ liệu nào của người học rời trình duyệt, trừ khi chính họ tải file xuống (backup, mẫu landmark, benchmark).
-- Không cookie, không analytics, không CDN bên thứ ba lúc chạy (A7) → không cần banner cookie.
+- **Hình camera và landmark bàn tay không bao giờ rời trình duyệt** (AC-PRIV-01). Mẫu landmark ở `/collect` chỉ được tải về máy.
+- Không đăng nhập: mọi dữ liệu người học chỉ ở trình duyệt.
+- Đăng nhập (tùy chọn): chỉ phần tiến độ (`profile`, `stats`, `progress`, `daily`, `sign_stats`) được lưu ở bảng `user_backups` của Supabase; cài đặt, phiên học và benchmark ở lại máy. RLS: mỗi người chỉ đọc/ghi dòng của mình. Người dùng tự xóa tài khoản (hàm `delete_my_account()`).
+- Bảng xếp hạng: chỉ hiện người **tự bật** tham gia, với tên hiển thị tự đặt; chỉ người đã đăng nhập đọc được; email không bao giờ lộ.
+- Không cookie theo dõi, không analytics, không CDN bên thứ ba lúc chạy (A7) → không cần banner cookie. Supabase lưu phiên đăng nhập trong `localStorage`.
 - Camera chỉ chạy trong secure context: Vercel luôn HTTPS; dev dùng `localhost`.
-- Header bảo mật trong `vercel.json`: `Content-Security-Policy` (chỉ `'self'`, thêm `'wasm-unsafe-eval'` cho WASM), `Cross-Origin-Opener-Policy: same-origin`, `Cross-Origin-Embedder-Policy: require-corp` (bật WASM threads), `Permissions-Policy: camera=(self)`.
+- Header bảo mật trong `vercel.json`: `Content-Security-Policy` (chỉ `'self'`, thêm `'wasm-unsafe-eval'` cho WASM, `connect-src` thêm `https://*.supabase.co`), `Cross-Origin-Opener-Policy: same-origin`, `Cross-Origin-Embedder-Policy: require-corp` (bật WASM threads), `Permissions-Policy: camera=(self)`.
 - Trang `/collect` dùng mã người ra dấu ẩn danh (S01…), không hỏi tên thật.
-- Không có secrets trong repo (không còn backend → không cần `.env` cho runtime).
+- Không có secrets trong repo. Biến môi trường build `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` (khóa công khai), `VITE_SUPABASE_GOOGLE` đặt trên Vercel và `frontend/.env.local` (gitignored). **Không bao giờ** dùng khóa `service_role`/`sb_secret_…` ở bất kỳ đâu.
 
 ## 8. Cấu trúc Monorepo
 
@@ -269,10 +298,13 @@ SignLingo/
 │   │   └── media/ · sounds/                                  # do nhóm cung cấp
 │   └── src/
 │       ├── app/ (router, providers)  pages/  components/ui/
-│       ├── features/ (lesson, skill-tree, practice, lab, profile, settings, collect)
-│       ├── vision/ (camera, landmarker, normalizer, classifier, smoother, holdFsm, fingerFeedback, perf, engine)
-│       ├── storage/  game/  content/
-│       └── styles/ (tokens.css)
+│       ├── features/ (onboarding, skill-tree, lesson, practice, alphabet, leaderboard, lab, profile,
+│       │              settings, account, collect)
+│       ├── vision/ (camera, landmarker, normalizer, classifier, smoother, holdFsm, fingerFeedback, perf, engine,
+│       │            numberGesture, dynamicGesture, letterTyper, captureDoc, captureRecorder)
+│       ├── storage/  game/  content/  sync/  i18n/ (vi.ts)  lib/ (sound)
+│       └── styles/ (tokens, theme)
+├── supabase/ (README.md, migrations/0001_init.sql, 0002_leaderboard.sql)   # chạy tay trong SQL Editor
 ├── e2e/  (Playwright, fixtures/video/*.y4m)
 └── .github/workflows/ci.yml
 ```
@@ -301,4 +333,7 @@ SignLingo/
 | FT-ACC-02..04 | — | `storage/*`, `features/settings` |
 | FT-SYS-01 | export/publish | `vision/classifier` loader |
 | FT-SYS-02 | `landmarks/ingest.py` | `features/collect` (tải file) |
+| Số 0–10, J, Z | — | `vision/numberGesture`, `vision/dynamicGesture`, `features/lesson` |
+| Tài khoản, đồng bộ | — | `sync/*`, `features/account` (`/login`, thẻ Tài khoản, menu tài khoản), `supabase/migrations/0001` |
+| Bảng xếp hạng | — | `features/leaderboard`, `supabase/migrations/0002` |
 | FT-LAB-* | reports JSON + publish | `features/lab` |
