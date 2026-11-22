@@ -1,4 +1,4 @@
-import type { ComponentType, ReactNode, SVGProps } from 'react';
+import { Suspense, type ComponentType, type ReactNode, type SVGProps } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router';
 import { vi } from '@/i18n/vi';
 import { CatEars, Mascot } from '@/components/ui/Mascot';
@@ -130,7 +130,7 @@ export function AppShell({ stats, banner, account }: { stats: Stats; banner?: Re
         <CatEars className="mx-4 -mb-1 h-8 md:hidden" />
         <div className="kw-window mx-2 flex flex-1 flex-col rounded-[1.75rem] md:mx-0">
           <header className="kw-titlebar sticky top-0 z-20 flex min-h-[3.75rem] items-center justify-between gap-2 rounded-t-[1.6rem] px-4 py-2 md:px-5">
-            <Link to="/" className="flex items-center gap-2 md:hidden">
+            <Link to="/" aria-label={vi.appName} className="flex items-center gap-2 md:hidden">
               <BrandMark className="size-8" />
               <span className={`kw-title text-lg font-black tracking-tight ${account ? 'hidden sm:inline' : ''}`}>{vi.appName}</span>
             </Link>
@@ -145,7 +145,9 @@ export function AppShell({ stats, banner, account }: { stats: Stats; banner?: Re
           {banner}
           <main id="main" className="flex-1 p-3 sm:p-4 md:p-6">
             <div key={pathname} className="page-enter">
-              <Outlet />
+              <Suspense fallback={<p role="status" className="font-bold text-text-muted">{vi.common.loading}</p>}>
+                <Outlet />
+              </Suspense>
             </div>
           </main>
         </div>

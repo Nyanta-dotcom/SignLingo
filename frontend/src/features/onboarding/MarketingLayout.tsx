@@ -30,7 +30,7 @@ export function MarketingLayout({ onStart, activeHome = false, children }: Props
 
       <header className="sticky top-0 z-30 border-b-2 border-border/80 bg-surface/85 backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
-          <Link to="/welcome" className="group flex items-center gap-2.5 rounded-2xl">
+          <Link to="/welcome" aria-label={vi.appName} className="group flex items-center gap-2.5 rounded-2xl">
             <BrandMark className="size-9 transition-transform duration-(--motion-bounce) group-hover:-rotate-6 group-hover:scale-110" />
             <span className={`text-xl font-black tracking-tight text-brand-fg ${hasAccount ? 'hidden sm:inline' : ''}`}>{vi.appName}</span>
           </Link>

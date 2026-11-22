@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /dev/
+
+Sitemap: https://signlingo-vn.vercel.app/sitemap.xml
