@@ -330,5 +330,5 @@ Theo trang Giới thiệu & Liên hệ (`frontend/src/features/onboarding/AboutP
 | Nguyễn Tuấn Hưng (trưởng nhóm) | Huấn luyện mô hình nhận diện, nhận diện trong trình duyệt, lộ trình bài học và AI Lab, tài khoản và bảng xếp hạng | Phase 1 (ML), P3-10..P3-13 (engine), P3-17..P3-22 (bài học, AI Lab), P5-01..P5-07, P5-13..P5-16 |
 | Nguyễn Hữu Triết | Tối ưu điểm Lighthouse, tối ưu giao diện trên máy tính, trên điện thoại, giảm thời gian tải trang và dung lượng ảnh | P4 (đo FPS, tối ưu), P5-21..P5-24; theo dõi điểm Lighthouse sau mỗi lần deploy |
 | Trần Công Sanh | Thu thập dữ liệu webcam từ nhiều người, kiểm tra chất lượng dữ liệu, kiểm thử trên nhiều trình duyệt và thiết bị, kiểm tra trợ năng | P1-21 (thu mẫu, signer holdout), trang `/collect`, P4 (E2E, a11y), P5-11 |
-| Nguyễn Thảo Anh | Báo cáo cuối kỳ, slide, kịch bản và video demo, khảo sát người dùng, danh sách từ cho bài đánh vần | §7 (báo cáo), docs/08 (demo), §8 (danh sách từ `spell_word`) |
+| Lê Nguyễn Thảo Anh | Báo cáo cuối kỳ, slide, kịch bản và video demo, khảo sát người dùng, danh sách từ cho bài đánh vần | §7 (báo cáo), docs/08 (demo), §8 (danh sách từ `spell_word`) |
 | Nguyễn Anh Dũng | Thiết kế lại giao diện, các trang giới thiệu, nhận diện số 0–10 và J, Z, âm thanh bài học | P5-08, P5-09, P5-17..P5-20, âm thanh |
