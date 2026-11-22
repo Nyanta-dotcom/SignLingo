@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import { loadActiveManifest } from '@/app/staticData';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
-import { BoltIcon, LabIcon, PlayIcon } from '@/components/ui/Icons';
+import { BoltIcon, PlayIcon } from '@/components/ui/Icons';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import curriculumJson from '@/content/curriculum.json';
 import { loadCurriculum } from '@/content/loader';
@@ -112,18 +112,6 @@ export function SkillTree({ load = loadLearnData, now = () => new Date() }: { lo
           <ProgressBar value={today} max={goal} label={t.goal} />
           <p className="text-sm font-extrabold text-text-muted">{t.goalValue(today, goal)}</p>
         </Card>
-        {data && (
-          <Card className="flex flex-col gap-2">
-            <div className="flex items-center gap-2 text-brand-fg">
-              <LabIcon className="size-4" />
-              <p className="text-xs font-extrabold uppercase tracking-wider">{t.aiUsing}</p>
-            </div>
-            <p className="text-base font-black text-text">{data.model.model_id} {data.model.version}</p>
-            <Link to="/lab" className="mt-1 inline-flex w-fit items-center gap-1 rounded-full bg-brand-50 px-3.5 py-1.5 text-sm font-extrabold text-brand-fg transition-colors hover:bg-brand-100">
-              {t.seeLab} →
-            </Link>
-          </Card>
-        )}
       </aside>
     </section>
   );
