@@ -18,10 +18,11 @@ const PREVIEW_ITEMS = [
 ] as const;
 
 /** Page 1 of the 3-page pre-app website: Hero with live interactive SignLingo preview + 3 highlights. */
-export function Landing({ onStart }: { onStart: () => void }) {
+export function Landing({ onStart, returning = false }: { onStart: () => void; returning?: boolean }) {
   const t = vi.landing;
   const [selected, setSelected] = useState(0);
   const current = PREVIEW_ITEMS[selected];
+  const ctaLabel = returning ? 'Tiếp tục học' : t.start;
 
   return (
     <MarketingLayout onStart={onStart} activeHome>
@@ -47,7 +48,7 @@ export function Landing({ onStart }: { onStart: () => void }) {
             <div className="mt-1 flex flex-wrap items-center gap-3.5">
               <Button size="lg" onClick={onStart}>
                 <PlayIcon className="size-4" />
-                {t.start}
+                {ctaLabel}
               </Button>
               <Button size="lg" variant="secondary" asChild>
                 <Link to="/features">Khám phá tính năng →</Link>

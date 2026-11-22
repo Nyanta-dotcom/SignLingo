@@ -26,10 +26,11 @@ describe('AppRoutes', () => {
     expect(store.getState().onboarded).toBe(true);
   });
 
-  it('sends / straight to the learning dashboard on later visits', () => {
+  it('keeps / on the welcome page on later visits and offers Continue to /learn', () => {
     store.getState().completeOnboarding();
     at('/');
-    expect(screen.queryByRole('button', { name: 'Bắt đầu' })).toBeNull();
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('SignLingo');
+    fireEvent.click(screen.getByRole('button', { name: 'Tiếp tục học' }));
     expect(screen.getByRole('heading', { level: 1, name: 'Học' })).toBeInTheDocument();
   });
 

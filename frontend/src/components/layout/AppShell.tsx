@@ -100,15 +100,23 @@ export function AppShell({ stats, banner }: { stats: Stats; banner?: ReactNode }
         {vi.nav.skip}
       </a>
       <nav aria-label={vi.nav.sidebar} className="sticky top-0 hidden h-dvh flex-col border-r-2 border-border bg-surface px-4 py-6 md:flex">
-        <Link to="/learn" className="mb-7 flex items-center gap-3 rounded-2xl px-2 py-1">
-          <BrandMark className="size-10" />
+        <Link to="/" className="group mb-7 flex items-center gap-3 rounded-2xl px-2 py-1">
+          <BrandMark className="size-10 transition-transform duration-(--motion-bounce) group-hover:-rotate-6 group-hover:scale-110" />
           <span className="text-xl font-black tracking-tight text-brand-fg">{vi.appName}</span>
         </Link>
         <SidebarNav />
+        <div className="mt-auto border-t border-border/70 pt-3">
+          <Link
+            to="/welcome"
+            className="flex min-h-10 items-center justify-center rounded-2xl px-3 text-xs font-extrabold text-text-muted transition-colors hover:bg-brand-50 hover:text-brand-fg"
+          >
+            ← Trang giới thiệu
+          </Link>
+        </div>
       </nav>
       <div className="flex min-h-dvh flex-col pb-24 md:pb-0">
         <header className="sticky top-0 z-20 flex items-center justify-between gap-2 border-b-2 border-border bg-surface/90 px-4 py-2.5 backdrop-blur-md md:justify-end md:px-8">
-          <Link to="/learn" className="flex items-center gap-2 md:hidden">
+          <Link to="/" className="flex items-center gap-2 md:hidden">
             <BrandMark className="size-8" />
             <span className="text-lg font-black tracking-tight text-brand-fg">{vi.appName}</span>
           </Link>

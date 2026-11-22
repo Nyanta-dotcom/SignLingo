@@ -45,13 +45,12 @@ function useStartApp() {
 
 function Home() {
   const onboarded = useLearner((s) => s.onboarded);
-  const start = useStartApp();
-  if (onboarded) return <Navigate to="/learn" replace />;
-  return <Landing onStart={start} />;
+  return <Landing onStart={useStartApp()} returning={onboarded} />;
 }
 
 function WelcomeRoute() {
-  return <Landing onStart={useStartApp()} />;
+  const onboarded = useLearner((s) => s.onboarded);
+  return <Landing onStart={useStartApp()} returning={onboarded} />;
 }
 
 function FeaturesRoute() {
