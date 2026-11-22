@@ -60,6 +60,7 @@ export function createLearnerState(kv: KV, { now = () => new Date(), heartThresh
           return after(file);
         },
         importBackup: (raw) => after(backup.importBackup(raw)),
+        applyData: (data) => after(backup.applyData(data)),
         clearAll: () => after(backup.clearAll()),
       },
       saveBenchmark: (record) => after(bench.saveBenchmark(record)),
