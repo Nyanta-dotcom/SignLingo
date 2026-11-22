@@ -63,8 +63,14 @@
   --unit-banner-bg: linear-gradient(135deg, #ff93b3 0%, #ff79a3 58%, #f96394 100%);
   --unit-banner-shadow: 0 5px 0 #d44c7c, 0 14px 28px -12px rgba(249, 109, 154, 0.42);
   --hero-glow: radial-gradient(60% 50% at 50% 0%, rgba(255, 151, 181, 0.28) 0%, rgba(255, 244, 248, 0) 75%);
+  --bg-dot-color: rgba(212, 45, 108, 0.09);
+  --orb-pink: radial-gradient(circle, rgba(255, 151, 181, 0.36) 0%, rgba(255, 151, 181, 0) 70%);
+  --orb-rose: radial-gradient(circle, rgba(249, 109, 154, 0.24) 0%, rgba(249, 109, 154, 0) 70%);
+  --orb-warm: radial-gradient(circle, rgba(251, 191, 36, 0.17) 0%, rgba(251, 191, 36, 0) 70%);
+  --btn-shine: linear-gradient(110deg, transparent 25%, rgba(255, 255, 255, 0.45) 50%, transparent 75%);
+  --scan-beam: linear-gradient(180deg, rgba(249, 109, 154, 0) 0%, rgba(249, 109, 154, 0.22) 50%, rgba(249, 109, 154, 0) 100%);
   --card-shadow: 0 3px 0 var(--border), 0 8px 24px -14px rgba(176, 28, 84, 0.1);
-  --card-shadow-hover: 0 4px 0 var(--border-strong), 0 14px 28px -12px rgba(249, 109, 154, 0.2);
+  --card-shadow-hover: 0 5px 0 var(--border-strong), 0 18px 34px -12px rgba(249, 109, 154, 0.26);
   --nav-pill-shadow: 0 10px 30px -8px rgba(43, 10, 24, 0.14), 0 2px 10px -2px rgba(249, 109, 154, 0.16);
 
   /* Radii & motion */

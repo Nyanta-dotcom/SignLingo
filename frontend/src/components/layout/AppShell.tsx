@@ -1,6 +1,7 @@
 import type { ComponentType, ReactNode, SVGProps } from 'react';
-import { Link, NavLink, Outlet } from 'react-router';
+import { Link, NavLink, Outlet, useLocation } from 'react-router';
 import { vi } from '@/i18n/vi';
+import { AmbientBackdrop } from '@/components/ui/AmbientBackdrop';
 import { AlphabetIcon, BrandMark, HandIcon, HomeIcon, LabIcon, UserIcon } from '@/components/ui/Icons';
 import { StatChip } from '@/components/ui/StatChip';
 
@@ -89,25 +90,27 @@ function BottomNav() {
   );
 }
 
-/** Desktop: crisp white Duolingo sidebar + sticky stat bar. Mobile: top bar + floating pill dock. */
+/** Desktop: crisp white Duolingo sidebar + themed ASL backdrop + sticky stat bar. Mobile: top bar + floating pill dock. */
 export function AppShell({ stats, banner }: { stats: Stats; banner?: ReactNode }) {
+  const { pathname } = useLocation();
   return (
-    <div className="min-h-dvh bg-bg text-text md:grid md:grid-cols-[16.5rem_1fr]">
+    <div className="relative min-h-dvh bg-bg text-text md:grid md:grid-cols-[16.5rem_1fr]">
+      <AmbientBackdrop variant="app" />
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-full focus:border-2 focus:border-brand-300 focus:bg-surface focus:px-4 focus:py-2.5 focus:font-extrabold focus:text-brand-fg"
       >
         {vi.nav.skip}
       </a>
-      <nav aria-label={vi.nav.sidebar} className="sticky top-0 hidden h-dvh flex-col border-r-2 border-border bg-surface px-4 py-6 md:flex">
-        <Link to="/learn" className="mb-7 flex items-center gap-3 rounded-2xl px-2 py-1">
-          <BrandMark className="size-10" />
+      <nav aria-label={vi.nav.sidebar} className="sticky top-0 z-20 hidden h-dvh flex-col border-r-2 border-border bg-surface/95 px-4 py-6 backdrop-blur-md md:flex">
+        <Link to="/learn" className="group mb-7 flex items-center gap-3 rounded-2xl px-2 py-1">
+          <BrandMark className="size-10 transition-transform duration-(--motion-bounce) group-hover:-rotate-6 group-hover:scale-110" />
           <span className="text-xl font-black tracking-tight text-brand-fg">{vi.appName}</span>
         </Link>
         <SidebarNav />
       </nav>
-      <div className="flex min-h-dvh flex-col pb-24 md:pb-0">
-        <header className="sticky top-0 z-20 flex items-center justify-between gap-2 border-b-2 border-border bg-surface/90 px-4 py-2.5 backdrop-blur-md md:justify-end md:px-8">
+      <div className="relative z-10 flex min-h-dvh flex-col pb-24 md:pb-0">
+        <header className="sticky top-0 z-20 flex items-center justify-between gap-2 border-b-2 border-border/80 bg-surface/85 px-4 py-2.5 backdrop-blur-xl md:justify-end md:px-8">
           <Link to="/learn" className="flex items-center gap-2 md:hidden">
             <BrandMark className="size-8" />
             <span className="text-lg font-black tracking-tight text-brand-fg">{vi.appName}</span>
@@ -120,12 +123,14 @@ export function AppShell({ stats, banner }: { stats: Stats; banner?: ReactNode }
         </header>
         {banner}
         <main id="main" className="flex-1 p-4 md:p-8">
-          <Outlet />
+          <div key={pathname} className="page-enter">
+            <Outlet />
+          </div>
         </main>
       </div>
       <nav
         aria-label={vi.nav.bottom}
-        className="fixed inset-x-3 bottom-3 z-30 mx-auto max-w-md rounded-full border-2 border-border bg-surface/95 px-2 py-1.5 shadow-(--nav-pill-shadow) backdrop-blur-md md:hidden"
+        className="fixed inset-x-3 bottom-3 z-30 mx-auto max-w-md rounded-full border-2 border-border bg-surface/95 px-2 py-1.5 shadow-(--nav-pill-shadow) backdrop-blur-xl md:hidden"
       >
         <BottomNav />
       </nav>
