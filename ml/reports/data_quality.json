@@ -1,0 +1,37 @@
+{
+  "sign_mnist_train.csv": {
+    "n_rows": 27455,
+    "n_missing_rows": 0,
+    "n_duplicate_rows": 0,
+    "n_invalid_labels": 0,
+    "pixel_min": 0.0,
+    "pixel_max": 255.0,
+    "class_balance_ratio": 1.3521421107628004
+  },
+  "sign_mnist_test.csv": {
+    "n_rows": 7172,
+    "n_missing_rows": 0,
+    "n_duplicate_rows": 0,
+    "n_invalid_labels": 0,
+    "pixel_min": 0.0,
+    "pixel_max": 255.0,
+    "class_balance_ratio": 3.4583333333333335
+  },
+  "keypoint.csv": {
+    "n_lines": 36402,
+    "n_bad_lines": 1,
+    "n_dropped_dynamic": 2865,
+    "n_rows": 33536,
+    "n_duplicate_rows": 0,
+    "n_nan_rows": 0,
+    "class_min": [
+      "O",
+      477
+    ],
+    "class_max": [
+      "A",
+      4136
+    ],
+    "class_balance_ratio": 8.67
+  }
+}
