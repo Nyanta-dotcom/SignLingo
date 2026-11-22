@@ -70,7 +70,7 @@ e2e/        kiểm thử đầu cuối (Playwright)
 | Nguyễn Tuấn Hưng (trưởng nhóm) | 24090019 | Huấn luyện mô hình nhận diện, nhận diện trong trình duyệt, lộ trình bài học và AI Lab, tài khoản và bảng xếp hạng |
 | Nguyễn Hữu Triết | 24090003 | Tối ưu điểm Lighthouse, tối ưu giao diện trên máy tính, tối ưu giao diện trên điện thoại, giảm thời gian tải trang và dung lượng ảnh |
 | Trần Công Sanh | 24090009 | Thu thập dữ liệu webcam từ nhiều người, kiểm tra chất lượng dữ liệu, kiểm thử trên nhiều trình duyệt và thiết bị, kiểm tra trợ năng |
-| Nguyễn Thảo Anh | 24090028 | Viết báo cáo cuối kỳ, làm slide thuyết trình, kịch bản và video demo, khảo sát ý kiến người dùng, soạn danh sách từ cho bài đánh vần |
+| Lê Nguyễn Thảo Anh | 24090028 | Viết báo cáo cuối kỳ, làm slide thuyết trình, kịch bản và video demo, khảo sát ý kiến người dùng, soạn danh sách từ cho bài đánh vần |
 | Nguyễn Anh Dũng | 24090021 | Thiết kế lại giao diện, các trang giới thiệu, nhận diện số 0–10 và ký hiệu động J, Z, âm thanh bài học |
 
 Liên hệ: hung.nguyen240919@vnuk.udn.vn (trưởng nhóm).
