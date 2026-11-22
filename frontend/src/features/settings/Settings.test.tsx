@@ -60,15 +60,9 @@ describe('Settings', () => {
     expect(store.getState().settings.camera_device_id).toBeUndefined();
   });
 
-  it('exports the learner data as a JSON file', () => {
-    store.getState().updateSettings({ daily_xp_goal: 50 });
-    let blob: Blob | null = null;
-    vi.stubGlobal('URL', { createObjectURL: (b: Blob) => { blob = b; return 'blob:x'; }, revokeObjectURL: vi.fn() });
-    const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+  it('offers no export of the learner data', () => {
     render(<Settings />);
-    fireEvent.click(screen.getByRole('button', { name: 'Xuất tiến độ' }));
-    expect(click).toHaveBeenCalledOnce();
-    expect(blob).not.toBeNull();
+    expect(screen.queryByRole('button', { name: 'Xuất tiến độ' })).toBeNull();
   });
 
   it('asks before overwriting on import, and cancelling changes nothing', async () => {
