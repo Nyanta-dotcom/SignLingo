@@ -163,9 +163,6 @@ export const vi = {
   },
   banners: {
     storageBlocked: 'Tiến độ sẽ không được lưu: trình duyệt đang chặn lưu trữ. Hãy bật lại cookie và dữ liệu trang, hoặc dùng cửa sổ thường thay vì ẩn danh.',
-    backupTitle: 'Tiến độ chỉ lưu trên trình duyệt này.',
-    backupAction: 'Xuất bản sao lưu',
-    backupClose: 'Đóng nhắc sao lưu',
   },
   settings: {
     title: 'Cài đặt',
@@ -182,8 +179,7 @@ export const vi = {
     cameraHelp: 'Chọn webcam dùng cho các màn luyện tập. Tên thiết bị chỉ hiện sau khi bạn đã cấp quyền camera.',
     data: 'Dữ liệu của bạn',
     dataNote: 'Tiến độ học được lưu trên trình duyệt và đồng bộ lên cơ sở dữ liệu khi bạn đăng nhập tài khoản ở mục Hồ sơ. Hình ảnh camera không bao giờ rời khỏi máy.',
-    storageBlocked: 'Trình duyệt đang chặn lưu trữ, nên tiến độ sẽ mất khi đóng tab. Hãy xuất file để giữ lại.',
-    export: 'Xuất tiến độ',
+    storageBlocked: 'Trình duyệt đang chặn lưu trữ, nên tiến độ sẽ mất khi đóng tab.',
     import: 'Nhập tiến độ',
     importConfirm: 'Nhập file này sẽ ghi đè toàn bộ tiến độ hiện tại. Tiếp tục?',
     importYes: 'Ghi đè và nhập',
@@ -200,6 +196,8 @@ export const vi = {
     intro: 'Đăng nhập để giữ tiến trình khi đổi máy. Chỉ tiến trình học (XP, chuỗi ngày, trạng thái bài) được lưu; hình camera và dữ liệu bàn tay không bao giờ rời máy bạn. Không đăng nhập vẫn dùng được đầy đủ.',
     email: 'Email',
     password: 'Mật khẩu (ít nhất 8 ký tự)',
+    showPassword: 'Hiện mật khẩu',
+    hidePassword: 'Ẩn mật khẩu',
     signIn: 'Đăng nhập',
     signUp: 'Đăng ký',
     google: 'Tiếp tục với Google',

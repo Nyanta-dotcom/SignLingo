@@ -1,4 +1,3 @@
-import { readFileSync } from 'node:fs';
 import { test, expect } from '@playwright/test';
 
 // P4-09: the learner's data survives reloads, can be exported, wiped and restored, and a blocked
@@ -24,19 +23,13 @@ test('settings survive a reload', async ({ page }) => {
   await expect(page.getByLabel(/Tên hiển thị/)).toHaveValue('Lan');
 });
 
-test('export, wipe and import bring the same data back', async ({ page }, info) => {
+test('there is no export button, and wiping the data resets the settings', async ({ page }) => {
   await page.addInitScript(() => localStorage.getItem('signlingo:v1:onboarded') ?? localStorage.setItem('signlingo:v1:onboarded', 'true'));
   await page.goto('/settings');
+  await expect(page.getByRole('button', { name: 'Xuất tiến độ' })).toHaveCount(0);
   await page.getByRole('radio', { name: '30 XP' }).check({ force: true });
   await page.getByLabel(/Tên hiển thị/).fill('Minh');
   await page.getByLabel(/Tên hiển thị/).blur();
-
-  const [download] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: 'Xuất tiến độ' }).click()]);
-  expect(download.suggestedFilename()).toMatch(/^signlingo_backup_\d{4}-\d{2}-\d{2}\.json$/);
-  const file = info.outputPath('backup.json');
-  await download.saveAs(file);
-  const backup = JSON.parse(readFileSync(file, 'utf-8'));
-  expect(backup.data.settings.daily_xp_goal).toBe(30);
 
   await page.getByRole('button', { name: 'Xóa toàn bộ dữ liệu' }).click();
   await page.getByRole('button', { name: 'Xóa vĩnh viễn' }).click();
@@ -44,13 +37,6 @@ test('export, wipe and import bring the same data back', async ({ page }, info) 
   await page.reload();
   await page.goto('/settings');
   await expect(page.getByRole('radio', { name: '20 XP' })).toBeChecked();
-
-  await page.getByLabel('Nhập tiến độ').setInputFiles(file);
-  await page.getByRole('button', { name: 'Ghi đè và nhập' }).click();
-  await expect(page.getByRole('status')).toHaveText('Đã nhập tiến độ.');
-  await page.reload();
-  await expect(page.getByRole('radio', { name: '30 XP' })).toBeChecked();
-  await expect(page.getByLabel(/Tên hiển thị/)).toHaveValue('Minh');
 });
 
 test('a corrupt backup is rejected and nothing changes', async ({ page }, info) => {
