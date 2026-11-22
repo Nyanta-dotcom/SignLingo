@@ -3,7 +3,7 @@
  * Keeping every string here makes adding English a data change, not a component change.
  */
 export const vi = {
-  appName: 'SignLingo AI',
+  appName: 'SignLingo',
   common: { loading: 'Đang tải…', comingSoon: 'Màn hình này đang được xây dựng.', notFound: 'Không tìm thấy trang', startupError: 'Không tải được dữ liệu khởi động' },
   theme: { label: 'Giao diện', system: 'Hệ thống', light: 'Sáng', dark: 'Tối' },
   nav: {
@@ -154,7 +154,7 @@ export const vi = {
     cameraNote: 'Khi cần, trình duyệt sẽ xin quyền dùng camera. Bạn có thể tắt bất cứ lúc nào.',
     start: 'Bắt đầu',
     lab: 'Xem AI Lab',
-    hero: 'Giới thiệu SignLingo AI',
+    hero: 'Giới thiệu SignLingo',
   },
   banners: {
     storageBlocked: 'Tiến độ sẽ không được lưu: trình duyệt đang chặn lưu trữ. Hãy bật lại cookie và dữ liệu trang, hoặc dùng cửa sổ thường thay vì ẩn danh.',
