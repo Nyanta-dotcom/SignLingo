@@ -73,6 +73,12 @@ export function mergeProgress(local: SyncData, remote: SyncData): SyncData {
   const signStats = mergeMap(local.sign_stats, remote.sign_stats, (x, y) => (y.attempts > x.attempts ? y : x));
   if (Object.keys(progress).length) out.progress = progress;
   if (Object.keys(daily).length) out.daily = daily;
+  // Two devices that earned XP on different days: the larger total alone would be less than the days added up,
+  // and total XP can never be below the XP of the days it is made of.
+  if (out.stats) {
+    const daysXp = Object.values(daily).reduce((sum, d) => sum + d.xp_earned, 0);
+    if (daysXp > out.stats.total_xp) out.stats = { ...out.stats, total_xp: daysXp };
+  }
   if (Object.keys(signStats).length) out.sign_stats = signStats;
   return out;
 }

@@ -56,6 +56,15 @@ describe('mergeProgress', () => {
     expect(merged.sign_stats?.A.attempts).toBe(9);
   });
 
+  it('keeps total XP at least as large as the XP of all days, when two devices earned on different days', () => {
+    const day = (xp: number) => ({ xp_earned: xp, lessons_completed: 1, goal_met: true });
+    const a = { stats: stats({ total_xp: 400 }), daily: { '2026-11-20': day(300), '2026-11-21': day(100) } };
+    const b = { stats: stats({ total_xp: 223 }), daily: { '2026-11-22': day(223) } };
+    expect(mergeProgress(a, b).stats?.total_xp).toBe(623);
+    expect(mergeProgress(b, a)).toEqual(mergeProgress(a, b));
+    expect(mergeProgress(mergeProgress(a, b), b)).toEqual(mergeProgress(a, b));
+  });
+
   it('is symmetric and idempotent', () => {
     const a = { stats: stats({ total_xp: 10 }), progress: { L1: lesson(50) } };
     const b = { stats: stats({ total_xp: 20 }), progress: { L1: lesson(90), L2: lesson(60) } };
