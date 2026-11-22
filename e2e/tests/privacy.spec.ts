@@ -24,10 +24,11 @@ test('a camera session only makes same-origin, read-only requests', async ({ pag
   expect(seen.filter((r) => r.postData()).map((r) => r.url())).toEqual([]);
 });
 
-test('the page restricts connections to its own origin (CSP is only applied on Vercel, so check the config)', async () => {
+test('the page restricts connections to its own origin and, for optional account sync, Supabase only (CSP is only applied on Vercel, so check the config)', async () => {
   const { readFileSync } = await import('node:fs');
   const config = JSON.parse(readFileSync(new URL('../../frontend/vercel.json', import.meta.url), 'utf-8'));
   const headers = JSON.stringify(config.headers);
-  expect(headers).toMatch(/connect-src 'self'/);
+  const connect = /connect-src ([^;"]*)/.exec(headers)?.[1]?.trim().split(/\s+/);
+  expect(connect).toEqual(["'self'", 'https://*.supabase.co']);
   expect(headers).toMatch(/camera=\(self\)/);
 });

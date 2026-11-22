@@ -49,4 +49,27 @@ describe('backup', () => {
     const f = { ...backup.exportBackup(), schema_version: 99 };
     expect(() => backup.importBackup(f)).toThrow(/BACKUP_INVALID|newer/);
   });
+
+  describe('account sync helpers', () => {
+    it('readData returns the stored data and does not mark the backup reminder', () => {
+      const { kv, learner, backup } = setup();
+      learner.updateSettings({ theme: 'dark' });
+      expect(backup.readData()).toMatchObject({ settings: { theme: 'dark' } });
+      expect(kv.get('backup_reminder', null)).toBeNull();
+    });
+
+    it('applyData writes the given progress and leaves other data alone', () => {
+      const { learner, backup } = setup();
+      learner.updateSettings({ theme: 'dark' });
+      backup.applyData({ progress: { L1: { status: 'completed', best_accuracy_pct: 80, times_completed: 1, last_completed_at: null } } });
+      expect(learner.getProgress().L1.best_accuracy_pct).toBe(80);
+      expect(learner.getSettings().theme).toBe('dark');
+    });
+
+    it('applyData refuses data that does not fit the schema and changes nothing', () => {
+      const { learner, backup } = setup();
+      expect(() => backup.applyData({ stats: { total_xp: -5 } })).toThrow(BackupError);
+      expect(learner.getStats().total_xp).toBe(0);
+    });
+  });
 });
