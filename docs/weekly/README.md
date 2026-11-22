@@ -12,7 +12,7 @@ Yêu cầu từng tuần: `docs/course/week1.docx` … `week5.docx`. Mỗi báo 
 
 **Nguồn số liệu:** mọi con số lấy từ `ml/reports/experiments/*.json` (tổng hợp ở `ml/reports/summary.md`, `ml/reports/RESULTS.md`), `ml/reports/data_quality.json`, `ml/reports/x_pose_check.json` và file benchmark ghi từ AI Lab (docs/02). Không dùng số của báo cáo tuần 3–4 cũ.
 
-**Ô `[nhóm điền]`:** thông tin repo không có (số giờ làm việc, ngày buổi trình bày, kênh liên lạc). Nhóm điền trước khi nộp.
+**Số giờ (How much):** là **ước tính** do nhóm nhờ soạn, không phải số đo; nhóm sửa lại theo thực tế nếu khác. **Ô `[nhóm điền]`:** thông tin repo không có (ngày buổi trình bày, kênh liên lạc).
 
 Báo cáo ở dạng Word (`.docx`). Slide trình bày được làm riêng, không đưa lên GitHub.
 
