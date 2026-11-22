@@ -246,7 +246,7 @@ Phase 2 và phần còn lại của Phase 3 (Skill Tree, Lesson Player đầy đ
 | ☐ | P5-10 | Chuyển ADR nháp thành ADR chính thức sau khi người dùng duyệt quy tắc gộp và câu chữ quyền riêng tư | `docs/` | — |
 | ☐ | P5-11 | E2E đăng nhập giả (Supabase giả lập) và privacy E2E cho trạng thái đã đăng nhập | `e2e/` | AC-PRIV-01, AC-ACC-03 |
 | ☐ | P5-12 | Trước khi có người dùng thật: bật lại "Confirm email" + SMTP riêng; cân nhắc giới hạn XP/ngày, lọc tên hiển thị | Supabase, `sync/` | — |
-| ☐ | P5-13 | Bảng xếp hạng khi chưa đăng nhập đang chỉ tới Hồ sơ; đổi sang `/login` | `i18n/vi.ts`, `features/leaderboard` | Unit |
+| ☑ | P5-13 | Bảng xếp hạng khi chưa đăng nhập chỉ tới `/login` (trước là Hồ sơ); trang Cách hoạt động và Giới thiệu bỏ nhắc Google, chỉ tới nút Đăng nhập | `i18n/vi.ts`, `features/leaderboard`, `features/onboarding` | Unit ✅ |
 
 **3 lớp kiểm thử Phase 4:** Unit = micro-benchmark normalizer/classifier (< 2 ms) · Integration = worker ↔ engine protocol; ONNX quantized parity · E2E = perf 60 s, privacy, a11y, dữ liệu cục bộ, smoke trên production.
 

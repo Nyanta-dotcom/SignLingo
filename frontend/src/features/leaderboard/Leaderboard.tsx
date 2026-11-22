@@ -4,6 +4,7 @@ import { loadActiveManifest } from '@/app/staticData';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { vi } from '@/i18n/vi';
+import type { Status } from '@/sync/account';
 import type { LeaderboardApi, LeaderboardRow } from '@/sync/supabase';
 import { useAccount } from '@/sync/useAccount';
 import { useLeaderboardApi } from '@/sync/useLeaderboardApi';
@@ -14,9 +15,10 @@ const TABS: readonly Tab[] = ['week', 'total', 'streak', 'accuracy'];
 type Load = { state: 'loading' } | { state: 'error' } | { state: 'ready'; rows: LeaderboardRow[] };
 
 /** Ranking of the people who chose to join. Visible to signed-in people only; the server enforces that. */
-export function Leaderboard({ api: given, labels: givenLabels }: { api?: LeaderboardApi | null; labels?: string[] }) {
+export function Leaderboard({ api: given, labels: givenLabels, status: givenStatus }: { api?: LeaderboardApi | null; labels?: string[]; status?: Status }) {
   const t = vi.leaderboard;
-  const status = useAccount((s) => s.status);
+  const accountStatus = useAccount((s) => s.status);
+  const status = givenStatus ?? accountStatus;
   const hookApi = useLeaderboardApi();
   const api = given === undefined ? hookApi : given;
   const [tab, setTab] = useState<Tab>('week');
@@ -53,7 +55,7 @@ export function Leaderboard({ api: given, labels: givenLabels }: { api?: Leaderb
       {!api ? (
         <Card className="flex flex-col items-start gap-3">
           <p className="text-text-muted">{status === 'disabled' ? t.disabled : status === 'loading' ? vi.common.loading : t.signedOut}</p>
-          {status === 'signed_out' && <Button asChild><Link to="/profile">{t.toProfile}</Link></Button>}
+          {status === 'signed_out' && <Button asChild><Link to="/login">{t.toLogin}</Link></Button>}
         </Card>
       ) : (
         <>

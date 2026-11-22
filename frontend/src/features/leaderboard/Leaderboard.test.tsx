@@ -19,6 +19,12 @@ describe('Leaderboard', () => {
     expect(screen.getByText(/chưa bật phần tài khoản/)).toBeInTheDocument();
   });
 
+  it('signed out: asks to sign in and links to the sign-in page', () => {
+    render(<MemoryRouter><Leaderboard api={null} labels={['A']} status="signed_out" /></MemoryRouter>);
+    expect(screen.getByText('Đăng nhập để xem bảng xếp hạng.')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Đăng nhập' })).toHaveAttribute('href', '/login');
+  });
+
   it('shows the weekly ranking first, with the learner highlighted', async () => {
     const { api, top } = fakeApi([row(1, 'Lan', 320), row(2, 'Minh', 150, { me: true })]);
     show(api);

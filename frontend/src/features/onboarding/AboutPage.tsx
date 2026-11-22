@@ -34,7 +34,7 @@ export function AboutPage({ onStart }: { onStart: () => void }) {
             <li>Cho phép trình duyệt dùng camera.</li>
             <li>Ra dấu chữ cái theo hình mẫu; AI báo đúng ngay khi nhận ra.</li>
             <li>Ôn lại ở mục Luyện và tra cứu ở Bảng chữ cái.</li>
-            <li>Đăng nhập ở <Link to="/profile" className={linkClass}>Hồ sơ</Link> để lưu tiến độ giữa các thiết bị và tham gia bảng xếp hạng.</li>
+            <li><Link to="/login" className={linkClass}>Đăng nhập</Link> để lưu tiến độ giữa các thiết bị và tham gia bảng xếp hạng.</li>
           </ol>
         </section>
 
