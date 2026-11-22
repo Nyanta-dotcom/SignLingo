@@ -2,12 +2,14 @@ import { describe, expect, it } from 'vitest';
 import { HAND_ART, HAND_LETTERS } from './handArt';
 
 const FULL_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+const NUMBERS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
 
 describe('hand art', () => {
-  it('has a drawing for all 26 ASL letters including dynamic J and Z with motion arrows', () => {
-    expect([...HAND_LETTERS].sort()).toEqual(FULL_ALPHABET);
+  it('has a drawing for all 26 ASL letters and numbers 1–10 with motion arrows on J, Z, 10', () => {
+    expect([...HAND_LETTERS].sort()).toEqual([...FULL_ALPHABET, ...NUMBERS].sort());
     expect(HAND_ART.J.motion).toBeDefined();
     expect(HAND_ART.Z.motion).toBeDefined();
+    expect(HAND_ART['10'].motion).toBeDefined();
   });
 
   it('draws every hand with at least one shape, all inside the 200 x 260 box before turning', () => {

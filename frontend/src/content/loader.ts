@@ -29,7 +29,7 @@ export function loadCurriculum(raw: unknown, labels: readonly string[]): Curricu
       // The app never loads anything from another site (privacy, CSP): pictures must be files of this app.
       if (!/^\/media\/[\w./-]+$/.test(m.src) || m.src.includes('..')) fail(`media of ${s.code} must be a file under /media/, got "${m.src}"`);
     }
-    if (s.kind === 'static') {
+    if (s.kind === 'static' && s.model_task === 'static_letters') {
       const letter = s.code.replace(/^LETTER_/, '');
       if (labels[s.model_class_index] !== letter) {
         fail(`sign ${s.code} says class ${s.model_class_index} but the model has "${labels[s.model_class_index]}" there`);

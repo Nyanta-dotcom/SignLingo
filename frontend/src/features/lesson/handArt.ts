@@ -79,6 +79,23 @@ export const HAND_ART: Record<string, Art> = {
       head: 'M 171 71 L 182 78 L 171 85',
     },
   },
+  // Basic ASL numbers 1–10
+  '1': { layers: [{ kind: 'palm' }, curl('pinky'), curl('ring'), curl('middle'), up('index'), thumbAcross(172)] },
+  '2': { layers: [{ kind: 'palm' }, curl('pinky'), curl('ring'), lean('middle', -10), lean('index', 10), thumbAcross(174)] },
+  '3': { layers: [{ kind: 'palm' }, curl('pinky'), curl('ring'), lean('middle', -10), lean('index', 10), thumbOut()] },
+  '4': { layers: [{ kind: 'palm' }, lean('pinky', -10), lean('ring', -4), lean('middle', 4), lean('index', 10), thumbAcross(176)] },
+  '5': { layers: [{ kind: 'palm' }, lean('pinky', -12), lean('ring', -4), lean('middle', 4), lean('index', 12), thumbOut()] },
+  '6': { layers: [{ kind: 'palm' }, lean('ring', -6), up('middle'), lean('index', 10), limb([[68, 128], [84, 150], [104, 166]], 19), limb([[148, 190], [128, 178], [108, 166]], 20)] },
+  '7': { layers: [{ kind: 'palm' }, lean('pinky', -12), up('middle'), lean('index', 10), limb([[88, 128], [100, 152], [112, 168]], 19), limb([[148, 190], [130, 178], [114, 168]], 20)] },
+  '8': { layers: [{ kind: 'palm' }, lean('pinky', -12), lean('ring', -4), lean('index', 10), limb([[108, 128], [114, 152], [120, 168]], 19), limb([[148, 190], [134, 178], [122, 168]], 20)] },
+  '9': { layers: [{ kind: 'palm' }, lean('pinky', -12), lean('ring', -4), up('middle'), { kind: 'ring', cx: 130, cy: 106, rx: 14, ry: 16, w: 14 }, limb([[148, 192], [138, 150], [132, 122]], 20)] },
+  '10': {
+    layers: [{ kind: 'palm' }, ...fist(), limb([[144, 186], [164, 136], [168, 92]], 22)],
+    motion: {
+      path: 'M 142 66 Q 168 50 192 66',
+      head: 'M 184 56 L 194 67 L 180 71',
+    },
+  },
 };
 
 export const HAND_LETTERS = Object.keys(HAND_ART);

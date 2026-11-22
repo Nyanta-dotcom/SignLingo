@@ -25,7 +25,7 @@ export function performConfig(item: Item, rec: Recommended): PerformConfig {
   };
 }
 
-export const letterOf = (signCode: string) => signCode.replace(/^LETTER_/, '');
+export const letterOf = (signCode: string) => signCode.replace(/^(?:LETTER_|NUMBER_)/, '');
 
 export type Outcome =
   | { result: 'correct'; label: string; confidence: number; timeToVerifyMs: number }
