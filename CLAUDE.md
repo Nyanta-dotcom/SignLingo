@@ -22,7 +22,7 @@ Kiến trúc: **backend là Supabase** (dịch vụ có sẵn, không tự viế
 - random_seed = 42 ở mọi chỗ có ngẫu nhiên.
 - Không commit dữ liệu thô, model > 50 MB, `.env`.
 - Không sửa `docs/course/`, `ml/data/raw/`.
-- KHÔNG dùng số liệu, ngưỡng hay mã từ các báo cáo tuần 3–4 cũ (đã loại, không đáng tin). Mọi con số trong docs, AI Lab và báo cáo phải đến từ thí nghiệm trong repo (`ml/reports/experiments/*.json`).
+- Mọi con số trong docs, AI Lab và báo cáo phải đến từ thí nghiệm trong repo (`ml/reports/experiments/*.json`).
 
 ## Lệnh
 - ML: `cd ml && python -m pytest -q && ruff check .`

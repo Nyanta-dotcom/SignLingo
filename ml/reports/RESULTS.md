@@ -1,6 +1,6 @@
 # Kết quả thí nghiệm và trả lời câu hỏi nghiên cứu
 
-Mọi số dưới đây đọc từ `reports/experiments/*.json` (bảng đầy đủ: `summary.md`, hình: `figures/`). Chưa có số nào lấy từ báo cáo tuần 3–4 cũ. Câu chữ chính thức của RQ1 cần nhóm xác nhận; dưới đây dùng bản trong PRD.
+Mọi số dưới đây đọc từ `reports/experiments/*.json` (bảng đầy đủ: `summary.md`, hình: `figures/`). Câu chữ chính thức của RQ1 cần nhóm xác nhận; dưới đây dùng bản trong PRD.
 
 ## Hai bộ dữ liệu, hai bài toán — không so sánh trực tiếp
 
@@ -28,7 +28,7 @@ Trên ảnh (test Macro-F1):
 - **Mức cải thiện:** tập hợp CNN hơn baseline tốt nhất 0,069 Macro-F1 (0,979 so với 0,911), lớn hơn hai lần độ lệch giữa các seed. Đây là quy tắc kinh nghiệm, không phải kiểm định thống kê. Tập hợp chỉ có một lần chấm vì các thành viên đã là 5 seed.
 - **Ảnh hưởng của đặc trưng:** với cùng MLP, HOG cho 0,911 so với 0,777 của pixel, tức đặc trưng thiết kế tay có ảnh hưởng lớn hơn việc đổi mô hình cổ điển (RF 0,788). Augmentation giúp CNN: bỏ augmentation giảm validation Macro-F1 từ 0,962 xuống 0,918.
 - **Landmark** (tập hợp 5 MLP, đặc trưng khoảng cách và góc): validation 0,857, test Macro-F1 0,778 (sai 21,9%). Đặc trưng kỹ thuật tăng validation từ 0,777 (chỉ x, y) lên 0,850. Số này đo trên bộ dữ liệu khác nên không so được với bảng trên.
-- **Giới hạn:** độ rộng CNN (`wide`) được thử vì từng xuất hiện trong báo cáo cũ không đáng tin; ở đây nó chỉ là một giả thuyết được kiểm bằng validation. Linear SVM chỉ có 1 seed (chạy 39 phút).
+- **Giới hạn:** độ rộng CNN (`wide`) là một giả thuyết được kiểm bằng validation. Linear SVM chỉ có 1 seed (chạy 39 phút).
 
 ## RQ2 — Chữ nào bị nhầm nhiều nhất?
 
@@ -42,10 +42,21 @@ Cặp nhầm lớn nhất (tỉ lệ trong chữ thật, ma trận nhầm trên 
 - F1 thấp nhất: CNN: T 0,872, G 0,935, Y 0,938. Landmark: **X 0,000**, U 0,319, S 0,604.
 - Giả thuyết ban đầu "các chữ nắm tay hoặc 2–3 ngón nhầm với nhau" khớp một phần: U/R, M/N, A/S là các cặp bàn tay gần nhau. Chúng tôi **chưa kiểm chứng nguyên nhân** (ví dụ do 2D thiếu độ sâu, ít mẫu, hay do người ra dấu); đo mới cho thấy đâu bị nhầm, không cho biết vì sao.
 - Với landmark, sửa lỗi làm lỗi di chuyển chứ không biến mất: đặc trưng kỹ thuật và tập hợp giảm tổng lỗi nhưng X vẫn có F1 bằng 0. Hướng cải thiện lớn nhất theo chúng tôi là thêm dữ liệu từ nhiều người; việc này chưa được kiểm chứng.
+- **Chữ X:** trong 1.094 dòng X của `keypoint.csv`, góc khớp đầu ngón trỏ trung bình là 160° (gần thẳng) và chỉ 2,6% dòng có đầu ngón cong móc dưới 110° (`x_pose_check.json`). Ảnh bài học vẽ X chuẩn ASL với ngón trỏ cong móc. Một bản ghi X chuẩn bằng webcam của một thành viên bị đoán là I ở cả 40 khung. Lỗi của X nằm ở dữ liệu huấn luyện, không chỉ ở mô hình.
 
 ## RQ3 — Suy luận thời gian thực > 30 FPS trên trình duyệt?
 
-**Chưa đo.** Mô hình ONNX đã xuất (5,68 MB, khớp PyTorch ở 3,3e-7) nhưng chưa có đo FPS trong trình duyệt (Phase 4). Một số riêng của baseline: MLP + HOG xử lý một ảnh trong khoảng 0,67 ms trên CPU của máy huấn luyện, nhưng đó là Python, không phải trình duyệt, nên không trả lời RQ3.
+Đo 60 giây trong Chrome 157 trên laptop của nhóm (AI Lab → Live Monitor). MediaPipe chạy CPU: thời gian mỗi khung p50 **29,8 ms**, p95 **38,6 ms** (đạt chỉ tiêu p50 ≤ 33 ms, p95 ≤ 40 ms); bộ phân loại 0,72 ms. Nhưng chỉ xử lý được **22,6 khung/giây**, dưới mục tiêu 30. MediaPipe chạy GPU chậm hơn khoảng 2,6 lần (MediaPipe p50 76,1 ms) nên giữ CPU. Đã sửa cách xếp lịch khung, **chưa đo lại**. Mới đo một lần trên một máy. Mô hình ONNX đã xuất (5,68 MB, khớp PyTorch ở 3,3e-7).
+
+## Chất lượng dữ liệu
+
+| | MNIST train | MNIST test | `keypoint.csv` |
+|---|---|---|---|
+| Dòng thiếu / trùng hoàn toàn | 0 / 0 | 0 / 0 | 0 / 0 |
+| Dòng hỏng hoặc bị bỏ | 0 | 0 | 1 dòng hỏng, 2.865 dòng chữ động |
+| Lớp nhiều nhất / ít nhất | 1,35 | 3,46 | 8,67 (A 4.136, O 477) |
+
+Nguồn: `data_quality.json`. Không có dòng trùng hoàn toàn, nhưng ảnh MNIST là bản tăng cường của ít ảnh gốc (xem phần rò rỉ dữ liệu).
 
 ## Đo trên người mới (signer-holdout)
 

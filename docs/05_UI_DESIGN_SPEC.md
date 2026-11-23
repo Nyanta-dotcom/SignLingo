@@ -151,7 +151,7 @@ Trang giới thiệu dùng chung `MarketingLayout`: thanh trên có menu 4 trang
 ```
 - **Bản đồ kẹo** (`features/skill-tree/candyLayout.ts`, `CandyDecor.tsx`): đường kẹo uốn lượn nối các viên kẹo bài học (số bài, sao, khóa), mỗi unit là một vùng màu ("Thung lũng Kẹo Dâu", "Rừng Bạc Hà", "Lâu đài Kẹo Nho") có biển cấp, thanh đếm bài và cúp đích; trang trí hai bên dùng seed cố định. Cột phải: Mục tiêu hôm nay, Đồng bộ tiến độ, Chú thích. Lộ trình hiện có 3 unit: Bảng chữ cái ASL (7 bài), Chữ cái động J & Z (1 bài), Chữ số 0–10 (2 bài).
 - Click node available → popover: tên bài, số bài tập, XP, nút **BẮT ĐẦU**.
-- Thẻ "Đồng bộ tiến độ" ở cột phải mời đăng nhập (link tới Hồ sơ & Tài khoản). Banner nhắc sao lưu đã bỏ (2026-11-22).
+- Thẻ "Đồng bộ tiến độ" ở cột phải mời đăng nhập (link tới Hồ sơ & Tài khoản).
 - Khi `localStorage` bị chặn: banner `warning` "Tiến độ sẽ không được lưu" (AC-ACC-02).
 
 ### 5.2 Lesson Player – Màn học Webcam (`/lesson/:id`) — FT-LRN-02..05
@@ -226,7 +226,7 @@ Avatar chữ cái đầu (từ tên hiển thị tùy chọn), tổng XP, streak
 - `/leaderboard`: tab **Tuần này · Tổng XP · Chuỗi ngày · Độ chính xác** (chọn "Tất cả" hoặc một chữ). Hàng của mình gắn nhãn "Bạn". Chưa đăng nhập → mời đăng nhập; chưa ai đủ điều kiện → trạng thái trống.
 
 ### 5.7 Cài đặt (`/settings`)
-Âm thanh (on/off), Mục tiêu ngày (10/20/30/50), Tên hiển thị (tùy chọn, lưu khi rời ô), Camera (chọn thiết bị), Dữ liệu (nút **Nhập tiến độ** (hỏi xác nhận ghi đè), **Xóa toàn bộ dữ liệu** (xác nhận 2 bước)); link **Giới thiệu & Liên hệ** ở cuối. Đã bỏ: chọn giao diện sáng/tối, tay thuận, nút **Xuất tiến độ** (2026-11-22).
+Âm thanh (on/off), Mục tiêu ngày (10/20/30/50), Tên hiển thị (tùy chọn, lưu khi rời ô), Camera (chọn thiết bị), Dữ liệu (nút **Nhập tiến độ** (hỏi xác nhận ghi đè), **Xóa toàn bộ dữ liệu** (xác nhận 2 bước)); link **Giới thiệu & Liên hệ** ở cuối.
 
 ### 5.8 Thu mẫu (`/collect`) — FT-SYS-02
 Nhập mã người ra dấu ẩn danh (S01…) → chọn chữ → đếm ngược 3-2-1 → ghi N khung landmark → xem lại skeleton → Giữ / Bỏ. Thanh tiến độ "30/50 mẫu chữ R". Nút **TẢI FILE** (`landmarks_<chữ>_<mã>_<thời gian>.json`). Ghi rõ: "Chỉ lưu tọa độ khớp tay, không lưu hình ảnh". Mẫu chưa tải giữ tạm trong bộ nhớ trang; rời trang sẽ hỏi xác nhận.
@@ -277,7 +277,4 @@ Use placeholder numbers clearly marked "—"; do not invent metrics.
 
 ## 9. Cần người dùng cung cấp / quyết định
 
-1. ~~Logo & tên~~ **Theo code:** tên **SignLingo**, logo bàn tay (`BrandMark`, cũng là biểu tượng tab `public/favicon.svg`); linh vật mèo **Lingo** (`public/mascot/*.webp`). **Cần nhóm ghi nguồn và giấy phép ảnh linh vật** (repo chưa có).
-2. ~~Nguồn ảnh~~ **Theo code:** hình chữ cái public domain (wpclipart.com qua Wikimedia Commons), hình số trong `public/media/numbers/`.
-3. ~~Nguồn âm thanh~~ **Theo code:** tự tổng hợp bằng Web Audio.
-4. ~~Ngôn ngữ UI~~ **Theo code:** tiếng Việt (`src/i18n/vi.ts`; riêng nội dung các trang giới thiệu viết thẳng trong component).
+1. Linh vật mèo **Lingo** (`public/mascot/*.webp`): cần nhóm ghi nguồn và giấy phép ảnh (repo chưa có).

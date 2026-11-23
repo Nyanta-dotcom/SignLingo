@@ -9,7 +9,22 @@ Real-time ASL learning web app (Duolingo-style) + final project for *Introductio
 - Kết quả thí nghiệm ML: [`ml/reports/RESULTS.md`](ml/reports/RESULTS.md)
 - Làm việc nhóm: [`CONTRIBUTING.md`](CONTRIBUTING.md)
 
-> Đang phát triển. Phần Kết quả và Giới hạn sẽ được hoàn thiện ở task P4-10.
+## Kết quả chính
+
+- Tập hợp 5 CNN trên Sign Language MNIST: test Macro-F1 **0,979**, so với baseline tốt nhất (MLP + HOG) 0,911.
+- Mô hình chạy trên web (tập hợp 5 MLP landmark): test Macro-F1 0,778. Đây không phải số đo trên người mới.
+- Trong trình duyệt (Chrome, laptop của nhóm): thời gian mỗi khung p50 29,8 ms, p95 38,6 ms, nhưng chỉ 22,6 khung/giây.
+- Chữ nhận kém nhất: X (do dữ liệu huấn luyện dạy dáng khác ảnh bài học) và U (hay bị nhầm thành R).
+
+Chi tiết: [`ml/reports/RESULTS.md`](ml/reports/RESULTS.md) · báo cáo cuối kỳ (IEEE): [`docs/final-report/`](docs/final-report/) · báo cáo từng tuần: [`docs/weekly/`](docs/weekly/)
+
+## Giới hạn
+
+- Chưa đo độ chính xác trên người mới: dữ liệu không có cột người ra dấu, chưa thu webcam nhiều người.
+- Dữ liệu chữ X lệch dáng chuẩn; U thường bị nhận thành R.
+- Số 0–10 và J, Z dùng luật hình học, chưa có thí nghiệm đo.
+- Chưa đạt 30 khung/giây trên laptop của nhóm; mới đo một lần trên một máy.
+- Ngưỡng 0,60 và giữ 1 giây là giả thuyết khởi đầu.
 
 ## Kiến trúc
 

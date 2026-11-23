@@ -3,7 +3,7 @@
 Trạng thái: **ĐƯỢC CHẤP THUẬN HƯỚNG VÀ ĐÃ TRIỂN KHAI** (2026-11-22). Đăng nhập, đồng bộ và bảng xếp hạng đang chạy trên production; người dùng đã chạy `0001_init.sql` và `0002_leaderboard.sql`. Còn chờ duyệt chính thức: quy tắc gộp ở mục 5 (bản đang chạy ghi ở dưới) để chuyển nháp này thành ADR chính thức (task P5-10).
 
 ## Bối cảnh
-Trước đây tiến trình chỉ lưu trong `localStorage` (có xuất/nhập JSON; nút Xuất đã bỏ ngày 2026-11-22 vì tài khoản thay thế). Người dùng không giữ được tiến trình khi đổi máy hay xóa dữ liệu trình duyệt. Mục tiêu của bạn: có tài khoản và đồng bộ tiến trình để thể hiện kiến trúc đầy đủ cho đồ án, còn nhiều thời gian.
+Trước đây tiến trình chỉ lưu trong `localStorage` (có xuất/nhập JSON). Người dùng không giữ được tiến trình khi đổi máy hay xóa dữ liệu trình duyệt. Mục tiêu của bạn: có tài khoản và đồng bộ tiến trình để thể hiện kiến trúc đầy đủ cho đồ án, còn nhiều thời gian.
 
 ## Quyết định đề xuất
 Dùng **Supabase** (Auth + Postgres, gói miễn phí) làm dịch vụ có sẵn, **không tự viết server**.

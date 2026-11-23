@@ -33,7 +33,7 @@ flowchart LR
 P0 còn lại → **P1 (toàn bộ trừ 1B)** → P3-01, P3-07..15, P3-20..22 (Free Practice + AI Lab) → P4-01..07, P4-10..12.
 Phase 2 và phần còn lại của Phase 3 (Skill Tree, Lesson Player đầy đủ, gamification) làm song song nếu đủ người, nếu không thì sau buổi chấm.
 
-> **Nguyên tắc số liệu (2026-11-18):** các báo cáo tuần 3–4 cũ và mã đi kèm **không dùng**. Mọi mã được viết lại trong repo này; mọi con số do thí nghiệm của repo sinh ra (JSON có seed + git commit). Dữ liệu đầu vào đã có ở `data/`: Kaggle CSV và `keypoint.csv` (đã kiểm cấu trúc).
+> **Nguyên tắc số liệu:** mọi con số do thí nghiệm của repo sinh ra (JSON có seed + git commit). Dữ liệu đầu vào đã có ở `data/`: Kaggle CSV và `keypoint.csv` (đã kiểm cấu trúc).
 
 ---
 
@@ -47,9 +47,7 @@ Phase 2 và phần còn lại của Phase 3 (Skill Tree, Lesson Player đầy đ
 | ☑ | P0-01b | `LICENSE` | gốc | MIT, chủ bản quyền "SignLingo AI contributors" (đổi tên nếu nhóm muốn) | — |
 | ☑ | P0-02 🎓 | `CLAUDE.md` gốc + `ml/`, `frontend/` + `.claude/settings.json` (permissions) | theo 06 §2 | Đã đồng bộ v0.2 | — |
 | ☑ | P0-03 🎓 | Scaffold `ml/` (pyproject, ruff, pytest, `config.py` seed 42 + 24 nhãn) | `ml/` | Tạm dùng venv + pip | Unit: 3 test config ✅ |
-| ~~P0-04~~ | — | ~~Scaffold backend~~ | — | **Bỏ (v0.2)**, đã xóa thư mục | — |
 | ☑ | P0-05 🎓 | Scaffold `frontend/` (Vite, React 19, TS 6, Tailwind 4, Vitest, ESLint C1/C3) | `frontend/` | TS ghim 6.x | Unit: render App ✅; build ✅ |
-| ~~P0-06~~ | — | ~~docker-compose Postgres~~ | — | **Bỏ (v0.2)**, đã xóa | — |
 | ☑ | P0-07 🎓 | `shared/contracts/schemas/model_manifest.schema.json` | `shared/` | — | Unit (ml): 6 test schema ✅ |
 | ☑ | P0-08 🎓 | CI GitHub Actions: job `ml`, `frontend` | `.github/` | Đã bỏ job backend | ☐ **Chưa chạy trên GitHub** |
 | ☑ | P0-09 🎓 | `e2e/` Playwright + Chrome fake camera | `e2e/` | `PW_CHANNEL=chrome` dùng Chrome cài sẵn | E2E smoke ✅ (local) |
@@ -86,10 +84,9 @@ Phase 2 và phần còn lại của Phase 3 (Skill Tree, Lesson Player đầy đ
 
 | ☐ | ID | Task | Files | Guide | Test |
 |---|---|---|---|---|---|
-| ☑ | P1-11 | CNN nhỏ (Conv16→Pool→Conv32→Pool→Dense128+Dropout→24). **Nguồn gốc kiến trúc:** các kích thước ban đầu đến từ mô tả trong báo cáo cũ (không đáng tin), chỉ là **giả thuyết xuất phát**; độ rộng là tham số để P1-13 so sánh biến thể trên **validation** | `models/cnn.py` | Số tham số được đo và ghi vào log (bản mặc định 208.728 là hệ quả của kiến trúc, không phải bằng chứng) | Unit ✅: shape, lớp, dropout, seed, gradient, độ rộng tùy chỉnh |
+| ☑ | P1-11 | CNN nhỏ (Conv16→Pool→Conv32→Pool→Dense128+Dropout→24). Độ rộng là tham số để P1-13 so sánh biến thể trên **validation** | `models/cnn.py` | Số tham số được đo và ghi vào log (bản mặc định 208.728 là hệ quả của kiến trúc, không phải bằng chứng) | Unit ✅: shape, lớp, dropout, seed, gradient, độ rộng tùy chỉnh |
 | ☑ | P1-12 [R] | Trainer: Adam wd 1e-4, cosine LR, label smoothing .05, batch 128, early stop theo val macro-F1 (patience 3), deterministic | `train/trainer.py` | Dùng lại cho landmark MLP | Unit: 2 epoch tiny → loss giảm; cùng seed → cùng kết quả · Đã duyệt plan. Unit ✅ (6): loss giảm, cùng seed tái lập, early stop theo val, khôi phục epoch tốt nhất, augment mỗi epoch seed mới, test không đọc khi chưa `eval_test`. Đo thật: ~7 s/epoch trên CPU 6 luồng |
 | ☑ | P1-13 | Sweep 4 cấu hình + tăng epoch tới 30 | `configs/cnn_*.yaml`, `train/run_cnn.py` | Chọn theo val | Integration: 1 config tiny → JSON · Đã chạy thật: 5 cấu hình × 3 seed, chọn theo val; thắng `wide` (val 0,975 ± 0,002), test chấm 1 lần: Macro-F1 0,971 ± 0,003 so với MLP+HOG 0,911 ± 0,003. Chi tiết và cảnh báo: `ml/reports/summary.md` · Vòng 2 (30 epoch, val): wide_e30 0,980 ± 0,005 tốt nhất; chọn theo val → test 1 lần: mô hình đơn acc 0,975 ± 0,002 / Macro-F1 0,974 ± 0,003 (sai 2,5%); tập hợp 5 seed (val 0,988 ≥ trung bình thành viên 0,981, đúng quy tắc khai báo trước) acc 0,979 / F1 0,979 (sai 2,1%). Cải thiện so với vòng 1 (sai 2,8%) nhỏ, gần mức nhiễu seed |
-| ~~P1-14~~ | — | ~~So với bản NumPy tuần 4~~ | — | **Bỏ (2026-11-18)**: không dùng mã cũ | — |
 
 ### 1C. Landmark model (cho web)
 
@@ -115,7 +112,7 @@ Phase 2 và phần còn lại của Phase 3 (Skill Tree, Lesson Player đầy đ
 | ☑ | P1-24 | Publish: copy vào `frontend/public/models/` + `index.json`; experiments → `frontend/public/data/experiments/` + `index.json` (tạo `model_index`, `experiment_index` schema) | `export/publish.py` | Không ghi đè version cũ; bỏ trường nặng | Integration: đủ file, đúng schema · Đã xuất bản: `frontend/public/models/` (ONNX 5,68 MB + manifest + index.json), `public/data/experiments/` (88 file + index). Bản đã phát hành là bất biến (chặn ghi đè khác nội dung cùng phiên bản); thêm schema `experiment_index`, `model_index` |
 | ☑ | P1-25 | Figures: CM, per-class F1, bar so sánh, leakage, curves | `evaluate/figures.py` | `reports/figures/` | Integration: PNG tồn tại · Đã sinh 7 hình từ file kết quả thật (`ml/reports/figures/`): so sánh mô hình (Macro-F1 test ± std seed), leakage study (độ chính xác và khoảng cách ảnh gần nhất), ma trận nhầm CNN và landmark, F1 từng chữ, đường cong học của hai mô hình. Hàm báo rõ hình nào bị bỏ qua vì thiếu dữ liệu, không vẽ giả. Test ✅ (5). Đã xem bằng mắt: sửa lỗi nhãn đè nhau và chú thích che cột, những lỗi test không bắt được |
 | ◐ | P1-26 🎓 | Entrypoint `python -m signlingo_ml.pipeline all\|data\|baselines\|cnn\|landmarks\|export\|publish` | `pipeline.py` | Idempotent, cache | **E2E ML:** `all` trên tiny trong CI (< 5 phút); đầy đủ trên máy nhóm → AC-ML-01, 05, 06 · Đã có `pipeline.py` (data, baselines, cnn, landmarks, export, publish, report; cache theo file đầu ra, `--force`, `--dry-run`). Test ✅ (5), chạy thật `--dry-run` báo cả 7 bước cached. CHƯA có: chạy `all` trên dữ liệu tiny trong CI (cần tiny fixture cho từng bước) |
-| ◐ | P1-27 🎓 | `ml/README.md` + `reports/RESULTS.md` (RQ1–RQ3, số lấy từ JSON) | docs | Bám rubric | Review thủ công · Đã viết `ml/README.md` và `ml/reports/RESULTS.md` (RQ1–RQ3, số chép từ JSON và `summary.md`). Còn thiếu: wording chính thức RQ1 (U2), số signer-holdout (P1-21) và FPS trình duyệt (RQ3, Phase 4) ghi rõ là chưa đo |
+| ☑ | P1-27 🎓 | `ml/README.md` + `reports/RESULTS.md` (RQ1–RQ3, số lấy từ JSON) | docs | Bám rubric | Review thủ công · `ml/README.md` và `ml/reports/RESULTS.md` đủ RQ1–RQ3 (số chép từ JSON, `summary.md` và lần đo benchmark trong trình duyệt), thêm chất lượng dữ liệu và kiểm tra chữ X. Signer-holdout vẫn chưa đo (P1-21) |
 
 **3 lớp kiểm thử Phase 1:** Unit = transform, split, guard, features, augment, metrics, normalize, templates, manifest · Integration = pipeline con trên `tiny_mnist.csv`, `tiny_keypoint.csv`; ONNX parity; publish đúng schema · E2E = `pipeline all` từ repo sạch, chạy 2 lần lệch Macro-F1 ≤ 0,005.
 
@@ -194,7 +191,7 @@ Phase 2 và phần còn lại của Phase 3 (Skill Tree, Lesson Player đầy đ
 
 | ☐ | ID | Task | Files | Guide | Test |
 |---|---|---|---|---|---|
-| ☑ | P3-16 🚀 | Lesson Player khung (progress, hearts, item router) dùng `useLearner` | `features/lesson/` | | Unit · Test ✅ (12): thẻ chữ → bắt camera → ra dấu, tiến độ, tim, thoát có xác nhận (bỏ dở = không XP, không tiến độ, không để lại phiên), bài khóa/không tồn tại/hết tim lúc bắt đầu; hết tim giữa chừng dừng bài. Phiên chỉ tạo ở lần làm đầu tiên. Route `/lesson/:code` nằm ngoài khung điều hướng. **Giả thuyết cần duyệt:** thời gian tối đa mỗi chữ `DEFAULT_TIME_LIMIT_MS` = 15 s (manifest không có; bài có thể ghi đè bằng `config.time_limit_ms`). **Đã chốt (nhóm):** bài chỉ tính hoàn thành khi ≥ 50% mục đúng (`MIN_LESSON_ACCURACY`); dưới mức đó hiện màn "Chưa đạt" (không XP, không tiến độ, có nút Thử lại), nên bấm "Bỏ qua" hết không còn nhận XP. · AC-GAM-03: màn "hết tim" nay hiện thời gian hồi tim kế tiếp (`msToNextHeart`, test ✅). |
+| ☑ | P3-16 🚀 | Lesson Player khung (progress, hearts, item router) dùng `useLearner` | `features/lesson/` | | Unit · Test ✅ (12): thẻ chữ → bắt camera → ra dấu, tiến độ, tim, thoát có xác nhận (bỏ dở = không XP, không tiến độ, không để lại phiên), bài khóa/không tồn tại/hết tim lúc bắt đầu; hết tim giữa chừng dừng bài. Phiên chỉ tạo ở lần làm đầu tiên. Route `/lesson/:code` nằm ngoài khung điều hướng. **Giả thuyết cần duyệt:** thời gian tối đa mỗi chữ `DEFAULT_TIME_LIMIT_MS` = 15 s (manifest không có; bài có thể ghi đè bằng `config.time_limit_ms`). Bài chỉ tính hoàn thành khi ≥ 50% mục đúng (`MIN_LESSON_ACCURACY`); dưới mức đó hiện màn "Chưa đạt" (không XP, không tiến độ, có nút Thử lại), nên bấm "Bỏ qua" hết không còn nhận XP. · AC-GAM-03: màn "hết tim" nay hiện thời gian hồi tim kế tiếp (`msToNextHeart`, test ✅). |
 | ◐ | P3-17 🚀 | Item `learn_card`, `perform_sign` (HoldRing, gợi ý, near-miss), `choose_sign` | `features/lesson/items/` | | Unit · `learn_card` và `perform_sign` đã làm (HoldRing, top-3, gợi ý ngón từ `fingerFeedback`, chip "đang giống chữ X", bỏ qua, ẩn khung xương, phím Esc/H/S). **Chưa làm `choose_sign`** (cần ảnh minh họa do bạn cung cấp). Chưa thử với webcam thật. · **Hình tay (bạn chọn phương án 2):** đủ 24 hình đường nét SVG của wpclipart.com (Public domain, tải từ Wikimedia Commons, không chỉnh sửa) trong `public/media/letters/`, nguồn ghi ở `ATTRIBUTION.md`, khai báo qua `media` trong `curriculum.json`; thẻ chữ hiện hai ô cân đối (chữ = hình tay) kèm dòng ghi nguồn. Test có kiểm: mỗi chữ có hình, file tồn tại và khác nhau, SVG không chứa script hay tham chiếu ngoài. Hình tự vẽ (`handArt.ts` + `HandIllustration`) giữ làm dự phòng khi chữ không có `media`. |
 | ☑ | P3-18 🚀 | Item `spell_word` (chữ lặp cần nhả tay) | như trên | AC-LRN-05 | Unit: "LL" · Test ✅ (4 + 3): `game/spellWord.ts` (chữ lặp như "LL" phải nhả tay hoặc đổi dấu rồi mới nhắm chữ tiếp; đổi dấu cũng tính là nhả), ô chữ hiện trạng thái bằng chữ, mỗi chữ là một lượt ghi nhận, hết giờ ở một chữ thì cả từ tính sai. **Chưa có từ nào trong `curriculum.json`** (chờ bạn cung cấp danh sách từ) nên chưa thấy ngoài test. |
 | ☑ | P3-19 🚀 | Màn kết quả (`CompleteResult`) + âm thanh (tắt được) + confetti (reduced-motion) | `features/lesson/` | | Unit · Test ✅ (6): XP đếm lên (không đếm khi giảm chuyển động), độ chính xác, thời gian, chuỗi ngày khi tăng, danh sách chữ sai nhiều nhất + nút Ôn lại, confetti CSS (tắt khi giảm chuyển động). Âm thanh tổng hợp bằng WebAudio (không file âm thanh; đúng/sai/hoàn thành) và có công tắc trong Cài đặt. |
@@ -205,7 +202,7 @@ Phase 2 và phần còn lại của Phase 3 (Skill Tree, Lesson Player đầy đ
 | ◐ | P3-24 🎓 | Collect page: mã người ra dấu, đếm ngược, ghi landmark, xem lại, **tải file JSON** theo `landmark_capture` | `features/collect/` | Không lưu ảnh | Unit: file đúng schema · Test ✅ (14): file tạo ra khớp `landmark_capture.schema.json`, tọa độ không lật gương, từ chối mã người không ẩn danh và chữ J/Z, đếm ngược 3 s rồi ghi đúng 40 khung có tay, hủy thì không lưu, tải file đúng schema. Route `/collect` (không có trong menu). Đã thêm bước xem lại (phát lại khung xương, **Giữ / Bỏ**) và hỏi xác nhận khi rời trang còn mẫu chưa tải (test ✅ 16). Chưa thử với webcam thật |
 | ☑ | P3-25 ✨ | Item `perform_dynamic` — làm bằng luật quỹ đạo thay vì buffer 32 khung + mô hình (P5-08) | `vision/dynamicGesture.ts`, `vision/numberGesture.ts`, `features/lesson/` | | Unit ✅ (`dynamicGesture.test.ts`, `numberGesture.test.ts`). Chưa có thí nghiệm đo độ chính xác |
 
-**3 lớp kiểm thử Phase 3:** Unit = mọi module `vision/*`, component states, stores · Integration = normalizer ↔ fixture Python; classifier ↔ ONNX Python; UI + `LearnerStore` thật (jsdom) · E2E (Playwright, Chrome fake camera với video `.y4m` nhóm quay): (1) mở app lần đầu → bài 1 → verify chữ A → màn kết quả → reload vẫn còn XP; (2) từ chối camera (AC-LRN-03); (3) không có tay > 2 s (AC-LRN-02); (4) ~~toggle dark mode~~ (bỏ, chỉ còn chế độ sáng); (5) AI Lab hiển thị bảng từ JSON; (6) Collect tải được file đúng schema.
+**3 lớp kiểm thử Phase 3:** Unit = mọi module `vision/*`, component states, stores · Integration = normalizer ↔ fixture Python; classifier ↔ ONNX Python; UI + `LearnerStore` thật (jsdom) · E2E (Playwright, Chrome fake camera với video `.y4m` nhóm quay): (1) mở app lần đầu → bài 1 → verify chữ A → màn kết quả → reload vẫn còn XP; (2) từ chối camera (AC-LRN-03); (3) không có tay > 2 s (AC-LRN-02); (4) AI Lab hiển thị bảng từ JSON; (5) Collect tải được file đúng schema.
 
 ---
 
@@ -223,8 +220,8 @@ Phase 2 và phần còn lại của Phase 3 (Skill Tree, Lesson Player đầy đ
 | ☐ | P4-06 🎓 | **Perf E2E**: 60 s fake camera, đọc `getPerf()`, assert frame p50 ≤ 33 ms & p95 ≤ 40 ms (trên máy tham chiếu; CI chỉ cảnh báo) | | AC-PERF-01..03 |
 | ☑ | P4-07 🎓 | Privacy E2E: mọi request cùng origin; không payload ảnh/video/landmark | | AC-PRIV-01, C2, C6 · E2E ✅ `e2e/tests/privacy.spec.ts`: một phiên thật với camera giả (luyện tập, AI Lab, thu mẫu, cài đặt, hồ sơ) chỉ có request cùng origin, chỉ GET/HEAD/OPTIONS, không có body; `vercel.json` có `connect-src 'self'` và `camera=(self)`. CSP chỉ có hiệu lực trên Vercel nên chưa kiểm trên Preview URL. **Sau đó (P5-01):** `connect-src` thêm `https://*.supabase.co`; test privacy chạy khi chưa đăng nhập nên vẫn chỉ cùng origin. Chưa có E2E cho trạng thái đã đăng nhập |
 | ☑ | P4-08 | A11y: axe-core 6 màn × 2 theme; bàn phím luồng học | | AC-UI-02 · E2E ✅ `e2e/tests/a11y.spec.ts`: axe-core (WCAG 2 A/AA, 2.1 A/AA) 7 màn × 2 theme không còn vi phạm; kiểm bằng axe lộ ra lỗi tương phản thật của chữ xanh (4,42:1 và 4,0:1), đã sửa bằng token `brand-fg`. Luồng bàn phím mới thử ở dashboard (chưa có luồng học). |
-| ☑ | P4-09 | E2E dữ liệu: học 1 bài → reload → XP/streak còn; export → xóa → import; storage bị chặn → banner (**cập nhật P5-03:** nút Xuất đã bỏ, test sửa theo: Cài đặt không còn nút Xuất, nhập file vẫn chạy) | | AC-GAM-01, AC-ACC-01/02 · E2E ✅ `e2e/tests/data.spec.ts`: landing một lần; cài đặt còn sau khi tải lại; xuất → xóa → nhập ra cùng dữ liệu (AC-ACC-01); file hỏng bị từ chối; storage bị chặn → banner và không lỗi (AC-ACC-02). Đã thêm: bài bị bỏ qua hết không được tính ("Chưa đạt", bài 2 vẫn khóa, XP 0); tiến độ và XP đã lưu còn sau khi tải lại và mở bài 2 (AC-GAM-01). Chrome camera giả không làm được dấu tay nên bài hoàn thành được dựng sẵn trong localStorage; luồng đầy đủ có dấu đúng nằm ở test thành phần. |
-| ☐ | P4-10 🎓 | README gốc + `reports/RESULTS.md` (RQ1–3, bảng, hình, link Vercel, giới hạn, hướng phát triển) | Bám Week 5 | AC-REPO-01..03 |
+| ☑ | P4-09 | E2E dữ liệu: học 1 bài → reload → XP/streak còn; export → xóa → import; storage bị chặn → banner | | AC-GAM-01, AC-ACC-01/02 · E2E ✅ `e2e/tests/data.spec.ts`: landing một lần; cài đặt còn sau khi tải lại; xuất → xóa → nhập ra cùng dữ liệu (AC-ACC-01); file hỏng bị từ chối; storage bị chặn → banner và không lỗi (AC-ACC-02). Đã thêm: bài bị bỏ qua hết không được tính ("Chưa đạt", bài 2 vẫn khóa, XP 0); tiến độ và XP đã lưu còn sau khi tải lại và mở bài 2 (AC-GAM-01). Chrome camera giả không làm được dấu tay nên bài hoàn thành được dựng sẵn trong localStorage; luồng đầy đủ có dấu đúng nằm ở test thành phần. |
+| ☑ | P4-10 🎓 | README gốc + `reports/RESULTS.md` (RQ1–3, bảng, hình, link Vercel, giới hạn, hướng phát triển) | Bám Week 5 | AC-REPO-01..03 · README có kết quả chính, giới hạn, link Vercel, RESULTS.md và báo cáo IEEE |
 | ◐ | P4-11 🎓 | Deploy Production Vercel; chạy lại E2E smoke + perf trên URL production | | URL hoạt động, header đúng · Đã deploy: `https://signlingo-vn.vercel.app` (project `sign-lingo`), có biến môi trường Supabase. **Chưa** chạy E2E smoke/perf trên URL production |
 | ◐ | P4-12 🎓 | Kịch bản demo + dự phòng (mạng yếu → `pnpm preview` localhost; camera lỗi → video fake) | | Diễn tập · Đã viết `docs/08_DEMO_SCRIPT.md` (kịch bản ~7 phút, danh sách chuẩn bị, phương án dự phòng, câu hỏi hay gặp; số liệu đọc từ AI Lab). **Chưa diễn tập**, chưa có link production, và cách camera giả bằng video `.y4m` cần quay chuẩn bị từ trước. |
 
@@ -299,22 +296,19 @@ Next: P1-04
 
 | Yêu cầu Week 5 | Nguồn |
 |---|---|
+| Báo cáo từng tuần và báo cáo cuối kỳ | `docs/weekly/BaoCao_Tuan1..5_SignLingo.docx`; báo cáo IEEE `docs/final-report/` |
 | Full DL pipeline demo Data → Model → Output | P1-26 + Free Practice/AI Lab trên URL Vercel + P4-12 |
 | Final model performance summary | AI Lab + `reports/RESULTS.md` |
 | Limitations & risks | PRD §8 + RESULTS.md (domain gap, signer ít, XP cục bộ sửa được) |
 | Future improvements | Phase 1B (mô hình học máy cho J/Z, số, từ vựng), P4-05, thu dữ liệu đa người, P5-10..13 |
 | Final GitHub review | AC-REPO-*, P1-26 |
-| 8 mục weekly (What/When/Why/Who/How much/risks/changes/issues) | Nhóm tự điền; "Major changes": bỏ backend, deploy Vercel (2026-11-18); thêm tài khoản Supabase tùy chọn, bảng xếp hạng, số và J/Z, giao diện hồng (2026-11-22); giao diện kawaii với linh vật, lộ trình bản đồ kẹo, tối ưu Lighthouse (2026-11-23). "Who": xem §9 |
+| 8 mục weekly (What/When/Why/Who/How much/risks/changes/issues) | Đã có trong báo cáo từng tuần (số giờ là ước tính); "Major changes": bỏ backend, deploy Vercel (2026-11-18); thêm tài khoản Supabase tùy chọn, bảng xếp hạng, số và J/Z, giao diện hồng (2026-11-22); giao diện kawaii với linh vật, lộ trình bản đồ kẹo, tối ưu Lighthouse (2026-11-23). "Who": xem §9 |
 
 ## 8. Việc người dùng cần làm / quyết định
 
 | # | Việc | Chặn task |
 |---|---|---|
-| U1 | ~~Gửi mã nguồn tuần 3–4~~ **Đã có `data/`** (Kaggle CSV + `keypoint.csv`); mã và báo cáo cũ không dùng | — |
-| U2 | Câu chữ chính thức RQ1–RQ3 | P1-27 |
-| U3 | ~~Ngôn ngữ UI~~ **Xong:** tiếng Việt | — |
 | U4 | Nội dung `curriculum.json`: **còn thiếu** danh sách từ Cấp 2 (`spell_word`) và ảnh cho `choose_sign`; ảnh chữ, ảnh số và âm thanh đã có | P3-17, P3-18 |
-| U5 | ~~Chủ project Vercel; repo; `LICENSE`~~ **Xong:** Vercel `sign-lingo`, repo `Nyanta-dotcom/SignLingo`, MIT | — |
 | U10 | Supabase: đặt Site URL/Redirect URLs cho `https://signlingo-vn.vercel.app`; mở lại dự án trước buổi demo (gói Free tự tạm dừng) | P5-* |
 | U6 | Cài uv (hoặc chốt pip) | P0-13 |
 | U7 | Thu dữ liệu ≥ 3 người; quay video fake-camera | P1-21, E2E Phase 3 |

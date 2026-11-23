@@ -2,7 +2,7 @@
 
 > **Trạng thái:** v0.4 · **Ngày:** 2026-11-23 · **v0.2:** bỏ backend; app là SPA tĩnh trên Vercel, dữ liệu người học lưu trong trình duyệt. · **v0.3 (đồng bộ với code):** thêm tài khoản tùy chọn (Supabase) để đồng bộ tiến độ, bảng xếp hạng tự nguyện, số 0–10 và chữ động J, Z (luật hình học), trang đăng nhập và trang Giới thiệu & Liên hệ; bỏ Xuất JSON và chế độ tối. · **v0.4 (2026-11-23, đồng bộ với code):** trang `/register`; lộ trình kiểu bản đồ kẹo, linh vật mèo Lingo, hiệu ứng "Vào học"; tối ưu Lighthouse; thêm §10 Nhóm thực hiện và phân công.
 > **Tài liệu liên quan:** [02_SOLUTION_ARCHITECTURE](02_SOLUTION_ARCHITECTURE.md) · [03_DATA_STORAGE](03_DATA_STORAGE.md) · [04_CONTRACTS](04_CONTRACTS.md) · [05_UI_DESIGN_SPEC](05_UI_DESIGN_SPEC.md) · [07_MASTER_PLAN](07_MASTER_PLAN.md)
-> **Nguồn đầu vào:** `docs/course/topic.docx`, `week1–5.docx` (yêu cầu môn). Các báo cáo tuần 3–4 cũ **không được dùng** (xem §2).
+> **Nguồn đầu vào:** `docs/course/topic.docx`, `week1–5.docx` (yêu cầu môn).
 
 ---
 
@@ -22,7 +22,7 @@
 | Mục tiêu kép | (a) Sản phẩm EdTech thực tế; (b) Đồ án cuối kỳ môn *Introduction to Artificial Intelligence* — **40% điểm môn** |
 | Rubric môn (10 điểm) | AI Problem Definition (2) · Problem Statement & 3 Research Questions (2) · Solution Development & Analysis (5) · GitHub Repository + README (1) |
 | Tiến độ môn | Lịch môn học theo `docs/course/week1–5.docx`. Tiến độ **thực** của nhóm chỉ được tính bằng kết quả chạy trong repo này (xem `docs/07_MASTER_PLAN.md`) |
-| Kết quả đã có | **Chưa có kết quả nào được kiểm chứng.** Số liệu trong các báo cáo tuần 3–4 cũ không do mã trong repo này sinh ra nên **không dùng** làm bằng chứng, ngưỡng hay mục tiêu (quyết định 2026-11-18). Mọi số liệu về sau đến từ `ml/reports/experiments/*.json` (có seed và git commit) |
+| Kết quả thí nghiệm | Mọi số liệu đến từ `ml/reports/experiments/*.json` (có seed và git commit); tổng hợp ở `ml/reports/RESULTS.md` |
 | Dữ liệu | Kaggle Sign Language MNIST (27.455 train / 7.172 test, 28×28 xám, 24 lớp; số đếm đã kiểm trực tiếp trên file) · `keypoint.csv` (36.402 dòng, 33.536 mẫu sau khi bỏ J, Z, 24 chữ; giấy phép MIT, từ dự án American-Sign-Language-Detection; **không có cột người ra dấu hay phiên thu**) · Dữ liệu webcam tự thu của nhóm (kế hoạch: ≥ 3 người × 30–50 mẫu/chữ). Cách Kaggle tạo tập train (số ảnh gốc, số bản augment) **chưa được kiểm chứng**; ta chỉ dựa vào bằng chứng đo được (chia ngẫu nhiên gây rò rỉ) |
 | Quyết định hạ tầng (2026-11-18, sửa 2026-11-22) | Dự án học tập phi thương mại → **SPA tĩnh deploy Vercel (gói Hobby)**, **backend là Supabase** (dịch vụ có sẵn, không tự viết server). Tiến độ lưu `localStorage` (local-first). **Từ 2026-11-22:** tài khoản tùy chọn trên Supabase (Auth + Postgres) để đồng bộ tiến độ và tham gia bảng xếp hạng; xem [ADR_backend_sync](drafts/ADR_backend_sync_DRAFT.md). Mẫu landmark thu thêm vẫn tải về dạng file |
 | Ràng buộc kỹ thuật | Inference trên trình duyệt (privacy: hình camera và landmark không rời máy; chỉ tiến độ học được đồng bộ khi người học tự đăng nhập) · random_seed = 42 · Không chia validation ngẫu nhiên trên MNIST · Chuẩn hóa chỉ fit trên Train · Không lật ngang ảnh MNIST |
@@ -31,8 +31,8 @@
 
 | RQ | Câu hỏi | Bằng chứng / Feature đáp ứng |
 |---|---|---|
-| **RQ1** *(cần nhóm xác nhận lại đúng wording đã nộp tuần 2)* | Mô hình Deep Learning (CNN có augmentation) cải thiện bao nhiêu so với các baseline ML cổ điển, và đặc trưng (pixel vs HOG vs landmark) ảnh hưởng thế nào? | FT-ML-03, FT-ML-04, AI Lab bảng benchmark |
-| **RQ2** | Những chữ cái nào bị nhầm lẫn nhiều nhất và vì sao (giả thuyết ban đầu: các chữ nắm tay và các chữ 2–3 ngón dễ nhầm với nhau; **cần kiểm chứng** bằng Confusion Matrix thật)? | FT-ML-05 Confusion Matrix, per-class F1, gallery lỗi |
+| **RQ1** | Mô hình Deep Learning (CNN có augmentation) cải thiện bao nhiêu so với các baseline ML cổ điển, và đặc trưng (pixel vs HOG vs landmark) ảnh hưởng thế nào? | FT-ML-03, FT-ML-04, AI Lab bảng benchmark |
+| **RQ2** | Những chữ cái nào bị nhầm lẫn nhiều nhất và vì sao (giả thuyết ban đầu: các chữ nắm tay và các chữ 2–3 ngón dễ nhầm với nhau; kiểm bằng Confusion Matrix thật)? | FT-ML-05 Confusion Matrix, per-class F1, gallery lỗi |
 | **RQ3** | Có thể đạt suy luận thời gian thực > 30 FPS trên trình duyệt với độ chính xác chấp nhận được không? | FT-ML-06 ONNX, FT-PERF-01 FPS monitor, Phase 4 |
 
 ## 3. User Personas
@@ -51,7 +51,7 @@
 | **MUST (bắt buộc cho Tuần 5 / chấm điểm)** | Pipeline ML tái lập được · Baseline vs CNN vs Landmark-MLP · Group split chống leakage · Xuất ONNX · Web nhận diện real-time > 30 FPS · Cấp độ 1 (bảng chữ cái) với Hold-to-Verify · Free Practice · AI Lab hiển thị kết quả từ JSON · Deploy Vercel · README |
 | **SHOULD (MVP)** | Skill Tree · XP, Streak, Hearts · Âm thanh · Phản hồi sửa lỗi ngón tay · Cấp độ 2 Fingerspelling · Nhập/Xóa tiến độ · Trang thu mẫu landmark · Bảng chữ cái tra cứu · **(đã làm, 2026-11-22)** J, Z động và số 0–10 bằng luật hình học · tài khoản tùy chọn + đồng bộ tiến độ · bảng xếp hạng tự nguyện · trang giới thiệu (Trang chủ, Tính năng, Cách hoạt động, Giới thiệu & Liên hệ) |
 | **COULD (mở rộng)** | Cấp độ 3 từ vựng động (chuỗi landmark) · mô hình học máy cho J, Z, số (thay luật) · đăng nhập Google · PWA offline |
-| **WON'T (lần này)** | Tự viết backend/server riêng (đã dùng Supabase) · telemetry, analytics · chế độ tối (đã bỏ 2026-11-22, giao diện chỉ sáng) · App mobile native · Nhận diện câu ASL liên tục · VSL · Biểu cảm khuôn mặt |
+| **WON'T (lần này)** | Tự viết backend/server riêng (đã dùng Supabase) · telemetry, analytics · chế độ tối · App mobile native · Nhận diện câu ASL liên tục · VSL · Biểu cảm khuôn mặt |
 
 ## 5. Danh sách tính năng (Features – Ft)
 
@@ -103,11 +103,10 @@ Mã tính năng được dùng xuyên suốt ARCH / DATA / CONTRACTS / PLAN. C�
 | FT-ACC-01 | Tài khoản tùy chọn & đồng bộ | Đăng ký (trang `/register`) rồi đăng nhập (trang `/login`) bằng email + mật khẩu (cùng thẻ Tài khoản ở Hồ sơ, menu tài khoản ở thanh trên); đồng bộ tiến độ giữa các máy theo quy tắc "không mất tiến độ"; đăng xuất; xóa tài khoản. Không đăng nhập vẫn dùng đủ | SHOULD (đã làm) | Supabase `user_backups` (03 §6) · K6 |
 | FT-ACC-02 | Hồ sơ | Tên hiển thị tùy chọn; XP, chuỗi ngày, lịch hoạt động 12 tuần, độ thành thạo từng chữ | SHOULD | `profile` |
 | FT-ACC-03 | Cài đặt | Âm thanh, mục tiêu XP/ngày, tên hiển thị, camera (giao diện chỉ chế độ sáng) | SHOULD | `settings` |
-| FT-ACC-04 | Nhập / Xóa tiến độ | Nhập file sao lưu từ bản cũ; xóa toàn bộ dữ liệu trên máy. Nút Xuất JSON đã bỏ (2026-11-22) vì tài khoản thay thế việc chuyển máy | SHOULD | 03 §3.6 · K5 |
+| FT-ACC-04 | Nhập / Xóa tiến độ | Nhập file sao lưu từ bản cũ; xóa toàn bộ dữ liệu trên máy. Chuyển tiến độ giữa các máy dùng tài khoản | SHOULD | 03 §3.6 · K5 |
 | FT-SYS-01 | Quản lý phiên bản mô hình | Client đọc `models/index.json`, tải manifest + ONNX, kiểm sha256, cache theo version | MUST | K2 |
 | FT-SYS-02 | Thu thập mẫu landmark | Ghi landmark (không ghi video) có nhãn, **tải về dạng file JSON**; nhóm gom vào `ml/data/raw/webcam/` | MUST cho nhóm dev | 03 §4 · K5 |
 
-> FT-ACC-01 bị bỏ ở v0.2 và **làm lại ở dạng tùy chọn** ở v0.3 (2026-11-22).
 
 ### 5.5 Nhóm AI Lab (Phòng thí nghiệm — cho người chấm)
 
@@ -160,7 +159,6 @@ Mỗi AC đo được và gắn với rubric (R1 = Problem Definition, R2 = Prob
 | AC-ACC-03 | Đăng nhập cùng tài khoản trên trình duyệt khác thì tiến độ xuất hiện; hai máy có tiến độ khác nhau gộp lại không mất bài hoàn thành, XP hay ngày học nào; tài khoản này không đọc được dữ liệu tài khoản khác (RLS) | FT-ACC-01 |
 | AC-ACC-04 | Người chưa bật tham gia không xuất hiện trên bảng xếp hạng; khách chưa đăng nhập không đọc được bảng; email không lộ | FT-GAM-06 |
 | AC-ACC-02 | localStorage bị chặn → app vẫn chạy, hiện banner "Tiến độ sẽ không được lưu" | FT-ACC-02 |
-| ~~AC-UI-01~~ | **Bỏ (2026-11-22):** giao diện chỉ còn chế độ sáng | — |
 | AC-UI-02 | Tương phản văn bản đạt WCAG 2.1 AA; toàn bộ luồng học điều khiển được bằng bàn phím | Toàn bộ UI |
 | AC-PRIV-01 | Khi chưa đăng nhập, app không gửi request nào ra ngoài origin của chính nó (kiểm network log trong E2E); khi đã đăng nhập, chỉ thêm request tới Supabase mang tiến độ học. Không request nào mang ảnh/video/landmark; mẫu landmark chỉ rời trình duyệt khi người dùng bấm tải file | FT-SYS-02, FT-ACC-01 |
 
@@ -200,13 +198,8 @@ Không có telemetry, nên đo bằng **buổi thử nghiệm có hướng dẫn
 
 ## 9. Câu hỏi mở (cần người dùng trả lời)
 
-1. Wording chính thức của RQ1–RQ3 đã nộp tuần 2?
-2. Ngày trình bày cuối kỳ (Tuần 5) và hạn nộp GitHub/báo cáo?
-3. ~~Mã nguồn tuần 3–4~~ **Đã chốt (2026-11-18):** không dùng; viết lại toàn bộ trong repo này, mọi số liệu tự đo.
-4. ~~Ngôn ngữ giao diện?~~ **Theo code (2026-11-22):** tiếng Việt (`src/i18n/vi.ts`).
-5. ~~Nguồn hình minh họa?~~ **Theo code (2026-11-22):** 26 hình chữ cái public domain từ wpclipart.com qua Wikimedia Commons (`frontend/public/media/letters/ATTRIBUTION.md`); hình số nằm ở `public/media/numbers/`.
-6. Danh sách từ cho Cấp 2 (Fingerspelling) và từ vựng Cấp 3 — **vẫn chờ người dùng cung cấp**.
-7. ~~Deploy?~~ **Đã chốt:** Vercel Hobby (project `sign-lingo`, `https://signlingo-vn.vercel.app`); repo `github.com/Nyanta-dotcom/SignLingo`; tài khoản tùy chọn qua Supabase (2026-11-22).
+1. Ngày trình bày cuối kỳ (Tuần 5) và hạn nộp GitHub/báo cáo?
+2. Danh sách từ cho Cấp 2 (Fingerspelling) và từ vựng Cấp 3 — **vẫn chờ người dùng cung cấp**.
 
 ## 10. Nhóm thực hiện và phân công
 

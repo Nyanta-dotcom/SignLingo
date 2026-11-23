@@ -1,6 +1,6 @@
 # 08 · Kịch bản demo và phương án dự phòng (P4-12)
 
-Mục tiêu: trong khoảng 7 phút cho người chấm thấy (1) vấn đề và giải pháp, (2) ứng dụng chạy thật với webcam, (3) bằng chứng AI đo được. Mọi con số khi trình bày **đọc trực tiếp trên màn AI Lab**, không đọc từ trí nhớ hay từ báo cáo cũ.
+Mục tiêu: trong khoảng 7 phút cho người chấm thấy (1) vấn đề và giải pháp, (2) ứng dụng chạy thật với webcam, (3) bằng chứng AI đo được. Mọi con số khi trình bày **đọc trực tiếp trên màn AI Lab**, không đọc từ trí nhớ.
 
 ## Chuẩn bị (làm trước buổi demo)
 
