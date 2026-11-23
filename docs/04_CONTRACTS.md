@@ -218,7 +218,7 @@ export type CompleteResult = {
 
 | File | Hướng | Schema |
 |---|---|---|
-| File sao lưu từ bản cũ | Chỉ Nhập (nút Xuất đã bỏ 2026-11-22) | `backup.schema.json` (03 §3.6) |
+| File sao lưu từ bản cũ | Chỉ Nhập | `backup.schema.json` (03 §3.6) |
 | `landmarks_<sign>_<signer>_<ts>.json` | Tải về từ `/collect` → `ml/data/raw/webcam/` | `landmark_capture.schema.json` (03 §4) |
 | `perf_<ts>.json` | Tải về từ AI Lab → `ml/reports/perf/` | `PerfRecord` (03 §3.4) |
 

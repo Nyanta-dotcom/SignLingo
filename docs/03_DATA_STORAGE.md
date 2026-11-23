@@ -147,7 +147,7 @@ type PerfRecord = {
 
 ### 3.6 Nhập / Xóa (Cài đặt)
 
-- **Xuất JSON đã bỏ (2026-11-22):** giữ tiến độ giữa các máy nay dùng tài khoản (§6). Hàm `exportBackup()` vẫn còn trong `src/storage/backup.ts` để tạo dữ liệu đồng bộ và cho test, nhưng không còn nút trên giao diện.
+- **Chuyển máy:** giữ tiến độ giữa các máy dùng tài khoản (§6). Hàm `exportBackup()` vẫn còn trong `src/storage/backup.ts` để tạo dữ liệu đồng bộ và cho test, nhưng không còn nút trên giao diện.
 - **Nhập:** file `{ schema_version, exported_at, app_version, data: { profile, settings, stats, progress, daily, sign_stats, sessions, benchmarks } }` (file xuất từ bản cũ) → kiểm JSON Schema `shared/contracts/schemas/backup.schema.json` → chạy `migrate` nếu version cũ → hỏi xác nhận "Ghi đè tiến độ hiện tại?" → ghi.
 - **Xóa dữ liệu:** nút trong Cài đặt, có xác nhận; chỉ xóa trên máy, không xóa tài khoản.
 
