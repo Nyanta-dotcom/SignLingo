@@ -26,7 +26,9 @@ test('the learning path can be reached and used with the keyboard only', async (
   await page.keyboard.press('Tab');
   await expect(page.getByRole('link', { name: 'Bỏ qua điều hướng' })).toBeFocused();
   await page.keyboard.press('Enter');
-  for (let i = 0; i < 12; i += 1) await page.keyboard.press('Tab');
-  const focused = await page.evaluate(() => document.activeElement?.tagName);
-  expect(focused).not.toBe('BODY');
+  const firstLesson = page.getByRole('button', { name: /^Bài 1:/ });
+  for (let i = 0; i < 10 && !(await firstLesson.evaluate((el) => el === document.activeElement)); i += 1) {
+    await page.keyboard.press('Tab');
+  }
+  await expect(firstLesson).toBeFocused();
 });
