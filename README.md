@@ -222,6 +222,35 @@ Quy ước chi tiết: [`CONTRIBUTING.md`](CONTRIBUTING.md).
 | `/login`, `/register`, `/profile`, `/settings` | Đăng nhập, đăng ký, hồ sơ và tài khoản, cài đặt |
 | `/collect` | Thu mẫu landmark để bổ sung dữ liệu |
 
+#### Ảnh chụp: trang giới thiệu
+
+| Trang chủ (`/welcome`) | Tính năng nổi bật (`/features`) |
+|---|---|
+| ![Trang chủ SignLingo](docs/screenshots/01-welcome.jpg) | ![Tính năng nổi bật](docs/screenshots/02-features.jpg) |
+| Giới thiệu tổng quan, khung xem thử tương tác 26 chữ cái A–Z & chữ số 0–10 kèm dải ký hiệu ASL trực quan. | Minh họa lộ trình học game hóa theo cấp độ, nhận diện chữ tĩnh/động (`J`, `Z`, `10`) và phản hồi từng ngón tay. |
+
+| Cách hoạt động & Quyền riêng tư (`/how-it-works`) | Giới thiệu & Nhóm phát triển (`/about`) |
+|---|---|
+| ![Cách hoạt động](docs/screenshots/03-how-it-works.jpg) | ![Về SignLingo](docs/screenshots/04-about.jpg) |
+| Trình bày quy trình 3 bước và kiến trúc xử lý AI cục bộ (0 byte ảnh webcam rời khỏi máy), đồng bộ tiến độ qua cơ sở dữ liệu. | Hướng dẫn sử dụng nhanh trong 5 bước cùng thông tin phân công thành viên nhóm phát triển (VNUK). |
+
+#### Ảnh chụp: học, luyện tập và AI Lab
+
+| Lộ trình học (`/learn`) | Luyện tập tự do (`/practice`) |
+|---|---|
+| ![Lộ trình học kiểu bản đồ kẹo](docs/screenshots/05-learn.jpg) | ![Luyện tự do trước webcam](docs/screenshots/06-practice.png) |
+| Bản đồ lộ trình game hóa chia 3 cấp (chữ cái tĩnh, chữ động `J & Z`, chữ số `0–10`), theo dõi mục tiêu XP ngày, chuỗi ngày và tim. | Ra dấu tự do trước webcam để gõ chữ: giữ chữ tĩnh 1 giây hoặc vẽ nét `J`/`Z` trong không trung, không mất tim. |
+
+| Bảng chữ cái & Chữ số (`/alphabet`) | Bảng xếp hạng (`/leaderboard`) |
+|---|---|
+| ![Bảng chữ cái và chữ số](docs/screenshots/07-alphabet.jpg) | ![Bảng xếp hạng](docs/screenshots/08-leaderboard.png) |
+| Từ điển tra cứu nhanh đủ 26 chữ cái A–Z và 11 chữ số 0–10 với bộ lọc danh mục, hình minh họa dáng tay chuẩn và nhãn ký hiệu động. | Xếp hạng học viên đã đăng nhập và tham gia theo **Tuần này**, **Tổng XP**, **Chuỗi ngày** và **Độ chính xác**. |
+
+| AI Lab — Phân tích lỗi (`/lab`) | Hồ sơ & Đồng bộ tài khoản (`/profile`) |
+|---|---|
+| ![AI Lab phân tích lỗi](docs/screenshots/09-ai-lab.jpg) | ![Hồ sơ học viên](docs/screenshots/10-profile.jpg) |
+| Đọc trực tiếp kết quả thí nghiệm ML: bảng benchmark, ma trận nhầm lẫn chuẩn hóa, cặp chữ dễ nhầm, F1 từng chữ, kiểm tra data leakage và đo FPS thật. | Thống kê tổng XP, chuỗi ngày, đăng nhập/đồng bộ đám mây (Supabase), tùy chọn tham gia bảng xếp hạng và biểu đồ nhiệt 12 tuần. |
+
 ### (b) Sử dụng Tailwind CSS
 
 - Tailwind CSS 4 qua plugin `@tailwindcss/vite`.
