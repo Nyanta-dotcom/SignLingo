@@ -152,7 +152,7 @@
   --kw-dash: #e7a3ba;
   --kw-ear-inner: #ffd2df;
   --kw-ink: #4a3540;
-  --kw-title: #c2456f;
+  --kw-title: #b83d66; /* 4.87:1 on --kw-butter (WCAG AA) */
   --kw-window-shadow: 0 6px 0 #f0b3c6;
   --kw-card-shadow: 0 4px 0 #f3d6df, 0 10px 22px -16px rgba(122, 74, 92, 0.35);
   --kw-card-shadow-hover: 0 6px 0 #f0b3c6, 0 16px 28px -14px rgba(194, 69, 111, 0.35);

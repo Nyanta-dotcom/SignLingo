@@ -3,13 +3,14 @@ import { test, expect } from '@playwright/test';
 // P4-09: the learner's data survives reloads, can be exported, wiped and restored, and a blocked
 // storage never breaks the app (AC-GAM-01, AC-ACC-01, AC-ACC-02).
 
-test('first visit shows the welcome page once, then goes straight to the learning path', async ({ page }) => {
+test('first visit offers "Bắt đầu", which opens the learning path; a returning learner sees "Tiếp tục học"', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('button', { name: 'Bắt đầu' })).toBeVisible();
-  await page.getByRole('button', { name: 'Bắt đầu' }).click();
+  const start = page.getByRole('button', { name: 'Bắt đầu', exact: true }).first();
+  await expect(start).toBeVisible();
+  await start.click();
   await expect(page).toHaveURL(/\/learn$/);
   await page.goto('/');
-  await expect(page).toHaveURL(/\/learn$/);
+  await expect(page.getByRole('button', { name: 'Tiếp tục học' }).first()).toBeVisible();
 });
 
 test('settings survive a reload', async ({ page }) => {
